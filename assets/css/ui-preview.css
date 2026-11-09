@@ -27,8 +27,6 @@
 @source '../../templates';
 @source '../js';
 @source '../../src/Twig';
-@source '../../tests/Browser/templates';
-@source '../../tests/Browser/public';
 
 @source inline('btn btn-primary btn-secondary btn-success btn-warning btn-error btn-info btn-neutral btn-outline btn-soft btn-ghost btn-link btn-sm btn-md btn-lg btn-block');
 @source inline('badge badge-primary badge-secondary badge-success badge-warning badge-error badge-info badge-neutral badge-outline badge-soft badge-ghost badge-sm badge-md badge-lg');

@@ -83,6 +83,11 @@
       "css": [
         "/ui-fonts-preview.f4fa61d4.css"
       ]
+    },
+    "ui-preview": {
+      "css": [
+        "/ui-preview.27ca099f.css"
+      ]
     }
   }
 }

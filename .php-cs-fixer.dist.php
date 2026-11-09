@@ -5,6 +5,7 @@ $finder = PhpCsFixer\Finder::create()
     ->ignoreDotFiles(true)
     ->ignoreVCS(true)
     ->exclude('vendor')
+    ->exclude('var')
     ->files()
     ->name('*.php')
 ;

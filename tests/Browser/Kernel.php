@@ -59,7 +59,7 @@ final class Kernel extends BaseKernel
             'test' => false,
             'session' => ['storage_factory_id' => 'session.storage.factory.native', 'save_path' => self::storageDir().'/sessions'],
             'asset_mapper' => [
-                'paths' => [\dirname(__DIR__, 2).'/assets/css' => 'easyadmin', \dirname(__DIR__, 2).'/assets/js/ui' => 'easyadmin-ui', __DIR__.'/public' => ''],
+                'paths' => [__DIR__.'/assets' => 'easyadmin', \dirname(__DIR__, 2).'/assets/css' => 'easyadmin', \dirname(__DIR__, 2).'/assets/js/ui' => 'easyadmin-ui', __DIR__.'/public' => ''],
                 'excluded_patterns' => [
                     '*/assets/css/app.css',
                     '*/assets/css/ui-fonts-preview.css',
@@ -76,7 +76,7 @@ final class Kernel extends BaseKernel
         ]);
         $container->loadFromExtension('symfonycasts_tailwind', [
             'binary' => \dirname(__DIR__, 2).'/node_modules/.bin/tailwindcss',
-            'input_css' => [\dirname(__DIR__, 2).'/assets/css/ui-preview.css'],
+            'input_css' => [__DIR__.'/assets/ui-preview.css'],
         ]);
         $container->loadFromExtension('twig', ['default_path' => __DIR__.'/templates', 'strict_variables' => true]);
         $container->loadFromExtension('twig_component', ['anonymous_template_directory' => 'components/']);

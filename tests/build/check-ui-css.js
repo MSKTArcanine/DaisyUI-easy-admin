@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const postcss = require('postcss');
 
-const filename = process.argv[2] || 'tests/Browser/var/tailwind/ui-preview.built.css';
+const filename = process.argv[2] || 'var/ui-build/ui-preview.css';
 const css = fs.readFileSync(path.resolve(filename), 'utf8');
 const stylesheet = postcss.parse(css, { from: filename });
 const selectors = [];
@@ -28,7 +28,6 @@ for (const selector of [
     '.input',
     '.grid',
     '.md\\:grid-cols-2',
-    '.outline-offset-\\[7px\\]',
 ]) {
     const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const classBoundary = new RegExp(`${escaped}(?![\\w\\\\-])`);

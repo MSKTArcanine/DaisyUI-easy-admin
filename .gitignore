@@ -16,6 +16,9 @@ yarn-error.log
 /tests/Browser/results/
 /tests/Browser/public/assets-built/
 /tests/Browser/var/
+/tests/Consumer/results/
 
 /.claude/*
 !/.claude/skills/
+
+/tools/UiBuild/public/assets/

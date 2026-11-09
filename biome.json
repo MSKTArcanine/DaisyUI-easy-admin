@@ -7,6 +7,10 @@
             "**/assets/js/**",
             "**/tests/Browser/**/*.js",
             "**/tests/Browser/public/**",
+            "**/tests/Browser/assets/**",
+            "**/tests/Consumer/**/*.js",
+            "**/examples/consumer/assets/**",
+            "**/examples/consumer/tailwind/**",
             "**/tests/build/**/*.js",
             "!**/composer.json",
             "!**/vendor",
@@ -15,6 +19,8 @@
             "!**/var",
             "!**/tests/Browser/results",
             "!**/tests/Browser/public/assets-built",
+            "!**/tests/Consumer/results",
+            "!**/examples/consumer/public/assets",
             "!**/.claude",
             "!**/public/entrypoints.json",
             "!**/public/manifest.json"
@@ -69,7 +75,10 @@
                 "assets/css/ui/**",
                 "assets/css/form-type-code-editor.css",
                 "assets/css/form-type-text-editor.css",
-                "assets/css/migration-*.css"
+                "assets/css/migration-*.css",
+                "tests/Browser/assets/**",
+                "examples/consumer/assets/**/*.css",
+                "examples/consumer/tailwind/**/*.css"
             ],
             "css": {
                 "formatter": {

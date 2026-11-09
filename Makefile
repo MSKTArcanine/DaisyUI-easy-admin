@@ -15,7 +15,7 @@ tests: ## Run tests (optional ARGS, e.g. make tests ARGS="tests/Unit/Field/" or 
 	php vendor/bin/phpunit $(ARGS)
 tests-parallel: ## Run tests in parallel processes (optional ARGS, e.g. make tests-parallel ARGS="--processes=4")
 	php vendor/bin/paratest $(ARGS)
-tests-browser: build-ui-assets ## Run browser behavior regressions (optional ARGS)
+tests-browser: build-browser-assets ## Run browser behavior regressions (optional ARGS)
 	yarn test:browser $(ARGS)
 browser-serve: ## Serve the isolated rendering regression application
 	php -S 127.0.0.1:8089 tests/Browser/router.php
@@ -48,21 +48,24 @@ build: ## Initially build the package before development
 	composer update
 	yarn install
 
-build-assets: ## Rebuild assets after changes in JS or SCSS
-	yarn encore production
+build-assets: ## Rebuild distributed CSS and JavaScript through AssetMapper and Encore
+	yarn build
 	php ./src/Resources/bin/fix-assets-manifest-file.php
 
-build-ui-dev: ## Build the isolated Tailwind/daisyUI stylesheet for development
-	php tests/Browser/console.php tailwind:build
-build-ui: ## Build the isolated Tailwind/daisyUI stylesheet for production
-	php tests/Browser/console.php tailwind:build --minify
-build-ui-assets: ## Build and compile the isolated production AssetMapper application
+build-ui-dev: ## Build development Tailwind CSS through the independent AssetMapper tool
+	php tools/UiBuild/build.php --dev
+build-ui: ## Build production Tailwind CSS through the independent AssetMapper tool
+	php tools/UiBuild/build.php
+build-ui-assets: build-ui ## Verify the independently compiled production UI stylesheet
+	node tests/build/check-ui-css.js var/ui-build/ui-preview.css
+build-browser-assets: build-assets ## Build the isolated browser fixture assets
 	EASYADMIN_BROWSER_ENV=prod php tests/Browser/console.php cache:clear
 	EASYADMIN_BROWSER_ENV=prod php tests/Browser/console.php tailwind:build --minify
 	EASYADMIN_BROWSER_ENV=prod php tests/Browser/console.php asset-map:compile
 	node tests/build/check-ui-css.js tests/Browser/var/tailwind/ui-preview.built.css
-check-ui-css: build-ui ## Verify production classes, layers and stylesheet isolation
-	node tests/build/check-ui-css.js tests/Browser/var/tailwind/ui-preview.built.css
+watch-ui: ## Rebuild Tailwind on source changes alongside yarn watch or yarn dev-server
+	php tools/UiBuild/console.php tailwind:build --watch
+check-ui-css: build-ui-assets ## Verify production classes, layers and stylesheet isolation
 
 checks-before-pr: linter-cs-fixer linter-phpstan linter-docs linter-twig tests ## Runs tests and linters which are also run on PRs
 
