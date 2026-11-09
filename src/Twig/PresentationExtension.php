@@ -100,6 +100,10 @@ final class PresentationExtension extends AbstractExtension
         'data-bs-offset' => 'data-ea-offset',
         'data-bs-placement' => 'data-ea-placement',
         'data-bs-animation' => 'data-ea-animation',
+        'data-bs-trigger' => 'data-ea-trigger',
+        'data-bs-delay' => 'data-ea-delay',
+        'data-bs-container' => 'data-ea-container',
+        'data-bs-boundary' => 'data-ea-boundary',
         'data-bs-html' => 'data-ea-html',
         'data-bs-custom-class' => 'data-ea-custom-class',
         'data-bs-title' => 'data-ea-title',
@@ -149,7 +153,7 @@ final class PresentationExtension extends AbstractExtension
      */
     public function mapAttributes(array $attributes): array
     {
-        if (\array_key_exists('data-bs-toggle', $attributes) && !\in_array($attributes['data-bs-toggle'], ['modal', 'dropdown', 'tab'], true)) {
+        if (\array_key_exists('data-bs-toggle', $attributes) && !\in_array($attributes['data-bs-toggle'], ['modal', 'dropdown', 'tab', 'collapse', 'tooltip', 'popover'], true)) {
             return $attributes;
         }
 

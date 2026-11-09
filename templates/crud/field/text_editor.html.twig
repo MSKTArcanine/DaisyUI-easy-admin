@@ -6,21 +6,15 @@
     {{ field.formattedValue|nl2br }}
 {% else %}
     {% set html_id = 'ea-text-editor-' ~ field.uniqueId %}
-    <a href="#" data-bs-toggle="modal" data-bs-target="#{{ html_id }}">
+    <a href="#" data-ea-toggle="modal" data-ea-target="#{{ html_id }}">
         <twig:ea:Icon name="internal:file-lines" /> {{ 'field.text_editor.view_content'|trans([], domain: 'EasyAdminBundle') }}
     </a>
 
-    <div class="modal fade" id="{{ html_id }}" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-xl" role="document">
-            <div class="modal-content">
-                <div class="modal-header d-flex justify-content-between">
-                    <h5 class="modal-title">{{ field.label|trans }}</h5>
-                    <twig:ea:Button type="button" variant="ghost" icon="internal:xmark" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans([], domain: 'EasyAdminBundle') }}" />
-                </div>
-                <div class="modal-body ea-prose">
-                    {{ field.formattedValue|nl2br }}
-                </div>
-            </div>
-        </div>
-    </div>
+    <twig:ea:Modal id="{{ html_id }}" size="xl" headerClass="flex items-center justify-between gap-4" bodyClass="ea-prose" aria-labelledby="{{ html_id ~ '-title' }}">
+        <twig:block name="header">
+            <h5 class="modal-title" id="{{ html_id ~ '-title' }}">{{ field.label|trans }}</h5>
+            <twig:ea:Modal:Close variant="ghost" icon="internal:xmark" aria-label="{{ 'action.close'|trans([], domain: 'EasyAdminBundle') }}" />
+        </twig:block>
+        <twig:block name="body">{{ field.formattedValue|nl2br }}</twig:block>
+    </twig:ea:Modal>
 {% endif %}

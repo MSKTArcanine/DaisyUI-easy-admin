@@ -11,6 +11,8 @@ return [
     ],
 
     'datagrid' => [
+        'select_all' => 'Select all rows',
+        'select_row' => 'Select row %entity_id%',
         'hidden_results' => 'Néhány találat nem megjeleníthető, mert nincs megfelelő jogosultsága',
         'no_results' => 'Nincs találat.',
         'sort' => 'Rendezés',

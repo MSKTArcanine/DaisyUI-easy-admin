@@ -114,7 +114,7 @@ class ActionsCustomizationTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertSame('Are you sure you want to %action_name%?', $crawler->filter('#modal-action-confirmation h4#action-confirmation-title')->text());
-        static::assertCount(1, $crawler->filter('#modal-action-confirmation p#action-confirmation-message.modal-message.d-none'));
-        static::assertCount(1, $crawler->filter('#modal-action-confirmation p#action-confirmation-content.d-none'));
+        static::assertCount(1, $crawler->filter('#modal-action-confirmation p#action-confirmation-message.modal-message[hidden]'));
+        static::assertCount(1, $crawler->filter('#modal-action-confirmation p#action-confirmation-content[hidden]'));
     }
 }

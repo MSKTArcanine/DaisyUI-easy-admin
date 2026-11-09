@@ -11,6 +11,8 @@ return [
     ],
 
     'datagrid' => [
+        'select_all' => 'Select all rows',
+        'select_row' => 'Select row %entity_id%',
         'hidden_results' => 'لا يمكنك عرض بعض النتائج لأنك لا تملك أذونات كافية',
         'no_results' => 'لا توجد أيّ نتائج',
         'sort' => 'فرز',

@@ -15,3 +15,7 @@
 @import './easyadmin-theme/theme.css' layer(ea);
 @import './migration-components.css';
 @import './migration-dialog.css';
+@import './ui/layout.css';
+@import './ui/detail.css';
+@import './ui/overlays.css';
+@import './ui/visibility.css' layer(ea-overrides);

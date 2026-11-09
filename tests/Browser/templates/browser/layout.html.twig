@@ -9,7 +9,11 @@
 {% endblock %}
 {% block head_javascript %}
     {% if app.request.attributes.get('browser_ui_preview') %}
-        {{ importmap(['ui-interactions', 'ui-shell'], {nonce: csp_nonce('script')}) }}
+        {% if ea.crud is not null %}
+            <script src="{{ asset('ui-crud-preview.js', ea.assets.defaultAssetPackageName) }}" nonce="{{ csp_nonce('script') }}"></script>
+        {% else %}
+            {{ importmap(['ui-interactions', 'ui-shell'], {nonce: csp_nonce('script')}) }}
+        {% endif %}
         {{ block('importmap') }}
     {% else %}
         {{ parent() }}

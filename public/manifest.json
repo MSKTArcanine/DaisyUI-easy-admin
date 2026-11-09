@@ -1,7 +1,8 @@
 {
-  "app.css": "app.f4c31cba.css",
-  "app.js": "app.4a3b1be7.js",
-  "form.js": "form.2a76376c.js",
+  "app.css": "app.2e6ffccc.css",
+  "app.js": "app.73617935.js",
+  "ui-crud-preview.js": "ui-crud-preview.bc2cb30d.js",
+  "form.js": "form.b86ee19d.js",
   "page-layout.js": "page-layout.dc270868.js",
   "page-color-scheme.js": "page-color-scheme.f88b401e.js",
   "field-boolean.js": "field-boolean.fff5e0d0.js",
@@ -43,6 +44,7 @@
   "fonts/ibm-plex-sans-vietnamese-wght-normal.woff2": "fonts/ibm-plex-sans-vietnamese-wght-normal.c50c4d9a.woff2",
   "fonts/rubik-cyrillic-ext-wght-normal.woff2": "fonts/rubik-cyrillic-ext-wght-normal.5d7a3ad3.woff2",
   "fonts/jetbrains-mono-cyrillic-wght-normal.woff2": "fonts/jetbrains-mono-cyrillic-wght-normal.37ac7420.woff2",
+  "licenses/LICENSE": "licenses/tom-select-APACHE-2.0.txt",
   "fonts/fa-v4compatibility.ttf": "fonts/fa-v4compatibility.fa86b3c8.ttf",
   "fonts/inter-vietnamese-wght-normal.woff2": "fonts/inter-vietnamese-wght-normal.ab4bb8dc.woff2",
   "fonts/rubik-hebrew-wght-normal.woff2": "fonts/rubik-hebrew-wght-normal.1158a121.woff2",
@@ -50,5 +52,6 @@
   "fonts/jetbrains-mono-vietnamese-wght-normal.woff2": "fonts/jetbrains-mono-vietnamese-wght-normal.b8c38c3c.woff2",
   "fonts/fa-v4compatibility.woff2": "fonts/fa-v4compatibility.c3ea317a.woff2",
   "fonts/LICENSE": "fonts/ibm-plex-sans-OFL.txt",
-  "fonts/jetbrains-mono-cyrillic-ext-wght-normal.woff2": "fonts/jetbrains-mono-cyrillic-ext-wght-normal.d539db02.woff2"
+  "fonts/jetbrains-mono-cyrillic-ext-wght-normal.woff2": "fonts/jetbrains-mono-cyrillic-ext-wght-normal.d539db02.woff2",
+  "licenses/LICENSE.md": "licenses/popper-MIT.txt"
 }

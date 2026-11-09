@@ -1,6 +1,6 @@
 # Rendering boundary and target architecture
 
-Status: Prompt 1 design decisions with implementation addenda through Prompt 4,
+Status: Prompt 1 design decisions with implementation addenda through Prompt 6,
 2026-11-09. The initial decisions are targets; the stage addenda and reports
 identify verified results. Source evidence is in [baseline.md](baseline.md)
 and [inventory.md](inventory.md).
@@ -440,3 +440,42 @@ used for the new keys outside English, following repository instructions;
 existing translations remain unchanged. Existing Sidebar/menu/flash templates
 already use neutral components, so preserve their interfaces rather than
 rewriting their markup unnecessarily.
+
+
+## D15. Native CRUD interactions and complete filter rendering
+
+Extract `assets/js/crud.js` from the legacy app wrapper and reuse it in the
+isolated `ui-crud-preview` entry. Keep action methods, hidden inputs, CSRF,
+selection and pending-confirmation targets unchanged. Initialize lazily loaded
+filter HTML and controls idempotently, accepting editable 422 responses and
+same-origin redirects while checking the final origin before inserting HTML.
+
+Use native collapse/dialog/menu hooks through `ea_ui_attrs`; retain public
+legacy styling/attribute inputs as adapter contracts. Keep independent Mark.js,
+TomSelect and Popper. Use neutral TomSelect CSS with a small scoped skin.
+Native tooltips/popovers use Popper 2.11.8 and isolated DOMPurify 3.4.17 with
+an explicit allowlist equivalent to the previous supported content; retain
+text defaults, delay/trigger options, RTL placement and accessible ownership.
+The direct DOMPurify development pin already existed transitively. Copy full
+Popper, DOMPurify and TomSelect licenses through the normal build.
+
+`templates/crud/filter_theme.html.twig` provides complete neutral filter
+widgets without changing the main form theme yet. Preserve configured partial
+theme ordering and every existing filter block. Consolidate shared neutral
+form widgets during Prompt 7. Keep the native hidden override scoped because
+Preflight is intentionally excluded. Exclude daisyUI collapse styling; native
+collapse uses explicit state and visibility rather than a styling class.
+
+The preview remains separate from Bootstrap. The legacy wrapper still imports
+Bootstrap for unmigrated forms/widgets; remove it and temporary preview entries
+at final cutover. The only product PHP change is presentation attribute mapping.
+
+
+The full legacy-path browser run exposed Bootstrap's delegated dropdown
+keyboard listener intercepting native menus and throwing after toggle attributes
+were adapted. The temporary legacy wrapper replaces only Bootstrap's delegated menu-key
+listener with a native-menu exclusion, using the shared source-module event
+registry. This preserves raw legacy dropdowns and native editable target
+handlers without intercepting propagation. Overlay Escape still has priority.
+Remove this wrapper with the Bootstrap runtime in Prompt 10; retain the
+regressions.

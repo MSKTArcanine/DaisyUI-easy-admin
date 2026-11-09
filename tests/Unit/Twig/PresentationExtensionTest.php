@@ -165,7 +165,7 @@ class PresentationExtensionTest extends TestCase
 
     public static function provideUnmigratedUiAttributes(): iterable
     {
-        foreach (['collapse', 'tooltip', 'popover', 'offcanvas'] as $mechanism) {
+        foreach (['offcanvas'] as $mechanism) {
             yield $mechanism => [[
                 'data-bs-toggle' => $mechanism, 'data-bs-target' => '#target',
                 'data-bs-title' => 'Help', 'data-bs-html' => 'true',
@@ -173,6 +173,44 @@ class PresentationExtensionTest extends TestCase
             ]];
         }
         yield 'unsupported dismiss' => [['data-bs-dismiss' => 'toast', 'data-bs-target' => '#target']];
+    }
+
+    #[DataProvider('provideDisclosureMechanisms')]
+    public function testDisclosureAttributesKeepCallerPriorityAndActionMetadata(string $mechanism): void
+    {
+        $result = (new PresentationExtension())->mapAttributes([
+            'data-bs-toggle' => $mechanism,
+            'data-bs-target' => '#details',
+            'data-bs-title' => 'Default title',
+            'data-ea-title' => 'Caller title',
+            'data-bs-html' => 'true',
+            'data-bs-trigger' => 'hover focus',
+            'data-bs-delay' => '{"show":100,"hide":200}',
+            'data-bs-container' => 'body',
+            'data-bs-boundary' => 'viewport',
+            'data-action-url' => '/admin?sort[name]=ASC',
+            'data-action-csrf-token' => 'protected-token',
+        ]);
+
+        self::assertSame([
+            'data-ea-title' => 'Caller title',
+            'data-action-url' => '/admin?sort[name]=ASC',
+            'data-action-csrf-token' => 'protected-token',
+            'data-ea-toggle' => $mechanism,
+            'data-ea-target' => '#details',
+            'data-ea-trigger' => 'hover focus',
+            'data-ea-delay' => '{"show":100,"hide":200}',
+            'data-ea-container' => 'body',
+            'data-ea-boundary' => 'viewport',
+            'data-ea-html' => 'true',
+        ], $result);
+    }
+
+    public static function provideDisclosureMechanisms(): iterable
+    {
+        foreach (['collapse', 'tooltip', 'popover'] as $mechanism) {
+            yield $mechanism => [$mechanism];
+        }
     }
 
     public function testUnsupportedPopperConfigurationAndNullNativeValuesArePreserved(): void

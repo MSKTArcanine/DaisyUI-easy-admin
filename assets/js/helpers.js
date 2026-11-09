@@ -1,4 +1,5 @@
 export function toggleVisibilityClasses(element, removeVisibility) {
+    element.hidden = removeVisibility;
     if (removeVisibility) {
         element.classList.remove('d-block');
         element.classList.add('d-none');

@@ -11,6 +11,8 @@ return [
     ],
 
     'datagrid' => [
+        'select_all' => 'Select all rows',
+        'select_row' => 'Select row %entity_id%',
         'hidden_results' => 'Některé položky nemohly být zobrazeny neboť nemáte patřičná oprávnění',
         'no_results' => 'Žádné položky.',
         'sort' => 'Seřadit',

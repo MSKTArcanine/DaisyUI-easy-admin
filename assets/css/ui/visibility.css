@@ -1,0 +1,4 @@
+/* Native hidden state must win over component display utilities when Preflight is omitted. */
+[data-ea-ui] [hidden]:not([hidden='until-found']) {
+    display: none !important;
+}

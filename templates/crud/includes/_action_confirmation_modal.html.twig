@@ -1,22 +1,22 @@
 {# Hidden form for POST-based actions (like DELETE) with CSRF protection #}
-<form class="d-none" method="post" id="action-confirmation-form">
+<form hidden method="post" id="action-confirmation-form">
     {% guard function csrf_token %}
         <input type="hidden" name="token" value="{{ csrf_token('ea-delete') }}" />
     {% endguard %}
 </form>
 
-<twig:ea:Modal id="modal-action-confirmation">
+<twig:ea:Modal id="modal-action-confirmation" aria-labelledby="action-confirmation-title">
     <twig:block name="body">
         <h4 id="action-confirmation-title">{{ 'action_confirmation_modal.title'|trans([], 'EasyAdminBundle') }}</h4>
         {# populated by JS from the data-action-confirmation-message attribute of the action; when present, the title is hidden #}
-        <p id="action-confirmation-message" class="modal-message d-none"></p>
+        <p id="action-confirmation-message" class="modal-message" hidden></p>
         {# optional description, populated by JS from the data-action-confirmation-content attribute of the action (e.g. the DELETE action) #}
-        <p id="action-confirmation-content" class="d-none"></p>
+        <p id="action-confirmation-content" hidden></p>
     </twig:block>
     <twig:block name="footer">
         <twig:ea:Modal:Close>{{ 'action.cancel'|trans([], 'EasyAdminBundle') }}</twig:ea:Modal:Close>
 
-        <twig:ea:Button type="button" color="danger" variant="solid" data-bs-dismiss="modal" id="modal-action-confirmation-button">
+        <twig:ea:Button type="button" color="danger" variant="solid" data-ea-dismiss="modal" id="modal-action-confirmation-button">
             {{ 'action_confirmation_modal.action'|trans([], 'EasyAdminBundle') }}
         </twig:ea:Button>
     </twig:block>

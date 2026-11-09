@@ -11,6 +11,8 @@ return [
     ],
 
     'datagrid' => [
+        'select_all' => 'Select all rows',
+        'select_row' => 'Select row %entity_id%',
         'hidden_results' => 'E puer Resultater kënnen opgrond vu feelende Berechtegungen net ugewise ginn.',
         'no_results' => 'Keng Resultater fonnt.',
         'sort' => 'Sortéieren',

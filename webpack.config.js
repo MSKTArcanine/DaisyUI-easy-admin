@@ -26,6 +26,7 @@ Encore
     })
 
     .addEntry('app', './assets/js/app.js')
+    .addEntry('ui-crud-preview', './assets/js/ui-crud-preview.js')
     .addStyleEntry('ui-fonts-preview', './assets/css/ui-fonts-preview.css')
     .addEntry('form', './assets/js/form.js')
     .addEntry('page-layout', './assets/js/page-layout.js')
@@ -48,6 +49,26 @@ Encore
         includeSubdirectories: false,
         to: `fonts/${font}-OFL.txt`,
     })))
+    .copyFiles([
+        {
+            from: './node_modules/tom-select',
+            pattern: /LICENSE$/,
+            includeSubdirectories: false,
+            to: 'licenses/tom-select-APACHE-2.0.txt',
+        },
+        {
+            from: './node_modules/dompurify',
+            pattern: /LICENSE$/,
+            includeSubdirectories: false,
+            to: 'licenses/dompurify-LICENSE.txt',
+        },
+        {
+            from: './node_modules/@popperjs/core',
+            pattern: /LICENSE\.md$/,
+            includeSubdirectories: false,
+            to: 'licenses/popper-MIT.txt',
+        },
+    ])
 ;
 
 module.exports = Encore.getWebpackConfig();

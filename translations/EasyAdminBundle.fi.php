@@ -11,6 +11,8 @@ return [
     ],
 
     'datagrid' => [
+        'select_all' => 'Select all rows',
+        'select_row' => 'Select row %entity_id%',
         'hidden_results' => 'Joitakin tuloksia ei voida näyttää, koska sinulla ei ole riittäviä käyttöoikeuksia',
         'no_results' => 'Tuloksia ei löytynyt.',
         'sort' => 'Lajittele',

@@ -263,3 +263,13 @@ navigation and public Theme configuration. A separate fixture dashboard proves
 custom layout blocks, configured assets, fonts, width preferences and enforced
 CSP nonces. Minimum-engine/PHP matrix limits remain distinct from current-engine
 execution; the original upstream SHA and visual references are unchanged.
+
+
+## Prompt 6 listing and detail baseline
+
+This stage starts from `1f531de69` on
+`migrate_crud_listings_detail_pages_and_actions`. The real CRUD index/detail
+preview uses compiled native CRUD interactions and AssetMapper-delivered CSS,
+without Bootstrap. Original upstream and screenshot references remain pinned.
+Public action/controller/query/persistence/security implementations are unchanged.
+The ordinary main Symfony form theme remains assigned to Prompt 7.

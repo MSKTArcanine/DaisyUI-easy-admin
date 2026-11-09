@@ -11,6 +11,8 @@ return [
     ],
 
     'datagrid' => [
+        'select_all' => 'Select all rows',
+        'select_row' => 'Select row %entity_id%',
         'hidden_results' => 'هەندێک ئەنجام پیشان نادرێن چونکە مۆڵەتی پێویستت نییە',
         'no_results' => 'هیچ ئەنجامێک نەدۆزرایەوە.',
         'sort' => 'ڕیزکردن',

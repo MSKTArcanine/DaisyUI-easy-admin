@@ -517,3 +517,16 @@ failure; their actual usage must be checked if a downstream app selects them.
 CRUD search/highlighting/help, listing/detail actions and filters remain Prompt 6.
 New/edit form inheritance remains Prompt 7. The isolated dashboard proof does
 not declare those pages or the normal delivered bundle Bootstrap-free.
+
+
+## Prompt 6 implementation boundary
+
+| Inventory rows | Implemented paths | Replacement and verification |
+| --- | --- | --- |
+| T02-T03/T07 | `templates/crud/index.html.twig`, `templates/crud/detail/*.html.twig`, `templates/crud/action_group.html.twig` | Scoped daisyUI table/mobile cards, semantic alignment/sorting/selection, adapted detail columns/fieldsets/tabs, existing ActionMenu composition; HTTP and three-engine query/action/state tests. |
+| J05-J09/P03-P05 | `assets/js/crud.js`, `assets/js/ui/interactions.js`, `assets/js/helpers.js`, `src/Twig/PresentationExtension.php` | Native confirmations, selection, lazy filters and collapse; unchanged request payloads/CSRF/URL sanitizer, adapter for legacy attributes; real persistence and canceled/confirmed outcomes. |
+| T04/J08 | `templates/crud/filter_theme.html.twig`, `templates/crud/filters.html.twig` | Neutral filter widgets and ordered configured themes; exact GET fields, hidden combined state, editable 422 responses, same-origin redirects, help/labels/errors. Main form theme follows in Prompt 7. |
+| J09/W01 | `assets/js/overlays.js`, `assets/css/ui/{overlays,autocomplete}.css`, `templates/crud/field/{code_editor,text_editor}.html.twig` | Native Popper overlays with DOMPurify, neutral TomSelect skin, existing Modal viewer interface; malicious HTML/protocol, keyboard/focus/cleanup and mobile viewport tests. Editors themselves remain Prompt 8. |
+| C02-C04 | `assets/css/ui/{listing,detail,search,visibility}.css`, `assets/css/ui-preview.css` | Responsive table/detail/filter styling, scoped native hidden states and initial collapse visibility; repeated initialization and physical geometry verified. |
+| B02 temporary support | `assets/js/{app,ui-crud-preview}.js`, `webpack.config.js`, `public/licenses/` | Legacy app wrapper and isolated native CRUD entry; normal distribution rebuilt with full retained dependency licenses. Remove wrappers/scaffolding in Prompt 10. |
+| Behavioral proof | `tests/Browser/listing.spec.js`, `tests/Browser/Controller/ListingCrudController.php`, `tests/Functional/Filters/FilterFormRenderingTest.php`, DefaultApp filter rendering controller/themes | Real requests, values, persisted outcomes, permissions, empty/mobile states and extension behavior; existing assertions updated to equivalent semantic attributes/states. |

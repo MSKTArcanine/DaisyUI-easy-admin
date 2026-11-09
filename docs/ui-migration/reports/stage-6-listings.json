@@ -1,0 +1,108 @@
+{
+    "stage": 6,
+    "branch": "migrate_crud_listings_detail_pages_and_actions",
+    "parent_commit": "1f531de69",
+    "upstream_commit": "bd0fb8448a41f69b3493c5bea84f793e46fe7c21",
+    "php": {
+        "command": "make tests",
+        "tests": 4146,
+        "assertions": 12229,
+        "passed": true
+    },
+    "focused_browser": {
+        "stats": {
+            "startTime": "2026-11-09T21:36:42.944Z",
+            "duration": 157552.596,
+            "expected": 144,
+            "skipped": 0,
+            "unexpected": 0,
+            "flaky": 0
+        },
+        "engines": ["chromium", "firefox", "webkit"]
+    },
+    "new_filter_http": {
+        "tests": 4,
+        "assertions": 51,
+        "passed": true
+    },
+    "dependency_changes": {
+        "dompurify": "3.4.17 direct development pin; already resolved transitively, zero new dependencies",
+        "popper": "existing 2.11.8 retained for native overlay positioning"
+    },
+    "compiled_css_bytes": 212814,
+    "review_findings_fixed": [
+        "Rendered filter validation responses preserve 422 HTML",
+        "Same-origin redirects remain supported; final HTML origin checked",
+        "Native collapse preserves initial visibility",
+        "Overlay owner/removal/timer cleanup",
+        "Overlay Escape priority and focus restoration",
+        "Section theme-root and native dialog containers",
+        "Mobile placement fallback and backdrop stacking",
+        "Bootstrap delegated keyboard interception on native menus during staged legacy coexistence"
+    ],
+    "setup_incident": "Two initial PHPUnit invocations overlapped shared bootstrap cache; stopped and reran through one wrapper. Not a product failure.",
+    "remaining_source_finding": "Confirmed external save buttons were not supported by original dispatch; reproduce and address in stage 7 while retaining submitter payload.",
+    "full_browser_initial": {
+        "startTime": "2026-11-09T21:41:05.369Z",
+        "duration": 306379.44299999997,
+        "expected": 213,
+        "skipped": 0,
+        "unexpected": 6,
+        "flaky": 0
+    },
+    "checks": {
+        "phpstan": true,
+        "php_cs_fixer_files": 1030,
+        "twig_product": 191,
+        "twig_browser": 12,
+        "twig_new_functional_partials": 2,
+        "frontend_lint": true,
+        "frontend_warnings": 154,
+        "frontend_infos": 2,
+        "rst_docs": true,
+        "normal_build_files": 64,
+        "manifest_targets": 55,
+        "assetmapper_assets": 89,
+        "original_references_unchanged": true,
+        "frontend_lint_files": 111
+    },
+    "keyboard_regression": {
+        "engines": ["chromium", "firefox", "webkit"],
+        "passed": 3,
+        "skipped": 0,
+        "retries": 0,
+        "original_assertion_unchanged": true
+    },
+    "remaining_browser_failures": {
+        "count": 3,
+        "case": "baseline DirtyForm issue: canceled submission must retain unsaved navigation protection",
+        "engines": ["chromium", "firefox", "webkit"],
+        "assigned_stage": 7
+    },
+    "full_browser_before_legacy_delegate_refinement": {
+        "startTime": "2026-11-09T21:56:19.156Z",
+        "duration": 273034.44999999995,
+        "expected": 216,
+        "skipped": 0,
+        "unexpected": 3,
+        "flaky": 0
+    },
+    "legacy_delegate_refinement": "Source-module registry scopes only the old Bootstrap menu-key delegate; target handlers and raw legacy dropdowns remain active. Focused baseline rerun recorded separately.",
+    "legacy_baseline_diagnostic": {
+        "startTime": "2026-11-09T22:05:25.011Z",
+        "duration": 155462.808,
+        "expected": 72,
+        "skipped": 0,
+        "unexpected": 6,
+        "flaky": 0
+    },
+    "legacy_editable_and_raw_dropdown_final": {
+        "startTime": "2026-11-09T22:09:34.444Z",
+        "duration": 6554.303,
+        "expected": 3,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+    },
+    "legacy_fixture_diagnostic": "The new listbox fixture initially omitted explicit selection; the running test collection retained the old fixture. Made initial selection deterministic, then verified the final unchanged expectations in fresh Chromium, Firefox and WebKit runs. The other 72 cases in the 78-case legacy baseline passed; its three remaining original DirtyForm failures are assigned to stage 7."
+}

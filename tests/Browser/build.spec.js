@@ -22,7 +22,7 @@ for (const mode of [
         const sheet = page.getByTestId('preview-stylesheet');
         const href = await sheet.getAttribute('href');
         expect(href.startsWith(mode.prefix)).toBe(true);
-        expect(href).toMatch(/easyadmin\/ui-preview-[a-zA-Z0-9]+\.css$/);
+        expect(href).toMatch(/easyadmin\/ui-preview-[a-zA-Z0-9_-]+\.css$/);
         await expect(page.locator('link[rel="stylesheet"]')).toHaveCount(1);
         expect(await page.evaluate(() => typeof window.bootstrap)).toBe('undefined');
         expect(

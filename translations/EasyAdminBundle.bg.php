@@ -11,6 +11,8 @@ return [
     ],
 
     'datagrid' => [
+        'select_all' => 'Select all rows',
+        'select_row' => 'Select row %entity_id%',
         'hidden_results' => 'Някои резултати не могат да бъдат показани, защото нямате необходимите права за това',
         'no_results' => 'Няма резултати.',
         'sort' => 'Сортиране',

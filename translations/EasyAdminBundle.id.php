@@ -11,6 +11,8 @@ return [
     ],
 
     'datagrid' => [
+        'select_all' => 'Select all rows',
+        'select_row' => 'Select row %entity_id%',
         'hidden_results' => 'Beberapa hasil tidak dapat ditampilkan karena Anda tidak memiliki hak akses yang cukup',
         'no_results' => 'Tidak ada hasil yang ditemukan.',
         'sort' => 'Urutkan',

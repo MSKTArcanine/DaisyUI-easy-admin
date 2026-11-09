@@ -93,6 +93,24 @@ export function initEasyAdminUI(root = document) {
             toggle.setAttribute('aria-controls', menu.id);
         }
     }
+    for (const toggle of all(root, '[data-ea-toggle="collapse"]')) {
+        const panel = targetOf(toggle);
+        if (!panel) {
+            continue;
+        }
+        const native = panel.hasAttribute('data-ea-collapse');
+        panel.setAttribute('data-ea-collapse', '');
+        if (!state.initialized.has(panel)) {
+            state.initialized.add(panel);
+            panel.hidden = native || panel.hasAttribute('hidden') ? panel.hidden : !panel.classList.contains('show');
+            panel.classList.toggle('show', !panel.hidden);
+        }
+        toggle.setAttribute('aria-expanded', String(!panel.hidden));
+        toggle.classList.toggle('collapsed', panel.hidden);
+        if (panel.id && !toggle.hasAttribute('aria-controls')) {
+            toggle.setAttribute('aria-controls', panel.id);
+        }
+    }
     for (const dialog of all(root, 'dialog[data-ea-dialog]')) {
         if (state.initialized.has(dialog)) {
             continue;
@@ -170,11 +188,30 @@ export function closeDialog(dialog, reason = 'close') {
     dialog.close(reason);
 }
 
+export function setCollapse(panel, expanded) {
+    if (!panel || panel.hidden === !expanded) {
+        return;
+    }
+    const phase = expanded ? 'show' : 'hide';
+    if (!emit(panel, `ea.collapse.${phase}`, {}, true)) {
+        return;
+    }
+    panel.hidden = !expanded;
+    panel.classList.toggle('show', expanded);
+    for (const toggle of panel.ownerDocument.querySelectorAll('[data-ea-toggle="collapse"]')) {
+        if (targetOf(toggle) === panel) {
+            toggle.setAttribute('aria-expanded', String(expanded));
+            toggle.classList.toggle('collapsed', !expanded);
+        }
+    }
+    emit(panel, `ea.collapse.${expanded ? 'shown' : 'hidden'}`);
+}
+
 function items(menu) {
     return [...menu.querySelectorAll('[data-ea-menu-item]')].filter(
         (item) =>
             item.closest('[data-ea-menu]') === menu &&
-            !item.matches(':disabled,[disabled],[aria-disabled="true"],.disabled,[data-ea-menu-split]') &&
+            !item.matches(':disabled,[disabled],[aria-disabled="true"],.disabled,.btn-disabled,[data-ea-menu-split]') &&
             item.getClientRects().length > 0
     );
 }
@@ -205,7 +242,7 @@ function position(menu, toggle) {
 
 export function showMenu(toggle, focus = null) {
     const menu = menuFor(toggle);
-    if (!menu || toggle.matches(':disabled,[disabled],[aria-disabled="true"],.disabled')) {
+    if (!menu || toggle.matches(':disabled,[disabled],[aria-disabled="true"],.disabled,.btn-disabled')) {
         return;
     }
     const state = stateFor(toggle.ownerDocument);
@@ -326,8 +363,8 @@ function bind(document, state) {
     document.addEventListener(
         'click',
         (event) => {
-            const item = event.target.closest('[data-ea-menu-item]');
-            if (item?.matches(':disabled,[disabled],[aria-disabled="true"],.disabled')) {
+            const item = event.target.closest('[data-ea-menu-item],[data-ea-toggle]');
+            if (item?.matches(':disabled,[disabled],[aria-disabled="true"],.disabled,.btn-disabled')) {
                 event.preventDefault();
                 event.stopImmediatePropagation();
             }
@@ -352,6 +389,12 @@ function bind(document, state) {
         } else if (toggle?.dataset.eaToggle === 'tab') {
             event.preventDefault();
             activateTab(toggle);
+        } else if (toggle?.dataset.eaToggle === 'collapse') {
+            event.preventDefault();
+            const panel = targetOf(toggle);
+            if (panel) {
+                setCollapse(panel, panel.hidden);
+            }
         }
         const dismiss = event.target.closest('[data-ea-dismiss]');
         if (dismiss?.dataset.eaDismiss === 'modal') {
@@ -475,7 +518,9 @@ function bind(document, state) {
             }
         }
     });
-    document.addEventListener('ea.collection.item-added', (event) => initEasyAdminUI(event.detail.newElement));
+    document.addEventListener('ea.collection.item-added', (event) =>
+        initEasyAdminUI(event.detail?.newElement ?? document)
+    );
     const reposition = () => {
         for (const [menu, toggle] of state.menus) {
             position(menu, toggle);
@@ -486,6 +531,15 @@ function bind(document, state) {
 }
 
 function keyboard(event, state) {
+    if (event.defaultPrevented) {
+        return;
+    }
+    const collapse = event.target.closest('[data-ea-toggle="collapse"]');
+    if (collapse && event.key === ' ') {
+        collapse.click();
+        event.preventDefault();
+        return;
+    }
     if (event.key === 'Escape' && state.menus.size > 0) {
         hideMenu(event.target.closest('[data-ea-menu]') ?? [...state.menus.keys()].at(-1), true);
         event.preventDefault();

@@ -31,6 +31,8 @@ test('navigation preserves destinations, keyboard disclosure and permission visi
 });
 
 test('appearance menu supports keyboard entry, selection and Escape focus restoration', async ({ page }) => {
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
     const settings = page.locator('.dropdown-settings-button:visible');
     await settings.focus();
     await page.keyboard.press('ArrowDown');
@@ -46,6 +48,73 @@ test('appearance menu supports keyboard entry, selection and Escape focus restor
     await page.keyboard.press('Escape');
     await expect(settings).toHaveAttribute('aria-expanded', 'false');
     await expect(settings).toBeFocused();
+    expect(errors).toEqual([]);
+});
+
+test('legacy menu compatibility preserves editable target handlers, native defaults and ordinary dropdown keys', async ({
+    page,
+}) => {
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    expect(await page.evaluate(() => typeof window.bootstrap?.Dropdown)).toBe('function');
+    const settings = page.locator('.dropdown-settings-button:visible');
+    await settings.click();
+    await settings.evaluate((toggle) => {
+        const menu = document.getElementById(toggle.getAttribute('aria-controls'));
+        const content = document.createElement('li');
+        content.innerHTML =
+            '<label for="legacy-menu-select">Menu select</label><select id="legacy-menu-select" size="2"><option value="first" selected>First value</option><option value="second">Second value</option></select><div id="legacy-menu-editor" contenteditable="true" role="textbox" aria-label="Menu editor" tabindex="0">Editable value</div>';
+        menu.append(content);
+        window.legacyEditableKeys = [];
+        for (const control of content.querySelectorAll('select,[contenteditable]')) {
+            control.addEventListener('keydown', (event) =>
+                window.legacyEditableKeys.push({
+                    id: control.id,
+                    key: event.key,
+                    prevented: event.defaultPrevented,
+                })
+            );
+        }
+    });
+    const select = page.getByLabel('Menu select');
+    await select.focus();
+    await expect(select).toHaveValue('first');
+    await page.keyboard.press('ArrowDown');
+    await expect(select).toHaveValue('second');
+    await page.keyboard.press('ArrowUp');
+    await expect(select).toHaveValue('first');
+    const editor = page.getByRole('textbox', { name: 'Menu editor', exact: true });
+    await editor.focus();
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('ArrowUp');
+    await expect(editor).toBeFocused();
+    expect(await page.evaluate(() => window.legacyEditableKeys)).toEqual([
+        { id: 'legacy-menu-select', key: 'ArrowDown', prevented: false },
+        { id: 'legacy-menu-select', key: 'ArrowUp', prevented: false },
+        { id: 'legacy-menu-editor', key: 'ArrowDown', prevented: false },
+        { id: 'legacy-menu-editor', key: 'ArrowUp', prevented: false },
+    ]);
+    await page.keyboard.press('Escape');
+    await expect(settings).toBeFocused();
+    await expect(settings).toHaveAttribute('aria-expanded', 'false');
+
+    await page.evaluate(() => {
+        const dropdown = document.createElement('div');
+        dropdown.className = 'dropdown';
+        dropdown.innerHTML =
+            '<button id="raw-legacy-toggle" type="button" data-bs-toggle="dropdown">Legacy choices</button><ul class="dropdown-menu"><li><a id="raw-legacy-first" class="dropdown-item" href="#">Legacy first</a></li><li><a id="raw-legacy-second" class="dropdown-item" href="#">Legacy second</a></li></ul>';
+        document.body.append(dropdown);
+    });
+    const legacy = page.locator('#raw-legacy-toggle');
+    await legacy.focus();
+    await page.keyboard.press('ArrowDown');
+    await expect(page.locator('#raw-legacy-first')).toBeFocused();
+    await page.keyboard.press('ArrowDown');
+    await expect(page.locator('#raw-legacy-second')).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(legacy).toBeFocused();
+    await expect(legacy).toHaveAttribute('aria-expanded', 'false');
+    expect(errors).toEqual([]);
 });
 
 test('system appearance and explicit preferences survive reload and media changes', async ({ page }) => {

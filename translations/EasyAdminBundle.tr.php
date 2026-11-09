@@ -11,6 +11,8 @@ return [
     ],
 
     'datagrid' => [
+        'select_all' => 'Select all rows',
+        'select_row' => 'Select row %entity_id%',
         'hidden_results' => 'Yeterli izniniz olmadığı için bazı sonuçlar görüntülenemiyor',
         'no_results' => 'Sonuç bulunamadı.',
         'sort' => 'Sırala',

@@ -2,14 +2,21 @@
 
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities) source(none);
+@import 'tom-select/dist/css/tom-select.css' layer(components);
 @import './easyadmin-theme/color-palette.css' layer(theme);
 @import './ui/tokens.css';
 @import './ui/foundation.css';
+@import './ui/visibility.css' layer(base);
 @import './ui/primitives.css';
 @import './ui/interactions.css';
 @import './ui/layout.css';
 @import './ui/shell.css';
 @import './ui/sidebar.css';
+@import './ui/listing.css';
+@import './ui/detail.css';
+@import './ui/search.css';
+@import './ui/autocomplete.css';
+@import './ui/overlays.css';
 
 @source '../../templates';
 @source '../js';
@@ -24,7 +31,7 @@
 @plugin 'daisyui' {
     themes: false;
     root: '[data-ea-ui]';
-    exclude: rootcolor, rootscrollgutter, rootscrolllock, scrollbar, svg;
+    exclude: rootcolor, rootscrollgutter, rootscrolllock, scrollbar, svg, collapse;
     logs: false;
 }
 

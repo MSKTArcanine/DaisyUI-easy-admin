@@ -5,7 +5,7 @@
 {% set has_label = field.label is ea_is_not_empty %}
 {% set column_has_title = field_icon is not null or has_label or field.help is not null %}
 
-<div class="form-column {{ not column_has_title ? 'form-column-no-header' }} {{ field.cssClass }}">
+<div class="form-column {{ not column_has_title ? 'form-column-no-header' }} {{ field.cssClass|ea_ui_classes }}">
     {% if column_has_title %}
         <div class="form-column-title">
             <div class="form-column-title-content">

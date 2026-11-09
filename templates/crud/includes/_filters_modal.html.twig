@@ -7,15 +7,15 @@
     batch_actions: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\ActionCollection',
     filters: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\FilterCollection',
 } %}
-<twig:ea:Modal id="modal-filters" size="lg" headerClass="justify-content-between" bodyClass="p-0">
+<twig:ea:Modal id="modal-filters" size="lg" headerClass="flex items-center justify-between gap-4" bodyClass="p-0" aria-labelledby="modal-filters-title">
     <twig:block name="header">
-        <twig:ea:Button type="button" size="sm" icon="internal:xmark" data-bs-dismiss="modal" id="modal-clear-button" formtarget="_self">
+        <twig:ea:Button type="button" size="sm" icon="internal:xmark" data-ea-dismiss="modal" id="modal-clear-button" formtarget="_self">
             {{ 'filter.button.clear'|trans(domain: 'EasyAdminBundle') }}
         </twig:ea:Button>
-        <h5 class="modal-title">
+        <h5 class="modal-title" id="modal-filters-title">
             <twig:ea:Icon name="internal:filter" /> {{ 'filter.title'|trans(domain: 'EasyAdminBundle') }}
         </h5>
-        <twig:ea:Button type="button" color="primary" size="sm" data-bs-dismiss="modal" id="modal-apply-button" formtarget="_self" icon="internal:check">
+        <twig:ea:Button type="button" color="primary" size="sm" data-ea-dismiss="modal" id="modal-apply-button" formtarget="_self" icon="internal:check">
             {{ 'filter.button.apply'|trans(domain: 'EasyAdminBundle') }}
         </twig:ea:Button>
     </twig:block>

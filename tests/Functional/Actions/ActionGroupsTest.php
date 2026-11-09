@@ -254,7 +254,7 @@ class ActionGroupsTest extends AbstractCrudTestCase
         });
         static::assertGreaterThan(0, $dropdownsWithHeaders->count(), 'Should have dropdowns with headers');
 
-        $dropdownsWithTooltip = $crawler->filter('.action-group[data-bs-toggle="tooltip"]');
+        $dropdownsWithTooltip = $crawler->filter('.action-group[data-ea-toggle="tooltip"]');
         static::assertGreaterThan(0, $dropdownsWithTooltip->count());
         static::assertSame('Complex dropdown', $dropdownsWithTooltip->first()->attr('title'), 'Should have dropdown with tooltip');
     }

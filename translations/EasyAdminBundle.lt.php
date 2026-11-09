@@ -11,6 +11,8 @@ return [
     ],
 
     'datagrid' => [
+        'select_all' => 'Select all rows',
+        'select_row' => 'Select row %entity_id%',
         'hidden_results' => 'Kai kurie elementai negali būti parodyti nes jums trūksta teisių.',
         'no_results' => 'Rezultatų nerasta.',
         'sort' => 'Rikiuoti',

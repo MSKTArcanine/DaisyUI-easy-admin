@@ -11,6 +11,8 @@ return [
     ],
 
     'datagrid' => [
+        'select_all' => 'Select all rows',
+        'select_row' => 'Select row %entity_id%',
         'hidden_results' => 'برخی از نتایج به دلیل نداشتن مجوز کافی نمایش داده نمی‌شوند',
         'no_results' => 'نتیجه‌ای یافت نشد',
         'sort' => 'مرتب‌سازی',

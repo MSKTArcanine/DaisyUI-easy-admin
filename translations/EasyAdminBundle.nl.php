@@ -11,6 +11,8 @@ return [
     ],
 
     'datagrid' => [
+        'select_all' => 'Select all rows',
+        'select_row' => 'Select row %entity_id%',
         'hidden_results' => 'Sommige resultaten konden niet worden weergegeven, toegang geweigerd.',
         'no_results' => 'Geen resultaten gevonden.',
         'sort' => 'Sorteren',

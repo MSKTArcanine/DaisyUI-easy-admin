@@ -1,0 +1,142 @@
+{% use '@EasyAdmin/symfony-form-themes/form_div_layout.html.twig' %}
+
+{% block form_widget_simple %}
+    {% set widget_class = type|default('text') == 'hidden' ? '' : (type|default('text') == 'file' ? 'file-input' : (type|default('text') == 'range' ? 'range' : 'input')) %}
+    {% if widget_class is not empty %}{% set attr = attr|merge({class: html_classes(attr.class|default(''), widget_class, {'input-error': not valid and widget_class == 'input'})}) %}{% endif %}
+    {{ parent() }}
+{% endblock %}
+
+{% block textarea_widget %}
+    {% set attr = attr|merge({class: html_classes(attr.class|default(''), 'textarea', {'textarea-error': not valid})}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block choice_widget_collapsed %}
+    {% set attr = attr|merge({class: html_classes(attr.class|default(''), 'select', {'select-error': not valid})}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block choice_widget_expanded %}
+    {% set attr = attr|merge({class: html_classes(attr.class|default(''), 'ea-filter-choices')}) %}
+    <div {{ block('widget_container_attributes') }}>
+        {% for child in form %}
+            <div class="ea-filter-choice">
+                {{ form_widget(child, {valid: valid}) }}
+                {{ form_label(child, null, {translation_domain: choice_translation_domain}) }}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block checkbox_widget %}
+    {% set attr = attr|merge({class: html_classes(attr.class|default(''), 'checkbox', {'checkbox-error': not valid})}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block radio_widget %}
+    {% set attr = attr|merge({class: html_classes(attr.class|default(''), 'radio', {'radio-error': not valid})}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block widget_attributes %}
+    {% if not valid %}{% set attr = attr|merge({'aria-invalid': 'true'}) %}{% endif %}
+    {{ parent() }}
+{% endblock %}
+
+{% block form_widget_compound %}
+    {% set attr = attr|merge({class: html_classes(attr.class|default(''), 'form-widget-compound')}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block form_row %}
+    {% set has_help = help is not same as(false) and help is not null and help is not same as('') %}
+    {% set descriptions = attr['aria-describedby']|default('')|split(' ') %}
+    {% if has_help and (id ~ '_help') not in descriptions %}{% set descriptions = descriptions|merge([id ~ '_help']) %}{% endif %}
+    {% if errors|length > 0 and (id ~ '_errors') not in descriptions %}{% set descriptions = descriptions|merge([id ~ '_errors']) %}{% endif %}
+    {% if descriptions|join(' ')|trim is not empty %}{% set attr = attr|merge({'aria-describedby': descriptions|join(' ')|trim}) %}{% endif %}
+    {% set row_attr = row_attr|merge({class: html_classes(row_attr.class|default(''), 'ea-filter-row', {'has-error': not valid})}) %}
+    <div {% with {attr: row_attr} %}{{ block('attributes') }}{% endwith %}>
+        {{ form_label(form) }}
+        {{ form_widget(form, {attr: attr}) }}
+        {{ form_help(form) }}
+        {{ form_errors(form) }}
+    </div>
+{% endblock %}
+
+{% block form_label %}
+    {% set label_attr = label_attr|merge({class: html_classes(label_attr.class|default(''), 'ea-filter-label')}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block form_help %}
+    {% set help_attr = help_attr|merge({class: html_classes(help_attr.class|default(''), 'ea-filter-help')}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block form_errors %}
+    {% if errors|length > 0 %}
+        <ul id="{{ id }}_errors" class="ea-filter-errors" role="alert">
+            {% for error in errors %}<li>{{ error.message }}</li>{% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
+
+{% block ea_filters_widget %}
+    {% set applied_filters = ea().request.query.all()['filters']|default([])|keys %}
+    {% for field in form %}
+        {% set is_applied = field.vars.name in applied_filters %}
+        {% set content_id = 'filter-content-' ~ loop.index %}
+        {% set label_id = field.vars.label_attr.id|default('filter-label-' ~ loop.index) %}
+        {% set has_help = field.vars.help is not same as(false) and field.vars.help is not null and field.vars.help is not same as('') %}
+        {% set widget_attr = {'aria-labelledby': label_id}|merge(field.vars.attr) %}
+        {% set toggle_attr = {id: label_id, 'data-ea-toggle': 'collapse', href: '#' ~ content_id, role: 'button', 'aria-expanded': is_applied ? 'true' : 'false', 'aria-controls': content_id}|merge(field.vars.label_attr|default({})|ea_ui_attrs) %}
+        {% set descriptions = widget_attr['aria-describedby']|default('')|split(' ') %}
+        {% if has_help and (field.vars.id ~ '_help') not in descriptions %}{% set descriptions = descriptions|merge([field.vars.id ~ '_help']) %}{% endif %}
+        {% if field.vars.errors|length > 0 and (field.vars.id ~ '_errors') not in descriptions %}{% set descriptions = descriptions|merge([field.vars.id ~ '_errors']) %}{% endif %}
+        {% if descriptions|join(' ')|trim is not empty %}{% set widget_attr = widget_attr|merge({'aria-describedby': descriptions|join(' ')|trim}) %}{% endif %}
+        <div class="filter-field" data-filter-property="{{ field.vars.name }}">
+            <div class="filter-heading" id="filter-heading-{{ loop.index }}">
+                <input type="checkbox" class="checkbox filter-checkbox" aria-labelledby="{{ label_id }}"{% if is_applied %} checked{% endif %}>
+                <a {% with {attr: toggle_attr} %}{{ block('attributes') }}{% endwith %}>
+                    {% set has_filter_label = field.vars.label is ea_is_not_empty %}
+                    {% set filter_label = has_filter_label ? field.vars.label : field.vars.name|humanize %}
+                    {{ filter_label|trans(domain: ea().i18n.translationDomain) }}
+                </a>
+            </div>
+            <div id="{{ content_id }}" class="filter-content" data-ea-collapse aria-labelledby="filter-heading-{{ loop.index }}"{% if not is_applied %} hidden{% endif %}>
+                <div class="form-widget">
+                    {{ form_widget(field, {attr: widget_attr}) }}
+                    {{ form_help(field) }}
+                    {% if 'ea_numeric_filter' not in field.vars.block_prefixes and 'ea_datetime_filter' not in field.vars.block_prefixes %}{{ form_errors(field) }}{% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block comparison_widget %}
+    {{ form_widget(form, {attr: attr|merge({'data-ea-comparison-id': form.vars.id})}) }}
+{% endblock %}
+
+{% block ea_numeric_filter_widget %}
+    {% set attr = attr|merge({class: html_classes(attr.class|default(''), 'form-widget-compound')}) %}
+    <div {{ block('widget_container_attributes') }}>
+        {{ form_row(form.comparison) }}
+        {{ form_row(form.value) }}
+        <div data-ea-value2-of-comparison-id="{{ form.comparison.vars.id }}"{% if form.comparison.vars.value != 'between' %} hidden{% endif %}>
+            {{ form_row(form.value2) }}
+        </div>
+    </div>
+    {{ form_errors(form) }}
+{% endblock %}
+
+{% block ea_datetime_filter_widget %}{{ block('ea_numeric_filter_widget') }}{% endblock %}
+
+{% block ea_autocomplete_widget %}
+    {{ form_widget(form.autocomplete, {attr: attr|merge({required: required})}) }}
+{% endblock %}
+
+{% block ea_autocomplete_inner_label %}
+    {% set name = form_parent(form).vars.name %}
+    {{ block('form_label') }}
+{% endblock %}

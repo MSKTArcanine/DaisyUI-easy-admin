@@ -57,7 +57,7 @@ and commit each stage before switching to the next title-derived branch.
   header/sidebar/user/locale/settings menus, nested navigation, responsive
   overlay, flashes/content/help, light/dark/auto/layout preferences, CSP/assets,
   template blocks. Keyboard/Escape/focus/scroll/reduced-motion/RTL validation.
-- [ ] **6. Migrate CRUD listings, detail pages, and actions.** T02-T03/T07,
+- [x] **6. Migrate CRUD listings, detail pages, and actions.** T02-T03/T07,
   J05-J09/P03-P05: tables/empty/permission states, field values, search/sort
   dialog/pagination, lazy filters/apply/reset, global/row/custom/group/batch
   actions, confirmation/tooltips/popovers, default row actions and selection.
@@ -345,3 +345,54 @@ Unresolved issues and next stage:
 - Continue with **Prompt 6 - Migrate CRUD listings, detail pages, and actions**,
   on `migrate_crud_listings_detail_pages_and_actions`; then complete the remaining
   authorized stages through Prompt 10.
+
+
+## Prompt 6 stage report
+
+Branch: `migrate_crud_listings_detail_pages_and_actions`.
+
+Changes made:
+
+- Migrated index/detail tables, empty and permission states, responsive row
+  rendering, sorting/selection, action groups and fieldsets/tabs while retaining
+  existing paths, blocks, metadata, URLs, hidden state and public APIs.
+- Extracted native CRUD interactions with cancel-safe current-target dialogs,
+  unchanged delete/batch methods and payloads, idempotent lazy filters and
+  complete neutral filter widgets with configured theme precedence.
+- Replaced Bootstrap overlays with Popper and isolated DOMPurify; retained
+  independent autocomplete/search libraries and delivered their licenses.
+  The isolated real CRUD preview loads no Bootstrap CSS or runtime.
+- Added real HTTP/browser regressions and regenerated normal distributed
+  assets. Product PHP changes are limited to presentation attribute mappings.
+
+Validation details are in `reports/stage-6-listings.json`. The PHP suite passes
+4146 tests and 12229 assertions. Four new filter HTTP cases pass 51 assertions;
+144 focused native browser cases pass across all three engines. PHPStan,
+PHP CS Fixer (1030 files), Twig (191 product, 12 browser, 2 added partials),
+frontend lint, documentation lint and both production builds pass. The normal
+manifest resolves 55 targets, including three complete dependency licenses;
+the isolated AssetMapper build compiles 89 assets and 212814 bytes of CSS.
+Existing frontend advisories remain visible. Original screenshots are unchanged.
+
+The full browser rerun before the final legacy delegate refinement passes
+216 cases, with only the same three retained
+DirtyForm failures (one per engine), no skipped or retried cases. The original
+appearance-menu assertion also verifies zero page errors after correcting
+Bootstrap keyboard interception during the staged transition. A subsequent
+78-case legacy baseline passes 72 cases; three new fixture checks initially
+used an unspecified listbox selection. After making that selection explicit,
+the fresh final case passes in all three engines, including editable target
+handlers, native values and raw legacy dropdown keys. The three original
+DirtyForm failures remain visible. No product failure is suppressed.
+
+Unresolved issues and next stage:
+
+- The retained DirtyForm canceled-submit failure remains assigned to Prompt 7.
+  The original external-save confirmation dispatch gap is a source finding to
+  reproduce and fix alongside submitter/validation coverage in that stage.
+- Normal unmigrated forms/widgets still use Bootstrap; the isolated native
+  CRUD proof does not declare the final delivered runtime complete.
+- Minimum-engine and lower PHP/Symfony matrix runs, standalone installation
+  and translated new-key placeholders remain explicit limits.
+- Continue with **Prompt 7 - Replace the Bootstrap-based Symfony form theme**
+  on `replace_the_bootstrap_based_symfony_form_theme`, then through Prompt 10.

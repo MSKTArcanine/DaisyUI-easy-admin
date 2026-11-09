@@ -284,3 +284,30 @@ component proof does not claim those surfaces are complete.
 The original screenshots remain unchanged. The known DirtyForm failure is still
 scheduled for Prompt 7; CRUD-specific behavior continues to use the legacy
 runtime until its assigned migration stages.
+
+
+## Prompt 6 focused coverage
+
+`tests/Browser/listing.spec.js` adds 13 cases across Chromium, Firefox and
+WebKit: combined listing state and filter reset, editable 422 filter HTML,
+same-origin redirects, cancel/current-target delete with actual CSRF and
+persistence, selection ranges/header/batch payloads, grouped and standalone
+GET/form actions, row keyboard behavior, detail collapse and sanitized help,
+unsafe protocols and permitted external URLs, mobile sorting and empty and
+permission states. Dynamic overlays verify accessible ownership, focus,
+Escape priority, repeated initialization, removal/timer cleanup, viewport
+placement and actual hit testing.
+
+`tests/Functional/Filters/FilterFormRenderingTest.php` adds four HTTP cases
+with 51 assertions for configured partial theme precedence, quoted attributes,
+translated labels/help, GET action/names, hidden combined state, autocomplete,
+422 errors with retained values, and real matched entity IDs with no mutation.
+Existing action/form-help tests assert equivalent semantic attributes and
+hidden states without relying on Bootstrap classes. Full PHP results are
+4146 tests and 12229 assertions. The original reference images are unchanged.
+
+The retained DirtyForm canceled-submit regression remains assigned to Prompt 7.
+Source review also found the original confirmation dispatch lacks external
+Symfony save buttons using only `form=...`; reproduce and fix in Prompt 7 while
+preserving submitter payload and validation. This is a source finding, not a
+claimed reproduced runtime failure yet.

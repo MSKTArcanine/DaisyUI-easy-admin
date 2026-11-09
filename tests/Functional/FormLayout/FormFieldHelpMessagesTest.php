@@ -77,10 +77,10 @@ class FormFieldHelpMessagesTest extends AbstractCrudTestCase
         static::assertSelectorNotExists('.form-fieldset-title:contains("Fieldset 1") .form-fieldset-help', 'The Fieldset 1 does not define a help message.');
         $idField = $crawler->filterXPath('//div[@class="field-label"]/div[normalize-space(text())="ID"]');
         static::assertGreaterThan(0, $idField->count(), 'ID field should exist');
-        static::assertNull($idField->attr('data-bs-title'), 'The ID field does not define a help message (no tooltip attributes).');
+        static::assertNull($idField->attr('data-ea-title'), 'The ID field does not define a help message (no tooltip attributes).');
         $nameField = $crawler->filterXPath('//div[@class="field-label"]/div[normalize-space(text())="Name"]');
         static::assertGreaterThan(0, $nameField->count(), 'Name field should exist');
-        static::assertNull($nameField->attr('data-bs-title'), 'The name field defines an empty string as a help message, so no tooltip is rendered.');
+        static::assertNull($nameField->attr('data-ea-title'), 'The name field defines an empty string as a help message, so no tooltip is rendered.');
 
         // fields with help defined as simple text strings
         static::assertSelectorTextContains('#tab-tab-2 .tab-help', 'Tab 2 Lorem Ipsum', 'The Tab 2 field defines a text help message.');
@@ -88,27 +88,27 @@ class FormFieldHelpMessagesTest extends AbstractCrudTestCase
         static::assertSelectorTextContains('.form-fieldset-title:contains("Fieldset 2") .form-fieldset-help', 'Fieldset 2 Lorem Ipsum', 'The Fieldset 2 field defines a text help message.');
         $descriptionLabel = $crawler->filterXPath('//div[@class="field-label"]/div[normalize-space(text())="Description"]');
         static::assertSame(1, $descriptionLabel->count(), 'Description field should exist');
-        static::assertStringContainsString('Description Lorem Ipsum', $descriptionLabel->attr('data-bs-title'), 'The description field defines a text help message shown in a tooltip on detail pages.');
+        static::assertStringContainsString('Description Lorem Ipsum', $descriptionLabel->attr('data-ea-title'), 'The description field defines a text help message shown in a tooltip on detail pages.');
 
         // fields with help defined as text strings with HTML contents
         static::assertSame('<a href="https://example.com">Tab 3</a> <b>Lorem</b> Ipsum', trim($crawler->filter('#tab-tab-3 .tab-help')->html()), 'The Tab 3 field defines a help message with HTML contents, which must be rendered instead of escaped.');
         static::assertSame('<a href="https://example.com">Column 3</a> <b>Lorem</b> Ipsum', trim($crawler->filter('.form-column.column-3 .form-column-help')->html()), 'The Column 3 field defines a help message with HTML contents, which must be rendered instead of escaped.');
         static::assertSame('<a href="https://example.com">Fieldset 3</a> <b>Lorem</b> Ipsum', trim($crawler->filter('.form-fieldset-title:contains("Fieldset 3") .form-fieldset-help')->html()), 'The Fieldset 3 field defines a help message with HTML contents, which must be rendered instead of escaped.');
         $emailLabel = $crawler->filterXPath('//div[@class="field-label"]/div[normalize-space(text())="Email"]');
-        static::assertStringContainsString('<a href="https://example.com">Email</a> <b>Lorem</b> Ipsum', $emailLabel->attr('data-bs-title'), 'The email field defines a help message with HTML contents shown in a tooltip (HTML is stored in the data-bs-title attribute and will be rendered by Bootstrap).');
+        static::assertStringContainsString('<a href="https://example.com">Email</a> <b>Lorem</b> Ipsum', $emailLabel->attr('data-ea-title'), 'The email field defines a help message with HTML contents shown in a tooltip (HTML is stored in the data-ea-title attribute and sanitized by the tooltip renderer).');
 
         // fields with help defined as Translatable objects using simple text strings
         static::assertSelectorTextContains('#tab-tab-4 .tab-help', 'Tab 4 Lorem Ipsum', 'The Tab 4 field defines a translatable text help message.');
         static::assertSelectorTextContains('.form-column.column-4 .form-column-help', 'Column 4 Lorem Ipsum', 'The Column 4 field defines a translatable text help message.');
         static::assertSelectorTextContains('.form-fieldset-title:contains("Fieldset 4") .form-fieldset-help', 'Fieldset 4 Lorem Ipsum', 'The Fieldset 4 field defines a translatable text help message.');
         $createdAtLabel = $crawler->filterXPath('//div[@class="field-label"]/div[normalize-space(text())="Created At"]');
-        static::assertStringContainsString('CreatedAt Lorem Ipsum', $createdAtLabel->attr('data-bs-title'), 'The createdAt field defines a translatable text help message shown in a tooltip on detail pages.');
+        static::assertStringContainsString('CreatedAt Lorem Ipsum', $createdAtLabel->attr('data-ea-title'), 'The createdAt field defines a translatable text help message shown in a tooltip on detail pages.');
 
         // fields with help defined as Translatable objects using text strings with HTML contents
         static::assertSelectorTextContains('#tab-tab-5 .tab-help', 'Tab 5 Lorem Ipsum', 'The Tab 5 field defines a translatable help message with HTML contents, which must be rendered instead of escaped.');
         static::assertSelectorTextContains('.form-column.column-5 .form-column-help', 'Column 5 Lorem Ipsum', 'The Column 5 field defines a translatable help message with HTML contents, which must be rendered instead of escaped..');
         static::assertSelectorTextContains('.form-fieldset-title:contains("Fieldset 5") .form-fieldset-help', 'Fieldset 5 Lorem Ipsum', 'The Fieldset 5 field defines a translatable help message with HTML contents, which must be rendered instead of escaped..');
         $priorityLabel = $crawler->filterXPath('//div[@class="field-label"]/div[normalize-space(text())="Priority"]');
-        static::assertStringContainsString('<a href="https://example.com">Priority</a> <b>Lorem</b> Ipsum', $priorityLabel->attr('data-bs-title'), 'The priority field defines a translatable help message with HTML contents shown in a tooltip (HTML is stored in the data-bs-title attribute and will be rendered by Bootstrap).');
+        static::assertStringContainsString('<a href="https://example.com">Priority</a> <b>Lorem</b> Ipsum', $priorityLabel->attr('data-ea-title'), 'The priority field defines a translatable help message with HTML contents shown in a tooltip (HTML is stored in the data-ea-title attribute and sanitized by the tooltip renderer).');
     }
 }

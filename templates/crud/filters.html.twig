@@ -3,7 +3,8 @@
     filters_form: '\\Symfony\\Component\\Form\\FormView',
     form_action_query_string_as_array: 'array',
 } %}
-{% form_theme filters_form with ea().crud.formThemes only %}
+{% set filter_themes = ea().crud.formThemes|map(theme => theme == '@EasyAdmin/crud/form_theme.html.twig' ? '@EasyAdmin/crud/filter_theme.html.twig' : theme) %}
+{% form_theme filters_form with ['@EasyAdmin/crud/filter_theme.html.twig']|merge(filter_themes) only %}
 
 {{ form_start(filters_form, {attr: {
     id: filters_form.vars.id,

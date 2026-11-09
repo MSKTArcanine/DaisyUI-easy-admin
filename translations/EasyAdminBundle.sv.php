@@ -11,6 +11,8 @@ return [
     ],
 
     'datagrid' => [
+        'select_all' => 'Select all rows',
+        'select_row' => 'Select row %entity_id%',
         'hidden_results' => 'Vissa resultat kan inte visas eftersom du inte har tillräckliga behörigheter',
         'no_results' => 'Inga resultat.',
         'sort' => 'Sortera',

@@ -13,9 +13,9 @@
         <div class="field-label">
             {%- set label_html_attributes -%}
                 {%- if has_help -%}
-                    data-bs-toggle="tooltip" data-bs-placement="auto" data-bs-animation="false"
-                    data-bs-html="true" data-bs-custom-class="ea-detail-label-tooltip"
-                    data-bs-title="{{ field.help|trans|e('html') }}"
+                    data-ea-toggle="tooltip" data-ea-placement="auto" data-ea-animation="false"
+                    data-ea-html="true" data-ea-custom-class="ea-detail-label-tooltip"
+                    data-ea-title="{{ field.help|trans|e('html') }}" tabindex="0"
                 {%- endif -%}
             {%- endset -%}
 

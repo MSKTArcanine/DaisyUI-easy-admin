@@ -9,7 +9,7 @@
 {% set is_collapsible = field.getCustomOption(is_collapsible_option_name) %}
 {% set is_collapsed = field.getCustomOption(is_collapsed_option_name) %}
 
-<div class="form-fieldset {{ not fieldset_has_header ? 'form-fieldset-no-header' }} {{ field.cssClass }}">
+<div class="form-fieldset {{ not fieldset_has_header ? 'form-fieldset-no-header' }} {{ field.cssClass|ea_ui_classes|ea_ui_classes('row') }}">
     <fieldset>
         {% if fieldset_has_header %}
             <div class="form-fieldset-header {{ is_collapsible ? 'collapsible' }} {{ has_help ? 'with-help' }}">
@@ -27,7 +27,7 @@
                     {% endset %}
 
                     {% if is_collapsible %}
-                        <a href="#content-{{ field.propertyNameWithSuffix }}" data-bs-toggle="collapse"
+                        <a href="#content-{{ field.propertyNameWithSuffix }}" data-ea-toggle="collapse" data-ea-target="#content-{{ field.propertyNameWithSuffix }}"
                            class="form-fieldset-title-content form-fieldset-collapse {{ is_collapsed ? 'collapsed' }}"
                            aria-expanded="{{ is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ field.propertyNameWithSuffix }}">
                             {{ fieldset_title_contents|raw }}
@@ -45,5 +45,5 @@
             </div>
         {% endif %}
 
-        <div id="content-{{ field.propertyNameWithSuffix }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ is_collapsible ? 'collapse' }} {{ not is_collapsed ? 'show' }}">
-            <div class="row">
+        <div id="content-{{ field.propertyNameWithSuffix }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ is_collapsible ? 'collapse' }} {{ not is_collapsed ? 'show' }}"{% if is_collapsible %} data-ea-collapse{% if is_collapsed %} hidden{% endif %}{% endif %}>
+            <div class="row ea-form-row">

@@ -61,12 +61,12 @@
                 <div class="datagrid-filters">
                     {% block filters %}
                         {% set applied_filters = ea.request.query.all['filters']|default([])|keys %}
-                        <div class="btn-group action-filters">
-                            <a href="#" data-href="{{ ea_url().setAction('renderFilters') }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" data-bs-toggle="modal" data-bs-target="#modal-filters">
+                        <div class="btn-group join action-filters">
+                            <a href="#" data-href="{{ ea_url().setAction('renderFilters') }}" class="{{ ea_ui_classes('btn btn-secondary btn-outline btn-labeled btn-labeled-right action-filters-button join-item', 'button') }} disabled {{ applied_filters ? 'action-filters-applied' }}" data-ea-toggle="modal" data-ea-target="#modal-filters" aria-disabled="true">
                                 <twig:ea:Icon name="internal:filter" /> {{ t('filter.title', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}{% if applied_filters %} <span class="action-filters-button-count">({{ applied_filters|length }})</span>{% endif %}
                             </a>
                             {% if applied_filters %}
-                                <a href="{{ ea_url().unset('filters').setAction('index') }}" class="btn btn-secondary action-filters-reset">
+                                <a href="{{ ea_url().unset('filters').setAction('index') }}" class="{{ ea_ui_classes('btn btn-secondary btn-outline action-filters-reset join-item', 'button') }}" aria-label="{{ 'filter.button.clear'|trans(domain: 'EasyAdminBundle') }}">
                                     {# the 'btn-icon' class is needed to make the icon-only button render as a square with a centered icon #}
                                     <twig:ea:Icon name="internal:xmark" class="btn-icon" />
                                 </a>
@@ -132,7 +132,7 @@
                     {% if has_batch_actions %}
                         <th>
                             <div class="form-check">
-                                <span><input type="checkbox" class="form-check-input form-batch-checkbox-all" id="form-batch-checkbox-all"></span>
+                                <span><input type="checkbox" class="checkbox checkbox-sm form-check-input form-batch-checkbox-all" id="form-batch-checkbox-all" aria-label="{{ 'datagrid.select_all'|trans(domain: 'EasyAdminBundle') }}"></span>
                             </div>
                         </th>
                     {% endif %}
@@ -145,7 +145,7 @@
                         {% set next_sort_direction = is_sorting_field ? (ea.search.sortDirection(field.property) == ea_sort_desc ? ea_sort_asc : ea_sort_desc) : ea_sort_desc %}
                         {% set column_icon = is_sorting_field ? (next_sort_direction == ea_sort_desc ? 'internal:sort-arrow-up' : 'internal:sort-arrow-down') : 'internal:sort-arrows' %}
 
-                        <th data-column="{{ field.property }}" class="{{ field.cssClass }} {{ is_searchable ? 'searchable' }} {{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} header-for-{{ field.cssClass|split(' ')|filter(class => class starts with 'field-')|join('') }} text-{{ field.textAlign }}" dir="{{ ea.i18n.textDirection }}">
+                        <th data-column="{{ field.property }}" class="{{ field.cssClass }} {{ is_searchable ? 'searchable' }} {{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} header-for-{{ field.cssClass|split(' ')|filter(class => class starts with 'field-')|join('') }} {{ {left: 'text-left', center: 'text-center', right: 'text-right'}[field.textAlign]|default('') }}" dir="{{ ea.i18n.textDirection }}"{% if is_sorting_field %} aria-sort="{{ ea.search.sortDirection(field.property) == ea_sort_asc ? 'ascending' : 'descending' }}"{% endif %}>
                             {% if field.isSortable %}
                                 {% set sortable_url = ea_url().setController(ea.request.attributes.get('crudControllerFqcn')).setAction('index').set('page', 1).set('sort', {(field.property): next_sort_direction}) %}
 
@@ -160,7 +160,7 @@
 
                     {% if has_entity_actions %}
                         <th class="{{ ea.crud.showEntityActionsAsDropdown ? 'actions-as-dropdown-table-head' }}" dir="{{ ea.i18n.textDirection }}">
-                            <span class="visually-hidden">{{ t('action.entity_actions', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}</span>
+                            <span class="sr-only">{{ t('action.entity_actions', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}</span>
                         </th>
                     {% endif %}
                 </tr>
@@ -177,7 +177,7 @@
                         {% if has_batch_actions %}
                             <td class="batch-actions-selector">
                                 <div class="form-check">
-                                    <input type="checkbox" class="form-check-input form-batch-checkbox" id="form-batch-checkbox-{{ loop.index0 }}" value="{{ entity.primaryKeyValue }}">
+                                    <input type="checkbox" class="checkbox checkbox-sm form-check-input form-batch-checkbox" id="form-batch-checkbox-{{ loop.index0 }}" value="{{ entity.primaryKeyValue }}" aria-label="{{ 'datagrid.select_row'|trans({'%entity_id%': entity.primaryKeyValueAsString}, 'EasyAdminBundle') }}">
                                 </div>
                             </td>
                         {% endif %}
@@ -185,7 +185,7 @@
                         {% for field in entity.fields %}
                             {% set is_searchable = null == ea.crud.searchFields or field.property in ea.crud.searchFields or ea.crud.searchFields|filter(search_field => search_field starts with field.property ~ '.')|length > 0 %}
 
-                            <td data-column="{{ field.property }}" data-label="{{ field.label|trans|e('html') }}" class="{{ is_searchable ? 'searchable' }} {{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}" {% for name, value in field.htmlAttributes %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
+                            <td data-column="{{ field.property }}" data-label="{{ field.label|trans|e('html') }}" class="{{ is_searchable ? 'searchable' }} {{ field.property == sort_field_name ? 'sorted' }} {{ {left: 'text-left', center: 'text-center', right: 'text-right'}[field.textAlign]|default('') }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}" {% for name, value in field.htmlAttributes %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
                                 {{ include(field.templatePath, {field: field, entity: entity}, with_context: false) }}
                             </td>
                         {% endfor %}
@@ -196,7 +196,7 @@
                                     {% if entity.actions.count > 0 %}
                                         {% if ea.crud.showEntityActionsAsDropdown %}
                                             <twig:ea:ActionMenu class="dropdown-actions">
-                                                <twig:ea:ActionMenu:Button withoutDropdownToggleMarker data-bs-popper-config='{"strategy":"fixed"}' aria-label="{{ 'action.entity_actions'|trans(domain: 'EasyAdminBundle') }}">
+                                                <twig:ea:ActionMenu:Button withoutDropdownToggleMarker aria-label="{{ 'action.entity_actions'|trans(domain: 'EasyAdminBundle') }}">
                                                     <twig:ea:Icon name="internal:dots-horizontal" />
                                                 </twig:ea:ActionMenu:Button>
 
@@ -262,7 +262,7 @@
             {% if some_results_are_hidden %}
                 <tr class="datagrid-row-empty">
                     <td class="text-center" colspan="100">
-                        <span class="datagrid-row-empty-message"><twig:ea:Icon name="internal:lock" class="mr-1" /> {{ 'datagrid.hidden_results'|trans({}, 'EasyAdminBundle') }}</span>
+                        <span class="datagrid-row-empty-message"><twig:ea:Icon name="internal:lock" class="me-1" /> {{ 'datagrid.hidden_results'|trans({}, 'EasyAdminBundle') }}</span>
                     </td>
                 </tr>
             {% endif %}
