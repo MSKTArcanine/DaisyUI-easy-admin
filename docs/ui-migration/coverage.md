@@ -255,3 +255,32 @@ The existing DirtyForm cancellation regression remains in the normal suite for
 Prompt 7. Shell, CRUD-specific interactions, form inheritance and independent
 widget initialization still require their later-stage verification; the shared
 component proof does not claim those surfaces are complete.
+
+## Prompt 5 focused coverage
+
+- `tests/Functional/Customization/Dashboard/ShellExtensionTest.php` adds real
+  HTTP checks for parent/child layout composition, generated navigation, custom
+  logo/footer/title/main, configured head/body contents, and exact CSS/JS asset
+  attributes and order. Existing Theme/asset tests continue to run.
+- `tests/Browser/shell.spec.js` drives the real dashboard with only the new
+  stylesheet/modules: navigation and user/settings menus, mobile focus and
+  inertness, Escape/backdrop dismissal, scroll restoration, 991/992px resizing,
+  RTL destinations, repeated initialization and nested dialog ownership.
+- `tests/Browser/theme-shell.spec.js` verifies public Theme colors/foregrounds,
+  actual gray surfaces/text, loaded bundled fonts, weight/features/radius,
+  spacing and bounded control height in both schemes; explicit/remembered
+  widths; disabled-dark precedence; inherited blocks/assets and enforced CSP
+  headers/nonces with actual configured JavaScript execution.
+- `tests/Browser/theme-widths.spec.js` verifies physical width changes at a
+  wide viewport, persistence/reload, compact rail containment and logo
+  centering. It checks the layout effect, not only state classes.
+- `tests/Browser/density.spec.js` covers development/production, light/dark and
+  three spacing values. Public button sizes retain bounded heights while gaps
+  scale; native caller xs/xl sizes remain effective.
+- The existing root-token build test remains unchanged and verifies inherited
+  overrides in dark mode. A pending-hover regression uses controlled browser
+  time to prove a hidden menu cannot reopen a child after dismissal.
+
+The original screenshots remain unchanged. The known DirtyForm failure is still
+scheduled for Prompt 7; CRUD-specific behavior continues to use the legacy
+runtime until its assigned migration stages.

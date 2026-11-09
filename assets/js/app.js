@@ -6,6 +6,7 @@ import Autocomplete from './autocomplete';
 import { sanitizeUrl, toggleVisibilityClasses } from './helpers';
 import { initTabs } from './tabs';
 import { initEasyAdminUI } from './ui/interactions';
+import { initShell } from './ui/shell';
 
 // Provide Bootstrap variable globally to allow custom backend pages to use it
 window.bootstrap = bootstrap;
@@ -19,20 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 class App {
-    #sidebarWidthLocalStorageKey;
-    #contentWidthLocalStorageKey;
-
     constructor() {
-        this.#sidebarWidthLocalStorageKey = 'ea/sidebar/width';
-        this.#contentWidthLocalStorageKey = 'ea/content/width';
-
         initEasyAdminUI();
+        initShell();
 
         this.#removeHashFormUrl();
         initTabs();
-        this.#createSidebarSubmenus();
-        this.#createLayoutResizeControls();
-        this.#createNavigationToggler();
         this.#createSearchHighlight();
         this.#createSearchInputAutoSizing();
         this.#createFilters();
@@ -65,156 +58,6 @@ class App {
         const urlParts = window.location.href.split('#');
         const urlWithoutHash = urlParts[0];
         window.history.replaceState({}, '', urlWithoutHash);
-    }
-
-    #createSidebarSubmenus() {
-        const submenuItemSelector = '.ea-sidebar-item.has-submenu:not(.is-kept-open)';
-        const submenuToggleSelector = ':scope > .ea-sidebar-item-link';
-
-        document.addEventListener('click', (event) => {
-            const submenuToggle = event.target.closest('.ea-sidebar-item-link');
-            const menuItem = submenuToggle?.parentElement;
-            if (!menuItem?.matches(submenuItemSelector)) {
-                return;
-            }
-
-            const willExpand = !menuItem.classList.contains('is-expanded');
-
-            // the accordion applies to the whole menu that contains the item (all its
-            // groups); items rendered outside a menu only close their siblings
-            const accordionScope = menuItem.closest('.ea-sidebar-content') ?? menuItem.parentElement;
-            accordionScope.querySelectorAll(`${submenuItemSelector}.is-expanded`).forEach((otherMenuItem) => {
-                // nested submenus must keep their open ancestors (the components allow
-                // more than one level, even though the main menu only uses one)
-                if (otherMenuItem.contains(menuItem)) {
-                    return;
-                }
-
-                otherMenuItem.classList.remove('is-expanded');
-                otherMenuItem.querySelector(submenuToggleSelector)?.setAttribute('aria-expanded', 'false');
-            });
-
-            menuItem.classList.toggle('is-expanded', willExpand);
-            submenuToggle.setAttribute('aria-expanded', String(willExpand));
-        });
-    }
-
-    #createLayoutResizeControls() {
-        this.#createLayoutToggle(
-            '.ea-layout-toggle-sidebar',
-            this.#sidebarWidthLocalStorageKey,
-            'sidebar',
-            'compact',
-            false
-        );
-        this.#createLayoutToggle(
-            '.ea-layout-toggle-content',
-            this.#contentWidthLocalStorageKey,
-            'content',
-            'full',
-            true
-        );
-    }
-
-    #createLayoutToggle(selector, localStorageKey, layoutPart, alternativeWidth, isAlternativeWidthExpanded) {
-        const toggle = document.querySelector(selector);
-        if (null === toggle) {
-            return;
-        }
-
-        const isExpanded = () =>
-            document.body.classList.contains(`ea-${layoutPart}-width-${alternativeWidth}`) ===
-            isAlternativeWidthExpanded;
-
-        const updateToggle = () => {
-            const label = isExpanded() ? toggle.dataset.eaCollapseLabel : toggle.dataset.eaExpandLabel;
-            toggle.setAttribute('aria-expanded', String(isExpanded()));
-            toggle.setAttribute('aria-label', label);
-            toggle.querySelector('.ea-layout-toggle-label').textContent = label;
-        };
-
-        // the initial width can come from the browser local storage (see page-layout.js)
-        // instead of the backend config used to render the toggle
-        updateToggle();
-
-        toggle.addEventListener('click', () => {
-            const oldValue = document.body.classList.contains(`ea-${layoutPart}-width-${alternativeWidth}`)
-                ? alternativeWidth
-                : 'normal';
-            const newValue = 'normal' === oldValue ? alternativeWidth : 'normal';
-
-            document.body.classList.add(`ea-${layoutPart}-transitions`);
-            document.body.classList.remove(`ea-${layoutPart}-width-${oldValue}`);
-            document.body.classList.add(`ea-${layoutPart}-width-${newValue}`);
-            if ('true' !== document.body.getAttribute(`data-ea-${layoutPart}-width-configured`)) {
-                localStorage.setItem(localStorageKey, newValue);
-            }
-            updateToggle();
-        });
-    }
-
-    #createNavigationToggler() {
-        const toggler = document.querySelector('#navigation-toggler');
-        const cssClassName = 'ea-mobile-sidebar-visible';
-        let modalBackdrop;
-
-        if (null === toggler) {
-            return;
-        }
-
-        // listen on window in the capture phase so this runs before Bootstrap closes
-        // open dropdowns and modals: its delegated dropdown handlers also listen in
-        // the capture phase, but on document, so they would run first otherwise
-        const onKeyDown = (event) => {
-            if ('Escape' !== event.key) {
-                return;
-            }
-
-            if (null !== document.querySelector('.dropdown-menu.show, .modal.show')) {
-                return;
-            }
-
-            closeSidebar();
-            toggler.focus();
-        };
-
-        const openSidebar = () => {
-            document.body.classList.add(cssClassName);
-            toggler.setAttribute('aria-expanded', 'true');
-
-            modalBackdrop = document.createElement('div');
-            modalBackdrop.classList.add('modal-backdrop', 'fade', 'ea-sidebar-backdrop');
-            modalBackdrop.onclick = closeSidebar;
-            document.body.appendChild(modalBackdrop);
-            // reading the layout makes the browser apply the transparent style first;
-            // otherwise 'show' would be applied at once and the backdrop wouldn't fade in
-            modalBackdrop.getBoundingClientRect();
-            modalBackdrop.classList.add('show');
-
-            window.addEventListener('keydown', onKeyDown, true);
-        };
-
-        const closeSidebar = () => {
-            document.body.classList.remove(cssClassName);
-            toggler.setAttribute('aria-expanded', 'false');
-
-            if (modalBackdrop) {
-                const closingBackdrop = modalBackdrop;
-                closingBackdrop.classList.remove('show');
-                // getAnimations() is empty when there's no transition (e.g. reduced motion),
-                // so the backdrop is removed right away instead of waiting for 'transitionend'
-                Promise.allSettled(closingBackdrop.getAnimations().map((animation) => animation.finished)).then(() =>
-                    closingBackdrop.remove()
-                );
-                modalBackdrop = null;
-            }
-
-            window.removeEventListener('keydown', onKeyDown, true);
-        };
-
-        toggler.addEventListener('click', () => {
-            document.body.classList.contains(cssClassName) ? closeSidebar() : openSidebar();
-        });
     }
 
     #createSearchHighlight() {

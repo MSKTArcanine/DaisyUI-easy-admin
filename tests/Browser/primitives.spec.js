@@ -182,6 +182,19 @@ test('menus position within the viewport, open submenus on hover and execute a p
     expect(requests).toHaveLength(1);
 });
 
+test('dismissing a menu cancels a pending submenu hover', async ({ page }) => {
+    await page.clock.install();
+    await page.locator('#open-menu').click();
+    await page.locator('[data-ea-menu-split]').dispatchEvent('pointerover', { pointerType: 'mouse' });
+    await page.locator('#outside-control').click();
+    await page.clock.runFor(150);
+    await expect(page.locator('#open-menu')).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('[data-ea-menu-split]')).toHaveAttribute('aria-expanded', 'false');
+    await expect.poll(() => page.locator('[data-ea-menu]:visible').count()).toBe(0);
+    await page.locator('#open-menu').click();
+    await expect(page.locator('[data-ea-menu-split]')).toHaveAttribute('aria-expanded', 'false');
+});
+
 test('tabs retain history, linked action hashes, keyboard direction and child Twig overrides', async ({ page }) => {
     await page.goto('/ui-primitives/override?direction=rtl');
     await expect(page.getByTestId('fixture-header')).toHaveText('Child template override');

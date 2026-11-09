@@ -125,6 +125,7 @@ return [
     ],
 
     'settings' => [
+        'label' => 'Settings',
         'appearance' => [
             'label' => 'Tampilan',
             'light' => 'Terang',
@@ -135,6 +136,7 @@ return [
     ],
 
     'layout' => [
+        'toggle_navigation' => 'Toggle navigation',
         'collapse' => 'Ciutkan',
         'expand' => 'Perluas',
     ],

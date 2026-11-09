@@ -1,3 +1,5 @@
+import { lockScroll, unlockScroll } from './scroll-lock.js';
+
 const KEY = Symbol.for('easyadmin.ui');
 const MENU = '[data-ea-toggle="dropdown"]';
 const TAB = '[data-ea-toggle="tab"][id^="tablist-"]';
@@ -113,9 +115,7 @@ export function initEasyAdminUI(root = document) {
             const entry = state.dialogs.get(dialog);
             state.dialogs.delete(dialog);
             dialog.classList.remove('show');
-            if (state.dialogs.size === 0) {
-                document.documentElement.style.overflow = state.overflow ?? '';
-            }
+            unlockScroll(document, dialog);
             if (entry?.trigger?.isConnected) {
                 entry.trigger.focus({ preventScroll: true });
             }
@@ -151,10 +151,7 @@ export function showDialog(dialog, trigger = null) {
     }
     const document = dialog.ownerDocument;
     const state = stateFor(document);
-    if (state.dialogs.size === 0) {
-        state.overflow = document.documentElement.style.overflow;
-        document.documentElement.style.overflow = 'hidden';
-    }
+    lockScroll(document, dialog);
     state.dialogs.set(dialog, { trigger: trigger ?? document.activeElement, reason: 'close' });
     dialog.returnValue = '';
     dialog.showModal();
@@ -234,6 +231,7 @@ export function showMenu(toggle, focus = null) {
 
 export function hideMenu(menu, restoreFocus = false) {
     const state = stateFor(menu.ownerDocument);
+    clearTimeout(state.hoverTimer);
     const toggle = state.menus.get(menu);
     for (const [child] of state.menus) {
         if (child !== menu && menu.contains(child)) {
@@ -439,6 +437,9 @@ function bind(document, state) {
         }
         clearTimeout(state.hoverTimer);
         state.hoverTimer = document.defaultView.setTimeout(() => {
+            if (!state.menus.has(parent)) {
+                return;
+            }
             for (const [child] of state.menus) {
                 if (child !== parent && parent.contains(child) && !child.contains(item) && menuFor(item) !== child) {
                     hideMenu(child);

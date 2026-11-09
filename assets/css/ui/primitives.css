@@ -1,4 +1,17 @@
 @layer utilities {
+    [data-ea-ui] .btn:where(:not(.btn-xs, .btn-xl)),
+    [data-ea-ui] .btn-md {
+        --size: var(--ea-control-height, 2rem);
+    }
+
+    [data-ea-ui] .btn-sm {
+        --size: var(--ea-control-height-sm, 1.75rem);
+    }
+
+    [data-ea-ui] .btn-lg {
+        --size: var(--ea-control-height-lg, 2.25rem);
+    }
+
     [data-ea-ui] .icon {
         align-items: center;
         block-size: 1em;

@@ -1,0 +1,6 @@
+{% extends '@EasyAdmin/layout.html.twig' %}
+
+{% block head_metas %}{{ parent() }}<meta name="shell-layout-override" content="inherited">{% endblock %}
+{% block header_logo %}{{ parent() }}<span data-testid="shell-logo-override">{{ 'Child logo extension'|trans }}</span>{% endblock %}
+{% block sidebar_footer %}<a href="{{ path('customization_shell_admin') }}" data-testid="shell-sidebar-footer">{{ 'Child sidebar footer'|trans }}</a>{% endblock %}
+{% block content_footer %}<span data-testid="shell-content-footer">{{ 'Child content footer'|trans }}</span>{% endblock %}

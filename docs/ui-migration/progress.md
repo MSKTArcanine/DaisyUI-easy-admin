@@ -53,7 +53,7 @@ and commit each stage before switching to the next title-derived branch.
   T06/P01-P05/J02/J10: existing component props/slots/classes/attrs/escaping,
   semantic styles, dialog/menu foundations and bounded legacy layout adapter.
   Test columns/defaults/rows/offsets/exact breakpoints and template overrides.
-- [ ] **5. Migrate the application shell.** T01/B04/C02-C04/J02-J04/P06:
+- [x] **5. Migrate the application shell.** T01/B04/C02-C04/J02-J04/P06:
   header/sidebar/user/locale/settings menus, nested navigation, responsive
   overlay, flashes/content/help, light/dark/auto/layout preferences, CSP/assets,
   template blocks. Keyboard/Escape/focus/scroll/reduced-motion/RTL validation.
@@ -295,3 +295,53 @@ Unresolved issues and boundaries:
 Next: **Prompt 5 - Migrate the application shell**, on
 `migrate_the_application_shell`. Continue the authorized sequence through
 Prompt 10.
+
+## Prompt 5 stage report
+
+Branch: `migrate_the_application_shell`.
+
+Changes made:
+
+- Migrated shell styling through scoped tokens/layout/sidebar CSS, reusing
+  neutral existing Sidebar/menu/flash components and preserving layout blocks,
+  template replacement, configured asset includes, locale/direction and nonces.
+- Preserved public Theme configuration and actual colors/foregrounds, gray
+  ramps, fonts/weights/features, radius and spacing. Kept control density
+  bounded while layout spacing scales; inherited root overrides work in dark
+  mode. Added translated accessible names consistently in all 39 locales.
+- Extracted idempotent shell interactions, retained preference keys/configured
+  priority and synchronous appearance/layout initialization, and implemented
+  mobile focus/inert/backdrop/scroll/resize handling. Shared scroll ownership
+  and focus arbitration preserve nested native dialogs.
+- Added real dashboard preview switching, independent compiled font delivery,
+  enforced-CSP fixture and HTTP/browser extension/theme/physical-width tests.
+  The preview loads no Bootstrap stylesheet or runtime. Temporary legacy CSS
+  and preview/font scaffolding remain isolated for removal in Prompt 10.
+- Regenerated distributed assets through the normal pipeline. No production
+  PHP behavior or public PHP configuration API changed.
+
+Validation results (details in `reports/stage-5-shell.json`):
+
+| Command/check | Result |
+| --- | --- |
+| `make tests` | Passed: 4142 tests, 12178 assertions |
+| Focused all-engine build/component/shell/theme/density/width proof | Passed: 105 unique cases, 0 skipped/retried |
+| `EASYADMIN_BROWSER_ALL_ENGINES=1 make tests-browser` | 177 passed, same 3 retained DirtyForm failures, 0 skipped/retried |
+| Actual Theme/fonts/CSP/width contracts | Passed on Chromium, Firefox and WebKit, including real configured JS execution and nonce response policy |
+| Normal production build, AssetMapper production build/CSS proof | Passed; isolated CSS 189080 bytes; independent font assets shipped |
+| PHPStan, PHP CS Fixer, Twig and frontend lint | Passed; 1027 PHP files, 190 product and 12 fixture Twig templates; existing frontend advisories remain visible |
+| Documentation, local links, manifest/license targets, whitespace | Passed |
+| Independent review | Concrete focus/scroll/menu/token/geometry findings fixed and behaviorally verified |
+
+Unresolved issues and next stage:
+
+- The existing DirtyForm canceled-submit/unsaved-navigation failure remains
+  visible and assigned to Prompt 7. No new regression failure remains.
+- The normal bundle still loads Bootstrap for unmigrated CRUD/form/widget
+  surfaces. Only the shell preview is claimed Bootstrap-free at this stage.
+- New accessible-name keys outside English use English placeholders. Existing
+  translations remain intact. Exact minimum engine/lower PHP dependency runs
+  and standalone consumer installation remain separately recorded gaps.
+- Continue with **Prompt 6 - Migrate CRUD listings, detail pages, and actions**,
+  on `migrate_crud_listings_detail_pages_and_actions`; then complete the remaining
+  authorized stages through Prompt 10.

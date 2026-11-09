@@ -26,6 +26,7 @@ Encore
     })
 
     .addEntry('app', './assets/js/app.js')
+    .addStyleEntry('ui-fonts-preview', './assets/css/ui-fonts-preview.css')
     .addEntry('form', './assets/js/form.js')
     .addEntry('page-layout', './assets/js/page-layout.js')
     .addEntry('page-color-scheme', './assets/js/page-color-scheme.js')

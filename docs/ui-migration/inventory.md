@@ -501,3 +501,19 @@ failure; their actual usage must be checked if a downstream app selects them.
 | J01/J02/J05/J11 | `assets/js/app.js`, `assets/js/page-layout.js`, `assets/js/form.js`, error-counter attributes in `templates/crud/form_theme.html.twig` | Reuse native foundation; remove duplicate Bootstrap menu handlers, retain early layout preferences, update filter target lookup and independent error-counter hook. Keep form processing, URL sanitizer and action payload logic intact. |
 | Temporary staged support | `assets/css/migration-components.css`, `assets/css/migration-dialog.css`, legacy attribute bridge in `assets/js/ui/interactions.js` | Loaded only by remaining legacy pages; no daisyUI stylesheet is mixed with Bootstrap. Remove at final cutover. |
 | Isolated proof | `tests/Browser/Controller/{PresentationLayoutController,PrimitivesController}.php`, `tests/Browser/templates/browser/ui_{layout,primitives,primitives_override}.html.twig`, `tests/Browser/{layout,primitives}.spec.js`, `tests/Unit/Twig/PresentationExtensionTest.php`, `tests/Functional/Component/` | Deterministic real component rendering, measured geometry, request/CSRF/keyboard/override evidence. Retain meaningful tests while replacing temporary fixture pages at acceptance. |
+
+## Prompt 5 implementation boundary
+
+| Inventory rows | Implemented paths | Evidence and remaining work |
+| --- | --- | --- |
+| T01/B04 | `templates/layout.html.twig` | Preserved every block, template/include and asset/nonce injection; added theme root, named navigation target and accessible names. Existing neutral `menu.html.twig`, `flash_messages.html.twig` and Sidebar component interfaces retained. |
+| C02-C04/T01 | `assets/css/ui/{tokens,shell,sidebar}.css`, `assets/css/ui/primitives.css`, `assets/css/ui-preview.css` | Existing palette and token contracts feed daisyUI roles; actual Theme grays/fonts/primary/foreground/radius/spacing, bounded controls, shell layout, compact sidebar and responsive RTL styles. No Bootstrap bridge imported into the new stylesheet. |
+| J01/J03/J04 | `assets/js/ui/{shell,scroll-lock}.js`, `assets/js/{app,page-layout,page-color-scheme}.js` | Shared idempotent shell interactions, first-paint preferences, native mobile focus/inert/scroll boundaries, nested dialog ownership and resize cleanup. Existing keys/configured-width semantics retained. |
+| J02 | `assets/js/ui/interactions.js`, `tests/Browser/primitives.spec.js` | Cancel pending submenu hover when the parent closes; preserve prevented navigation and dialog/sidebar arbitration. |
+| B02/C02 temporary font delivery | `assets/css/ui-fonts-preview.css`, `webpack.config.js` | Independent FontAwesome and bundled faces compiled by the existing pipeline, without Bootstrap. Fold into final `app.css` and remove temporary entry in Prompt 10. |
+| Isolated proof | `tests/Browser/{shell,theme-shell,theme-widths,density}.spec.js`, `Controller/ThemeDashboardController.php`, `Twig/NonceExtension.php`, `templates/browser/theme_*.html.twig`, `public/theme_fixture.{css,js}` beneath `tests/Browser/` | Real shell, public Theme values, actual fonts/layout widths, configured assets and enforced CSP; fixture-only preview cookie/router/child-layout wiring. |
+| Extension proof | `tests/Functional/Customization/Dashboard/ShellExtensionTest.php`, `Controller/Dashboard/ShellExtensionTestDashboardController.php` and `templates/admin/shell_{layout,dashboard}.html.twig` beneath CustomizationApp | Existing block inheritance composes with parent logo/navigation/footer/title/main; exact URL, asset attributes/order and configured HTML placement preserved. |
+
+CRUD search/highlighting/help, listing/detail actions and filters remain Prompt 6.
+New/edit form inheritance remains Prompt 7. The isolated dashboard proof does
+not declare those pages or the normal delivered bundle Bootstrap-free.

@@ -384,3 +384,59 @@ files let existing Bootstrap pages use the migrated primitives and native
 dialog. Neither loads daisyUI into a Bootstrap page. Remove these temporary
 compatibility stylesheets and obsolete runtime
 bridges at final cutover after all product emitters are migrated.
+
+## D14. Migrate the shell with its preferences and focus boundaries
+
+Prompt 5 retains `templates/layout.html.twig` and every named block, captured
+sidebar slot, configured template include and asset injection point. The body
+adds the theme root; the existing synchronous page scripts resolve remembered
+layout and appearance before content paint. Keep the `ea-light-scheme` and
+`ea-dark-scheme` classes because validated PHP Theme overrides target them.
+Resolve daisyUI's `data-theme` alongside them. Keep `ea/colorScheme`,
+`ea/sidebar/width`, `ea/content/width`, configured-width priority, disabled dark
+mode, system-media updates and both settings menus.
+
+Reuse the Bootstrap-free color palette and design-token scales. New scoped
+`assets/css/ui/{tokens,shell,sidebar}.css` maps Theme fonts, grays, primary color,
+foreground, radius and spacing into real surfaces and controls. Derived roles
+must resolve on the same root as dark-mode overrides. Bound control density
+with the existing `--ea-control-height*` scale so larger spacing scales layout
+padding/gaps without violating `Theme::spacing()`'s control-size meaning.
+Primary and foreground defaults stay in the daisyUI theme fallback; the new
+scale recipes do not redeclare those optional overrides on the dark body.
+This preserves application `:root` overrides in both appearances. Derived
+primary recipes fall back to the resolved daisyUI role and still recompute
+inside the dark root.
+
+`assets/js/ui/shell.js` replaces the old shell methods and is shared by the
+normal app and the isolated preview. It manages nested navigation, layout
+controls and mobile navigation. An open mobile drawer owns a visible focus
+boundary, makes background content inert, locks scrolling, and restores prior
+focus/inert/scroll state on Escape, backdrop dismissal or desktop resize.
+Dialogs take precedence over the drawer focus boundary. A shared small
+`assets/js/ui/scroll-lock.js` coordinates independent owners so closing or
+resizing one overlay does not unlock or permanently lock another.
+
+The browser fixture opts into the real dashboard preview with `?ui=tailwind`;
+a fixture cookie preserves that mode through generated links. `?ui=legacy`
+returns to the ordinary stylesheet. This switch is test-only; PHP controllers,
+routing and URL generation in the bundle remain unchanged. FontAwesome and
+bundled font faces are compiled through a temporary independent
+`ui-fonts-preview` Encore style entry because their existing source URLs use
+Webpack resolution. The preview loads those independent fonts and the new
+AssetMapper CSS, without loading Bootstrap or `app.js`. Fold the font styles
+back into the normal distribution and remove the temporary entry in Prompt 10.
+
+`tests/Browser/Twig/NonceExtension.php` and the fixture router provide real
+per-response nonces and opt-in enforced CSP with `?csp=1`. This tests the
+existing product nonce guards and the importmap attributes. The fixture allows
+style attributes for configured HTML styling; it does not claim to enforce a
+policy banning all inline style attributes. Its CSP configuration is not a
+change to the bundle's security policy.
+
+New accessible-name translation keys `settings.label` and
+`layout.toggle_navigation` exist in all 39 locales. English placeholders are
+used for the new keys outside English, following repository instructions;
+existing translations remain unchanged. Existing Sidebar/menu/flash templates
+already use neutral components, so preserve their interfaces rather than
+rewriting their markup unnecessarily.

@@ -125,6 +125,7 @@ return [
     ],
 
     'settings' => [
+        'label' => 'Settings',
         'appearance' => [
             'label' => 'Εμφάνιση',
             'light' => 'Ανοιχτόχρωμη',
@@ -135,6 +136,7 @@ return [
     ],
 
     'layout' => [
+        'toggle_navigation' => 'Toggle navigation',
         'collapse' => 'Σύμπτυξη',
         'expand' => 'Ανάπτυξη',
     ],

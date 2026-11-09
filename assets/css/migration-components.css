@@ -1,6 +1,25 @@
 /* Temporary styling for migrated primitives on the remaining legacy pages.
    This file is loaded only with the legacy theme and is removed at cutover. */
 @layer ea.components {
+    .ea .ea-sidebar-backdrop {
+        background: color-mix(in srgb, var(--black) 40%, transparent);
+        inset: 0;
+        opacity: 0;
+        position: fixed;
+        transition: opacity var(--ea-duration-drawer-close) var(--ea-ease-drawer);
+        z-index: var(--zindex-modal-backdrop);
+    }
+
+    .ea .ea-sidebar-backdrop.show {
+        opacity: 1;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .ea .ea-sidebar-backdrop {
+            transition: none;
+        }
+    }
+
     .ea .sr-only {
         position: absolute;
         inline-size: 1px;

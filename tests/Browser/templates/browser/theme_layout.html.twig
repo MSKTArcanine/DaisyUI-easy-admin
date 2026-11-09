@@ -1,0 +1,5 @@
+{% extends 'browser/layout.html.twig' %}
+
+{% block header_logo %}{{ parent() }}<span data-testid="theme-logo-override">{{ 'Theme logo extension'|trans }}</span>{% endblock %}
+{% block sidebar_footer %}<a href="{{ path('browser_theme_admin') }}" data-testid="theme-sidebar-footer">{{ 'Theme footer link'|trans }}</a>{% endblock %}
+{% block content_footer %}<span data-testid="theme-content-footer">{{ 'Theme content footer'|trans }}</span>{% endblock %}

@@ -1,0 +1,177 @@
+@layer theme {
+    :root {
+        --ea-radius: 0.25rem;
+        --ea-spacing: 0.125rem;
+        --ea-focus-ring-width: 3px;
+        --ea-prose-font-size: calc(15em / 14);
+        --ea-prose-line-height: 1.75;
+        --ea-prose-spacing: 1.143em;
+        --font-family-system-sans-serif:
+            system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans',
+            sans-serif;
+        --font-family-system-monospace:
+            ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+        --font-family-sans-serif: 'Inter Variable', 'Inter Variable Fallback', var(--font-family-system-sans-serif);
+        --font-family-monospace:
+            'JetBrains Mono Variable', 'JetBrains Mono Variable Fallback', var(--font-family-system-monospace);
+        --font-size-xs: 0.75rem;
+        --font-size-sm: 0.8125rem;
+        --font-size-base: 0.875rem;
+        --font-size-lg: 1rem;
+        --font-size-xl: 1.125rem;
+        --font-size-xxl: 1.5rem;
+        --font-size-xxxl: 1.75rem;
+        --font-weight-normal: 435;
+        --font-weight-medium: 500;
+        --font-weight-semibold: 600;
+        --font-weight-bold: 700;
+        --font-size-adjust: 0.54;
+        --font-feature-settings: normal;
+        --icon-size-sm: 1rem;
+        --icon-size-md: 1.25rem;
+        --icon-size-lg: 1.5rem;
+        --ea-duration-fast: 150ms;
+        --ea-duration-slow: 250ms;
+        --ea-duration-drawer-open: 250ms;
+        --ea-duration-drawer-close: 200ms;
+        --ea-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --ea-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+        --ea-ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    :root,
+    [data-ea-ui] {
+        --border-radius-none: 0;
+        --border-radius-sm: calc(var(--ea-radius) * 0.5);
+        --border-radius: var(--ea-radius);
+        --border-radius-lg: calc(var(--ea-radius) * 2);
+        --border-radius-xl: calc(var(--ea-radius) * 3);
+        --border-radius-full: 50rem;
+        --border-radius-pill: min(calc(var(--ea-radius) * 1000), var(--border-radius-full));
+        --ea-sp-1: var(--ea-spacing);
+        --ea-sp-2: calc(var(--ea-spacing) * 2);
+        --ea-sp-3: calc(var(--ea-spacing) * 3);
+        --ea-sp-4: calc(var(--ea-spacing) * 4);
+        --ea-sp-5: calc(var(--ea-spacing) * 5);
+        --ea-sp-6: calc(var(--ea-spacing) * 6);
+        --ea-sp-7: calc(var(--ea-spacing) * 7);
+        --ea-sp-8: calc(var(--ea-spacing) * 8);
+        --ea-sp-10: calc(var(--ea-spacing) * 10);
+        --ea-sp-12: calc(var(--ea-spacing) * 12);
+        --ea-sp-14: calc(var(--ea-spacing) * 14);
+        --ea-sp-16: calc(var(--ea-spacing) * 16);
+        --ea-sp-18: calc(var(--ea-spacing) * 18);
+        --ea-sp-20: calc(var(--ea-spacing) * 20);
+        --ea-sp-22: calc(var(--ea-spacing) * 22);
+        --ea-sp-24: calc(var(--ea-spacing) * 24);
+        --ea-sp-28: calc(var(--ea-spacing) * 28);
+        --ea-sp-32: calc(var(--ea-spacing) * 32);
+        --ea-control-height: clamp(1.75rem, calc(var(--ea-spacing) * 16), 2rem);
+        --ea-control-height-sm: clamp(1.5rem, calc(var(--ea-spacing) * 14), 1.75rem);
+        --ea-control-height-lg: clamp(2rem, calc(var(--ea-spacing) * 18), 2.25rem);
+        --ea-control-padding-x: clamp(0.5rem, calc(var(--ea-spacing) * 5), 0.625rem);
+        --ea-control-padding-x-lg: clamp(0.75rem, calc(var(--ea-spacing) * 8), 1rem);
+    }
+
+    /* resolve role recipes on the same element as per-scheme Theme overrides */
+    [data-ea-ui] {
+        --ea-primary-mix-base: var(--body-bg);
+        --ea-primary-contrast-base: var(--black);
+        --ea-primary-subtle: color-mix(
+            in oklab,
+            var(--ea-primary, var(--color-primary)) 8%,
+            var(--ea-primary-mix-base)
+        );
+        --ea-primary-soft: color-mix(in oklab, var(--ea-primary, var(--color-primary)) 16%, var(--ea-primary-mix-base));
+        --ea-primary-muted: color-mix(
+            in oklab,
+            var(--ea-primary, var(--color-primary)) 30%,
+            var(--ea-primary-mix-base)
+        );
+        --ea-primary-text: color-mix(
+            in oklab,
+            var(--ea-primary, var(--color-primary)) 55%,
+            var(--ea-primary-contrast-base)
+        );
+        --ea-primary-strong: color-mix(
+            in oklab,
+            var(--ea-primary, var(--color-primary)) 80%,
+            var(--ea-primary-contrast-base)
+        );
+        --ea-primary-ring: color-mix(in srgb, var(--ea-primary, var(--color-primary)) 35%, transparent);
+        --font-sans: var(--font-family-sans-serif);
+        --font-mono: var(--font-family-monospace);
+        --body-bg: var(--white);
+        --text-color: var(--gray-800);
+        --text-muted: var(--gray-500);
+        --text-on-primary: var(--ea-primary-foreground, var(--color-primary-content));
+        --secondary-bg: var(--gray-100);
+        --border-secondary-color: var(--gray-300);
+        --sidebar-bg: var(--gray-50);
+        --sidebar-border-color: var(--gray-200);
+        --sidebar-logo-color: var(--gray-800);
+        --sidebar-menu-color: var(--gray-800);
+        --sidebar-menu-icon-color: var(--gray-500);
+        --sidebar-menu-header-color: var(--gray-500);
+        --sidebar-menu-active-item-bg: var(--ea-primary-soft);
+        --sidebar-menu-active-item-color: var(--ea-primary-on-surface, var(--ea-primary-text));
+        --sidebar-item-hover-bg: var(--gray-200);
+        --sidebar-tooltip-bg: var(--gray-900);
+        --sidebar-tooltip-color: var(--gray-50);
+        --responsive-header-bg: var(--gray-50);
+        --responsive-header-border-color: var(--gray-200);
+        --responsive-header-logo-color: var(--gray-800);
+        --body-max-width: 1440px;
+        --sidebar-max-width: 230px;
+        --main-content-gap: var(--ea-sp-4);
+        --main-content-border-color: var(--gray-200);
+        --main-content-border-radius: var(--border-radius-xl);
+        --content-padding-left: var(--ea-sp-8);
+        --content-padding-right: var(--ea-sp-8);
+        --lg-content-padding-left: var(--ea-sp-18);
+        --lg-content-padding-right: var(--ea-sp-12);
+        --lg-content-padding-bottom: var(--ea-sp-22);
+        --user-avatar-icon-bg: var(--gray-200);
+        --user-avatar-icon-color: var(--gray-500);
+        --user-name-color: var(--gray-600);
+        --layout-toggle-marker-color: var(--gray-500);
+        --layout-toggle-marker-hover-color: var(--gray-800);
+        --layout-toggle-label-bg: var(--gray-900);
+        --layout-toggle-label-color: var(--gray-50);
+        --zindex-modal-backdrop: 2020;
+        --shadow-lg:
+            0 10px 15px -3px color-mix(in srgb, var(--black) 12%, transparent),
+            0 4px 6px -4px color-mix(in srgb, var(--black) 12%, transparent);
+    }
+
+    [data-ea-ui].ea-dark-scheme,
+    [data-ea-ui][data-theme='easyadmin-dark'] {
+        --ea-primary-contrast-base: var(--white);
+        --ea-primary-on-surface: var(--ea-primary-text);
+        --body-bg: var(--gray-950);
+        --text-color: var(--gray-200);
+        --text-muted: var(--gray-400);
+        --secondary-bg: var(--gray-900);
+        --border-secondary-color: var(--gray-700);
+        --sidebar-bg: var(--gray-900);
+        --sidebar-border-color: var(--gray-800);
+        --sidebar-logo-color: var(--gray-100);
+        --sidebar-menu-color: var(--gray-300);
+        --sidebar-menu-icon-color: var(--gray-400);
+        --sidebar-menu-header-color: var(--gray-400);
+        --sidebar-item-hover-bg: var(--gray-800);
+        --sidebar-tooltip-bg: var(--gray-100);
+        --sidebar-tooltip-color: var(--gray-900);
+        --responsive-header-bg: var(--gray-900);
+        --responsive-header-border-color: var(--gray-800);
+        --responsive-header-logo-color: var(--gray-100);
+        --main-content-border-color: var(--gray-800);
+        --user-avatar-icon-bg: var(--gray-800);
+        --user-avatar-icon-color: var(--gray-300);
+        --user-name-color: var(--gray-300);
+        --layout-toggle-marker-color: var(--gray-400);
+        --layout-toggle-marker-hover-color: var(--gray-100);
+        --layout-toggle-label-bg: var(--gray-100);
+        --layout-toggle-label-color: var(--gray-900);
+    }
+}

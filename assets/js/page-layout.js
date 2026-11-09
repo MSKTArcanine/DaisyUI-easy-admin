@@ -6,9 +6,12 @@ const eaLayoutWidth = (layoutPart) => {
         return configuredWidth;
     }
 
-    return localStorage.getItem(`ea/${layoutPart}/width`) || configuredWidth;
+    const storedWidth = localStorage.getItem(`ea/${layoutPart}/width`);
+    const alternative = layoutPart === 'sidebar' ? 'compact' : 'full';
+    return ['normal', alternative].includes(storedWidth) ? storedWidth : configuredWidth;
 };
-document.body.classList.add(
-    `ea-content-width-${eaLayoutWidth('content')}`,
-    `ea-sidebar-width-${eaLayoutWidth('sidebar')}`
-);
+for (const part of ['content', 'sidebar']) {
+    const alternative = part === 'sidebar' ? 'compact' : 'full';
+    document.body.classList.remove(`ea-${part}-width-normal`, `ea-${part}-width-${alternative}`);
+    document.body.classList.add(`ea-${part}-width-${eaLayoutWidth(part)}`);
+}

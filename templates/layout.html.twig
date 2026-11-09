@@ -113,6 +113,8 @@
     <body {% block body_attr %}{% endblock %}
         id="{% block body_id %}{% endblock %}"
         class="ea {% block body_class %}{% endblock %}"
+        data-ea-ui
+        data-theme="easyadmin-light"
         data-ea-content-width="{{ ea.crud.contentWidth ?? ea.dashboardContentWidth ?? 'normal' }}"
         data-ea-content-width-configured="{{ (ea.crud.contentWidth ?? null) is not null or (ea.dashboardContentWidthConfigured ?? false) ? 'true' : 'false' }}"
         data-ea-sidebar-width="{{ ea.crud.sidebarWidth ?? ea.dashboardSidebarWidth ?? 'normal' }}"
@@ -144,11 +146,11 @@
 
         {% set user_menu_avatar %}
             {% if null == ea.userMenu.avatarUrl %}
-                <span class="user-avatar">
+                <span class="user-avatar" aria-hidden="true">
                     <twig:ea:Icon name="internal:user" />
                 </span>
             {% else %}
-                <img class="user-avatar" src="{{ ea.userMenu.avatarUrl }}" />
+                <img class="user-avatar" src="{{ ea.userMenu.avatarUrl }}" alt="" />
             {% endif %}
         {% endset %}
 
@@ -199,7 +201,7 @@
         {% set settings_dropdown %}
             {% if ea.dashboardLocales or ea.dashboardHasDarkModeEnabled %}
                 <twig:ea:ActionMenu class="dropdown-settings">
-                    <twig:ea:ActionMenu:Button class="dropdown-settings-button" data-bs-offset="0,5" withoutDropdownToggleMarker>
+                    <twig:ea:ActionMenu:Button class="dropdown-settings-button" data-ea-offset="0,5" aria-label="{{ 'settings.label'|trans(domain: 'EasyAdminBundle') }}" withoutDropdownToggleMarker>
                         <twig:ea:Icon name="internal:gear" />
                     </twig:ea:ActionMenu:Button>
 
@@ -252,9 +254,9 @@
             {% block wrapper %}
                 <div class="responsive-header">
                     {% block responsive_header %}
-                        <twig:ea:Button type="button" variant="ghost" icon="internal:menu-bars" id="navigation-toggler" aria-label="Toggle navigation" aria-expanded="false"></twig:ea:Button>
+                        <twig:ea:Button type="button" variant="ghost" icon="internal:menu-bars" id="navigation-toggler" aria-label="{{ 'layout.toggle_navigation'|trans(domain: 'EasyAdminBundle') }}" aria-expanded="false" aria-controls="ea-navigation"></twig:ea:Button>
 
-                        <div id="responsive-header-logo" class="text-truncate">
+                        <div id="responsive-header-logo" class="text-truncate truncate">
                             {% block responsive_header_logo %}
                                 <a class="responsive-logo" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
                                     {{ ea.dashboardTitle|raw }}
@@ -264,7 +266,7 @@
 
                         <div class="responsive-header-actions">
                             <twig:ea:ActionMenu class="user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}">
-                                <twig:ea:ActionMenu:Button class="user-details" data-bs-offset="0,5" withoutDropdownToggleMarker>
+                                <twig:ea:ActionMenu:Button class="user-details" data-ea-offset="0,5" aria-label="{{ ea.user is null ? 'user.anonymous'|trans(domain: 'EasyAdminBundle') : ea.userMenu.name }}" withoutDropdownToggleMarker>
                                     {# to make the site design consistent, always display the user avatar in responsive header
                                        and hide the user name (because there's no space left) regardless of the user config #}
                                     {% if ea.userMenu.avatarDisplayed %}
@@ -322,7 +324,7 @@
                     {% endblock sidebar %}
                 {% endset %}
 
-                <div class="sidebar-wrapper">
+                <div class="sidebar-wrapper" id="ea-navigation" data-ea-sidebar>
                     <twig:ea:Sidebar>
                         {{ sidebar_contents }}
                     </twig:ea:Sidebar>
@@ -415,7 +417,7 @@
                             <div class="navbar-custom-menu">
                                 {% block header_custom_menu %}
                                     <twig:ea:ActionMenu class="user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}">
-                                        <twig:ea:ActionMenu:Button class="user-details" withoutDropdownToggleMarker>
+                                        <twig:ea:ActionMenu:Button class="user-details" aria-label="{{ ea.user is null ? 'user.anonymous'|trans(domain: 'EasyAdminBundle') : ea.userMenu.name }}" withoutDropdownToggleMarker>
                                             {{ user_menu_avatar }}
                                             {% if ea.userMenu.isNameDisplayed %}
                                                 <span class="user-name">{{ ea.userMenu.name }}</span>

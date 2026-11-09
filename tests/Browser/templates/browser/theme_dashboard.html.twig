@@ -1,0 +1,11 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}{{ 'Theme configuration preview'|trans }}{% endblock %}
+{% block main %}
+    <p data-testid="theme-dashboard-content">{{ 'Public Theme configuration remains effective'|trans }}</p>
+    <twig:ea:Button type="button" color="primary" variant="solid" id="theme-primary">{{ 'Configured primary'|trans }}</twig:ea:Button>
+    <twig:ea:Button type="button" color="primary" variant="solid" id="theme-user-override" class="theme-user-override">{{ 'Application override'|trans }}</twig:ea:Button>
+    <div id="theme-spacing" class="p-4">{{ 'Scaled spacing'|trans }}</div>
+    <div id="theme-surface" class="bg-base-200">{{ 'Configured gray surface'|trans }}</div>
+    <code id="theme-monospace" class="font-mono">{{ '0123456789'|trans }}</code>
+{% endblock %}

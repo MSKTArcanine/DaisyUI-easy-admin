@@ -248,3 +248,18 @@ The layout proof measures every supported span and offset at 575/576,
 767/768, 991/992, 1199/1200 and 1399/1400px, including default wrapping,
 explicit widths, row breaks, offsets, RTL and widths inside vertical columns.
 The source baseline and original screenshots above remain immutable references.
+
+## Prompt 5 shell baseline
+
+The shell stage starts from `fe6260dba` on `migrate_the_application_shell`.
+Production PHP APIs and backend implementation remain unchanged. The normal
+asset pipeline adds a temporary independent `ui-fonts-preview` stylesheet for
+the isolated shell; original entry names and package delivery remain intact.
+The real browser dashboard opts into new CSS/modules with `?ui=tailwind` and a
+fixture cookie, without Bootstrap CSS/runtime in that document.
+
+The new shell tests use the existing authenticated fixture, actual generated
+navigation and public Theme configuration. A separate fixture dashboard proves
+custom layout blocks, configured assets, fonts, width preferences and enforced
+CSP nonces. Minimum-engine/PHP matrix limits remain distinct from current-engine
+execution; the original upstream SHA and visual references are unchanged.

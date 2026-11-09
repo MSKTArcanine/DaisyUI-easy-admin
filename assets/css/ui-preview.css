@@ -2,10 +2,14 @@
 
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities) source(none);
+@import './easyadmin-theme/color-palette.css' layer(theme);
+@import './ui/tokens.css';
 @import './ui/foundation.css';
 @import './ui/primitives.css';
 @import './ui/interactions.css';
 @import './ui/layout.css';
+@import './ui/shell.css';
+@import './ui/sidebar.css';
 
 @source '../../templates';
 @source '../js';
@@ -31,18 +35,18 @@
     root: '[data-ea-ui]';
     color-scheme: light;
 
-    --color-base-100: oklch(1 0 0);
-    --color-base-200: oklch(0.97 0 0);
-    --color-base-300: oklch(0.922 0 0);
-    --color-base-content: oklch(0.205 0 0);
+    --color-base-100: var(--body-bg, var(--white, #fff));
+    --color-base-200: var(--secondary-bg, var(--gray-100));
+    --color-base-300: var(--border-secondary-color, var(--gray-300));
+    --color-base-content: var(--text-color, var(--gray-800));
     --color-primary: var(--ea-primary, oklch(0.205 0 0));
     --color-primary-content: var(--ea-primary-foreground, oklch(0.985 0 0));
     --color-secondary: oklch(0.556 0 0);
     --color-secondary-content: oklch(0.985 0 0);
     --color-accent: var(--ea-primary, oklch(0.205 0 0));
     --color-accent-content: var(--ea-primary-foreground, oklch(0.985 0 0));
-    --color-neutral: oklch(0.269 0 0);
-    --color-neutral-content: oklch(0.985 0 0);
+    --color-neutral: var(--gray-800);
+    --color-neutral-content: var(--gray-50);
     --color-info: oklch(0.546 0.245 262.88);
     --color-info-content: oklch(0.985 0 0);
     --color-success: oklch(0.527 0.154 150.069);
@@ -55,8 +59,8 @@
     --radius-selector: var(--ea-radius, 0.25rem);
     --radius-field: var(--ea-radius, 0.25rem);
     --radius-box: calc(var(--ea-radius, 0.25rem) * 2);
-    --size-selector: calc(var(--ea-spacing, 0.125rem) * 2);
-    --size-field: calc(var(--ea-spacing, 0.125rem) * 2);
+    --size-selector: calc(var(--ea-control-height, 2rem) / 10);
+    --size-field: calc(var(--ea-control-height, 2rem) / 10);
     --border: 1px;
     --depth: 0;
     --noise: 0;
@@ -69,18 +73,18 @@
     root: '[data-ea-ui]';
     color-scheme: dark;
 
-    --color-base-100: oklch(0.145 0 0);
-    --color-base-200: oklch(0.205 0 0);
-    --color-base-300: oklch(0.269 0 0);
-    --color-base-content: oklch(0.922 0 0);
+    --color-base-100: var(--body-bg, var(--gray-950));
+    --color-base-200: var(--secondary-bg, var(--gray-900));
+    --color-base-300: var(--border-secondary-color, var(--gray-700));
+    --color-base-content: var(--text-color, var(--gray-100));
     --color-primary: var(--ea-primary, oklch(0.922 0 0));
     --color-primary-content: var(--ea-primary-foreground, oklch(0.205 0 0));
     --color-secondary: oklch(0.708 0 0);
     --color-secondary-content: oklch(0.205 0 0);
     --color-accent: var(--ea-primary, oklch(0.922 0 0));
     --color-accent-content: var(--ea-primary-foreground, oklch(0.205 0 0));
-    --color-neutral: oklch(0.439 0 0);
-    --color-neutral-content: oklch(0.985 0 0);
+    --color-neutral: var(--gray-200);
+    --color-neutral-content: var(--gray-50);
     --color-info: oklch(0.707 0.165 254.624);
     --color-info-content: oklch(0.205 0 0);
     --color-success: oklch(0.723 0.219 149.579);
@@ -93,8 +97,8 @@
     --radius-selector: var(--ea-radius, 0.25rem);
     --radius-field: var(--ea-radius, 0.25rem);
     --radius-box: calc(var(--ea-radius, 0.25rem) * 2);
-    --size-selector: calc(var(--ea-spacing, 0.125rem) * 2);
-    --size-field: calc(var(--ea-spacing, 0.125rem) * 2);
+    --size-selector: calc(var(--ea-control-height, 2rem) / 10);
+    --size-field: calc(var(--ea-control-height, 2rem) / 10);
     --border: 1px;
     --depth: 0;
     --noise: 0;

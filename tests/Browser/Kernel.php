@@ -62,6 +62,7 @@ final class Kernel extends BaseKernel
                 'paths' => [\dirname(__DIR__, 2).'/assets/css' => 'easyadmin', \dirname(__DIR__, 2).'/assets/js/ui' => 'easyadmin-ui', __DIR__.'/public' => ''],
                 'excluded_patterns' => [
                     '*/assets/css/app.css',
+                    '*/assets/css/ui-fonts-preview.css',
                     '*/assets/css/layers.css',
                     '*/assets/css/form-type-*.css',
                     '*/assets/css/easyadmin-theme/*',

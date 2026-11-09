@@ -67,6 +67,7 @@
             "includes": [
                 "assets/css/app.css",
                 "assets/css/ui-preview.css",
+                "assets/css/ui-fonts-preview.css",
                 "assets/css/ui/**",
                 "assets/css/migration-*.css"
             ],

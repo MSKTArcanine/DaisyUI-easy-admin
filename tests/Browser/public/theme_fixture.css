@@ -1,0 +1,8 @@
+.theme-user-override {
+    background-color: rgb(12 34 56);
+}
+
+[data-testid="theme-logo-override"] {
+    display: block;
+    font-size: 0.75rem;
+}
