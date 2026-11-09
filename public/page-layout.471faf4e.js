@@ -1,0 +1,1 @@
+(()=>{var t=function(t){var a=document.body.getAttribute("data-ea-".concat(t,"-width"));return"true"===document.body.getAttribute("data-ea-".concat(t,"-width-configured"))?a:localStorage.getItem("ea/".concat(t,"/width"))||a};document.body.classList.add("ea-content-width-".concat(t("content")),"ea-sidebar-width-".concat(t("sidebar")))})();

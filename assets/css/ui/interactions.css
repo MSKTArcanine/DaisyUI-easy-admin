@@ -1,0 +1,117 @@
+@layer utilities {
+    dialog[data-ea-dialog] {
+        --ea-dialog-width: 380px;
+        position: fixed;
+        inset: 0;
+        inline-size: 100%;
+        block-size: 100%;
+        max-inline-size: none;
+        max-block-size: none;
+        margin: 0;
+        padding: 1rem;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        overflow: auto;
+    }
+
+    dialog[data-ea-dialog]:not([open]) {
+        display: none;
+    }
+
+    dialog[data-ea-dialog][open] {
+        display: grid;
+        place-items: center;
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    dialog[data-ea-dialog]::backdrop {
+        background: rgb(0 0 0 / 25%);
+        backdrop-filter: blur(4px);
+    }
+
+    dialog[data-ea-dialog][data-ea-backdrop='false']::backdrop {
+        background: transparent;
+        backdrop-filter: none;
+    }
+
+    dialog[data-ea-dialog].ea-dialog-sm {
+        --ea-dialog-width: 320px;
+    }
+
+    dialog[data-ea-dialog].ea-dialog-lg {
+        --ea-dialog-width: 512px;
+    }
+
+    dialog[data-ea-dialog].ea-dialog-xl {
+        --ea-dialog-width: 800px;
+    }
+
+    dialog[data-ea-dialog] [data-ea-dialog-panel] {
+        display: grid;
+        gap: var(--ea-sp-12, 1.5rem);
+        inline-size: min(var(--ea-dialog-width), 100%);
+        max-inline-size: none;
+        max-block-size: none;
+        margin: auto;
+        padding: var(--ea-sp-8, 1rem);
+        border: 1px solid var(--color-base-300, var(--border-color, #ddd));
+        border-radius: var(--radius-box, var(--border-radius-lg, 0.5rem));
+        background: var(--color-base-100, var(--content-bg, #fff));
+        box-shadow: 0 16px 48px rgb(0 0 0 / 20%);
+        transform: none;
+        pointer-events: auto;
+    }
+
+    dialog[data-ea-dialog] .modal-header,
+    dialog[data-ea-dialog] .modal-body,
+    dialog[data-ea-dialog] .modal-footer {
+        padding: 0;
+        border: 0;
+    }
+
+    dialog[data-ea-dialog] .modal-footer {
+        display: flex;
+        justify-content: end;
+        gap: var(--ea-sp-4, 0.5rem);
+    }
+
+    [data-ea-menu] {
+        z-index: 1060;
+        min-inline-size: 12rem;
+        max-inline-size: calc(100vw - 1rem);
+        overflow: auto;
+        transform: none;
+        animation: none;
+    }
+
+    [data-ea-menu][hidden],
+    [data-ea-tab-panel][hidden] {
+        display: none;
+    }
+
+    [data-ea-menu-item]:focus-visible {
+        outline: 2px solid var(--color-primary, currentColor);
+        outline-offset: -2px;
+    }
+
+    [data-ea-menu-item][aria-disabled='true'],
+    [data-ea-menu-item].disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    [data-ea-tab-panels] {
+        display: block;
+        inline-size: 100%;
+        padding: 0;
+        border: 0;
+        background: transparent;
+    }
+
+    [data-ea-tab-panel]:not([hidden]) {
+        display: block;
+    }
+}

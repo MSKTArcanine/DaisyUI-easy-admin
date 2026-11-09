@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <title>{{ 'Presentation layout fixture'|trans }}</title>
+    <link rel="stylesheet" href="{{ asset('easyadmin/ui-preview.css') }}" data-testid="layout-stylesheet">
+    <style>
+        .application-button-override { background-color: rgb(1, 2, 3); }
+        .custom-layout-marker { outline: 2px solid rgb(1, 2, 3); }
+    </style>
+</head>
+<body data-ea-ui data-theme="easyadmin-light">
+<main class="p-6">
+    <h1>{{ 'Presentation layout fixture'|trans }}</h1>
+    <section aria-label="{{ 'Component priority'|trans }}">
+        <twig:ea:Button color="primary" variant="solid" data-testid="reference-primary">{{ 'Reference primary'|trans }}</twig:ea:Button>
+        <twig:ea:Button variant="solid" class="btn-primary" data-testid="caller-primary">{{ 'Caller primary'|trans }}</twig:ea:Button>
+        <twig:ea:Button color="danger" variant="solid" data-testid="reference-danger">{{ 'Reference danger'|trans }}</twig:ea:Button>
+        <twig:ea:Button color="primary" variant="solid" class="btn-danger" data-testid="caller-danger">{{ 'Caller danger'|trans }}</twig:ea:Button>
+        <twig:ea:Button color="primary" variant="outline" class="btn-solid" data-testid="caller-solid">{{ 'Caller solid'|trans }}</twig:ea:Button>
+        <twig:ea:Button class="btn-primary application-button-override" data-testid="application-override">{{ 'Application override'|trans }}</twig:ea:Button>
+        <twig:ea:Badge color="primary" data-testid="reference-badge">{{ 'Reference badge'|trans }}</twig:ea:Badge>
+        <twig:ea:Badge class="badge-primary" data-testid="caller-badge">{{ 'Caller badge'|trans }}</twig:ea:Badge>
+        <twig:ea:Alert variant="danger" data-testid="reference-alert">{{ 'Reference alert'|trans }}</twig:ea:Alert>
+        <twig:ea:Alert class="alert-danger" data-testid="caller-alert">{{ 'Caller alert'|trans }}</twig:ea:Alert>
+    </section>
+
+    {% for breakpoint, minimum in breakpoints %}
+        {% set suffix = breakpoint == 'base' ? '' : '-' ~ breakpoint %}
+        {% for span in 1..12 %}
+            <div class="ea-form-row" data-width-case data-minimum="{{ minimum }}" data-span="{{ span }}">
+                <div class="{{ ('col' ~ suffix ~ '-' ~ span)|ea_ui_classes }} h-4" data-width-item></div>
+            </div>
+        {% endfor %}
+        {% for offset in 0..11 %}
+            <div class="ea-form-row" data-offset-case data-minimum="{{ minimum }}" data-offset="{{ offset }}">
+                <div class="{{ ('col-1 offset' ~ suffix ~ '-' ~ offset)|ea_ui_classes }} h-4" data-offset-item></div>
+            </div>
+        {% endfor %}
+        {% if breakpoint != 'base' %}
+            <div class="ea-form-row" data-break-case data-minimum="{{ minimum }}">
+                <div class="{{ 'col-4'|ea_ui_classes }} h-4" data-break-first></div>
+                <div class="{{ ('field-form_row d-none d-' ~ breakpoint ~ '-flex flex-' ~ breakpoint ~ '-fill custom-row')|ea_ui_classes('row') }}" data-break-item></div>
+                <div class="{{ 'col-4'|ea_ui_classes }} h-4" data-break-second></div>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    <div class="ea-form-row" data-testid="equal-row">
+        <div class="{{ 'col'|ea_ui_classes }} h-4"></div>
+        <div class="{{ 'col'|ea_ui_classes }} h-4"></div>
+    </div>
+    <div class="ea-form-row" data-testid="auto-row">
+        <div class="{{ 'col-auto'|ea_ui_classes }} h-4">{{ 'Auto'|trans }}</div>
+        <div class="{{ 'col'|ea_ui_classes }} h-4"></div>
+    </div>
+    <div class="ea-form-row" data-testid="wrap-row">
+        <div class="{{ 'col-6'|ea_ui_classes }} h-4"></div>
+        <div class="{{ 'col-7'|ea_ui_classes }} h-4"></div>
+    </div>
+    <div class="ea-form-row" data-testid="offset-reset-row">
+        <div class="{{ 'col-3 offset-3 offset-md-0 custom-layout-marker'|ea_ui_classes }} h-4" data-custom="{{ custom_value }}"></div>
+    </div>
+    <div class="ea-form-row" data-testid="default-width-row">
+        {% for field in default_fields %}
+            <div class="{{ (field.columns ?? field.defaultColumns)|ea_ui_classes }} h-4" data-default-field></div>
+            {% if field.columns is null %}<div class="{{ 'flex-fill'|ea_ui_classes('row') }}" data-default-break></div>{% endif %}
+        {% endfor %}
+    </div>
+    <div class="ea-form-row" data-testid="explicit-width-row">
+        {% for field in explicit_fields %}
+            <div class="{{ (field.columns ?? field.defaultColumns)|ea_ui_classes }} h-4" data-explicit-field></div>
+            {% if field.columns is null %}<div class="{{ 'flex-fill'|ea_ui_classes('row') }}" data-explicit-break></div>{% endif %}
+        {% endfor %}
+    </div>
+    <div class="ea-form-row">
+        <div class="form-column {{ column.cssClass|ea_ui_classes }}" data-testid="vertical-column">
+            <div class="{{ inside_field.columns|ea_ui_classes }} h-4" data-testid="inside-numeric"></div>
+            <div class="{{ 'col'|ea_ui_classes }} h-4" data-testid="inside-equal"></div>
+            <div class="{{ 'col-auto'|ea_ui_classes }} h-4" data-testid="inside-auto">{{ 'Auto'|trans }}</div>
+            <div class="{{ 'col-md'|ea_ui_classes }} h-4" data-testid="inside-responsive-equal"></div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

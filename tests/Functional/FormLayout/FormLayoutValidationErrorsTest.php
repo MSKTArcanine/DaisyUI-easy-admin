@@ -211,7 +211,7 @@ class FormLayoutValidationErrorsTest extends AbstractCrudTestCase
         // the collapsed "Status Settings" fieldset should have the error badge
         $statusFieldset = $crawler->filter('.form-fieldset:contains("Status Settings")');
         static::assertGreaterThan(0, $statusFieldset->count(), 'Status Settings fieldset should be present');
-        static::assertCount(1, $statusFieldset->filter('.badge-danger'), 'Collapsed fieldset with errors should show an error badge');
+        static::assertCount(1, $statusFieldset->filter('[data-ea-error-count]'), 'Collapsed fieldset with errors should show an error badge');
     }
 
     public function testCollapsedFieldsetAutoExpandsOnValidationErrors(): void
@@ -262,7 +262,7 @@ class FormLayoutValidationErrorsTest extends AbstractCrudTestCase
 
         // the "Metadata" fieldset (no errors) should NOT have an error badge
         $metadataFieldset = $crawler->filter('.form-fieldset:contains("Metadata")');
-        static::assertCount(0, $metadataFieldset->filter('.badge-danger'), 'Fieldset without errors should not show an error badge');
+        static::assertCount(0, $metadataFieldset->filter('[data-ea-error-count]'), 'Fieldset without errors should not show an error badge');
     }
 
     public function testFieldsetErrorBadgeShowsCorrectCount(): void
@@ -285,7 +285,7 @@ class FormLayoutValidationErrorsTest extends AbstractCrudTestCase
         static::assertTrue(422 === $statusCode || 200 === $statusCode, 'Form should be re-displayed with validation errors');
 
         $statusFieldset = $crawler->filter('.form-fieldset:contains("Status Settings")');
-        $badge = $statusFieldset->filter('.badge-danger');
+        $badge = $statusFieldset->filter('[data-ea-error-count]');
         static::assertCount(1, $badge, 'Should have exactly one error badge');
         static::assertSame('1', trim($badge->text()), 'Error badge should show count of 1');
     }

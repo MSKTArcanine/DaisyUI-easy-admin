@@ -1,8 +1,9 @@
 # Bootstrap coupling and rendering inventory
 
 Baseline: `bd0fb8448a41f69b3493c5bea84f793e46fe7c21`, 2026-11-09.
-Every row is **audited, not migrated**. Stage numbers indicate planned work;
-the verification column is an acceptance requirement, not a passing result.
+The original matrix records the **audited baseline**. Stage numbers indicate
+planned work; implementation status and verified evidence are recorded in the
+stage addenda. The matrix's verification column is an acceptance requirement.
 Paths are relative to this repository unless stated otherwise. The source
 catalog below assigns every shipped Twig/JS/CSS source file to a surface.
 
@@ -489,3 +490,14 @@ failure; their actual usage must be checked if a downstream app selects them.
 - `@EasyAdmin/crud/field/raw.html.twig`
 - `@EasyAdmin/crud/field/smallint.html.twig`
 - `@EasyAdmin/crud/field/toggle.html.twig`
+
+## Prompt 4 implementation boundary
+
+| Inventory rows | Implemented paths | Evidence and remaining work |
+| --- | --- | --- |
+| T06/P03/P05 | `templates/components/{Button,Badge,Alert,Switch,Pagination}.html.twig`, `assets/css/ui/primitives.css` | Existing interfaces and render tests retained; daisyUI semantic roles, caller precedence, native/prefixed attrs, escaping, method override and slots verified. Keep independent Icon/Flag implementations; complete remaining field/widget styling in Prompt 8. |
+| T06/J02/J10 | `templates/components/{ActionMenu,Modal,Tabs}*`, `assets/js/ui/interactions.js`, `assets/css/ui/interactions.css`, `assets/js/tabs.js` | Native dialog/menu/tab composition, keyboard/focus, canceled/confirmed form requests, hash/history and repeated initialization. No Bootstrap dependency in isolated fixtures. Shell, CRUD and form-specific interactions remain assigned to Prompts 5-7. |
+| P01/P02 | `src/Twig/PresentationExtension.php`, `config/services.php`, `assets/css/ui/layout.css` | Bounded legacy presentation adapter; all supported widths/offsets and exact breakpoints. Wire into real form/detail renderers with their associated migration in Prompts 6-7. No builder/DTO meaning changes. |
+| J01/J02/J05/J11 | `assets/js/app.js`, `assets/js/page-layout.js`, `assets/js/form.js`, error-counter attributes in `templates/crud/form_theme.html.twig` | Reuse native foundation; remove duplicate Bootstrap menu handlers, retain early layout preferences, update filter target lookup and independent error-counter hook. Keep form processing, URL sanitizer and action payload logic intact. |
+| Temporary staged support | `assets/css/migration-components.css`, `assets/css/migration-dialog.css`, legacy attribute bridge in `assets/js/ui/interactions.js` | Loaded only by remaining legacy pages; no daisyUI stylesheet is mixed with Bootstrap. Remove at final cutover. |
+| Isolated proof | `tests/Browser/Controller/{PresentationLayoutController,PrimitivesController}.php`, `tests/Browser/templates/browser/ui_{layout,primitives,primitives_override}.html.twig`, `tests/Browser/{layout,primitives}.spec.js`, `tests/Unit/Twig/PresentationExtensionTest.php`, `tests/Functional/Component/` | Deterministic real component rendering, measured geometry, request/CSRF/keyboard/override evidence. Retain meaningful tests while replacing temporary fixture pages at acceptance. |

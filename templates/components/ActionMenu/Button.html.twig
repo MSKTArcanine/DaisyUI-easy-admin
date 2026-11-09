@@ -1,14 +1,15 @@
 {% props
-    ## bool If true, the caret displayed by Bootstrap next to the dropdown toggle is hidden.
+    ## bool If true, the caret displayed next to the menu toggle is hidden.
     withoutDropdownToggleMarker = false,
 %}
+{% set attributes = attributes.only().defaults(attributes.all|ea_ui_attrs) %}
 
 {% set css_class = html_classes(
     'dropdown-toggle',
     {'dropdown-toggle-hidden-marker': withoutDropdownToggleMarker},
 ) %}
 
-<a {{ attributes.defaults({class: css_class, href: '#', role: 'button', 'data-bs-toggle': 'dropdown', 'aria-haspopup': 'true', 'aria-expanded': 'false'}) }}>
+<a {{ attributes.defaults({class: css_class, href: '#', role: 'button', 'data-ea-toggle': 'dropdown', 'aria-haspopup': 'true', 'aria-expanded': 'false'}) }}>
     {## The contents of the button that opens the menu (e.g. a label or an icon). -#}
     <twig:block name="content"></twig:block>
 </a>

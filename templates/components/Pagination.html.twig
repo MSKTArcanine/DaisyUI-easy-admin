@@ -1,4 +1,6 @@
-<div {{ attributes.defaults({class: this.defaultCssClass()}) }}>
+{% set caller_classes = attributes.render('class')|default('') %}
+{% set ui_attributes = attributes.only().defaults(ea_ui_attrs(attributes.all)).without('class') %}
+<div {{ ui_attributes.defaults({class: ea_ui_classes(this.defaultCssClass() ~ ' flex flex-wrap items-center justify-between gap-4 ' ~ caller_classes, 'pagination')}) }}>
     <div class="list-pagination-counter">
         {%- if this.showResultsCount and this.numResults is not null -%}
             {## The text that displays the total number of results. -#}
@@ -11,10 +13,10 @@
     {% set has_next_page = this.hasNextPage %}
     {% if has_previous_page or has_next_page %}
         {% set current_page = this.getCurrentPage %}
-        {% set page_link_css_class = this.pageLinkCssClass %}
+        {% set page_link_css_class = ea_ui_classes(this.pageLinkCssClass, 'pagination') ~ (this.size == 'sm' ? ' btn-sm' : '') %}
         {% set is_rtl = this.isRtl %}
-        <nav class="{{ this.navCssClass }}" aria-label="{{ 'paginator.label'|trans({}, this.translationDomain) }}">
-            <ul class="{{ this.listCssClass }}">
+        <nav class="{{ ea_ui_classes(this.navCssClass, 'pagination') }}" aria-label="{{ 'paginator.label'|trans({}, this.translationDomain) }}">
+            <ul class="{{ ea_ui_classes(this.listCssClass, 'pagination') }} m-0 flex list-none items-center gap-1 p-0">
                 {% if this.showFirstLast %}
                     <li class="page-item page-item-first {{ not has_previous_page ? 'disabled' }}">
                         <a class="{{ page_link_css_class }}" href="{{ not has_previous_page ? '#' : this.urlForPage(1) }}"{% if not has_previous_page %} aria-disabled="true" tabindex="-1"{% endif %}>
@@ -31,7 +33,7 @@
                             <twig:ea:Icon name="internal:chevron-left" aria-hidden="true" />
                         {% endif %}
 
-                        <span class="{{ this.showPreviousNextLabels ? 'btn-label' : 'visually-hidden' }}">{## The label of the link to the previous page. ##}{% block previous_label %}{{ 'paginator.previous'|trans({}, this.translationDomain) }}{% endblock %}</span>
+                        <span class="{{ this.showPreviousNextLabels ? 'btn-label' : 'sr-only' }}">{## The label of the link to the previous page. ##}{% block previous_label %}{{ 'paginator.previous'|trans({}, this.translationDomain) }}{% endblock %}</span>
                     </a>
                 </li>
 
@@ -39,7 +41,7 @@
                     {% for page in this.pageRange %}
                         <li class="page-item {{ page == current_page ? 'active' }} {{ page is null ? 'disabled' }}">
                             {% if page is null %}
-                                <span class="{{ page_link_css_class }}"><span aria-hidden="true">&hellip;</span><span class="visually-hidden">{{ 'paginator.more_pages'|trans({}, this.translationDomain) }}</span></span>
+                                <span class="{{ page_link_css_class }}" aria-disabled="true"><span aria-hidden="true">&hellip;</span><span class="sr-only">{{ 'paginator.more_pages'|trans({}, this.translationDomain) }}</span></span>
                             {% else %}
                                 <a class="{{ page_link_css_class }}" href="{{ this.urlForPage(page) }}"{% if page == current_page %} aria-current="page"{% endif %}>{{ page }}</a>
                             {% endif %}
@@ -53,7 +55,7 @@
 
                 <li class="page-item page-item-next {{ not has_next_page ? 'disabled' }}">
                     <a class="{{ page_link_css_class }}" href="{{ not has_next_page ? '#' : this.urlForPage(this.nextPage) }}"{% if has_next_page %} rel="next"{% else %} aria-disabled="true" tabindex="-1"{% endif %}>
-                        <span class="{{ this.showPreviousNextLabels ? 'btn-label' : 'visually-hidden' }}">{## The label of the link to the next page. ##}{% block next_label %}{{ 'paginator.next'|trans({}, this.translationDomain) }}{% endblock %}</span>
+                        <span class="{{ this.showPreviousNextLabels ? 'btn-label' : 'sr-only' }}">{## The label of the link to the next page. ##}{% block next_label %}{{ 'paginator.next'|trans({}, this.translationDomain) }}{% endblock %}</span>
 
                         {% if is_rtl %}
                             <twig:ea:Icon name="internal:chevron-left" aria-hidden="true" />

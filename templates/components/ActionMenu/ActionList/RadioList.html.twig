@@ -8,10 +8,11 @@
     ## string|null Custom CSS class(es) added to the header of the group.
     labelClass = null,
 %}
+{% set attributes = attributes.only().defaults(attributes.all|ea_ui_attrs) %}
 
 {% if label %}<twig:ea:ActionMenu:ActionList:Header label="{{ label }}" class="{{ labelClass }}" />{% endif %}
 <li>
-    <ul role="group" {{ attributes.defaults({class: 'dropdown-selectable-group dropdown-radio-group'}) }}>
+    <ul role="group" data-ea-menu-group="radio" {{ attributes.defaults({class: 'dropdown-selectable-group dropdown-radio-group'}) }}>
         {## The options of the group (`<twig:ea:ActionMenu:ActionList:Item>` elements that pass a `selected` prop). -#}
         <twig:block name="content"></twig:block>
     </ul>

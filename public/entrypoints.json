@@ -2,20 +2,20 @@
   "entrypoints": {
     "app": {
       "css": [
-        "/app.da55b3f2.css"
+        "/app.92106cdf.css"
       ],
       "js": [
-        "/app.17d72443.js"
+        "/app.9639871d.js"
       ]
     },
     "form": {
       "js": [
-        "/form.e609da1d.js"
+        "/form.d033b8ed.js"
       ]
     },
     "page-layout": {
       "js": [
-        "/page-layout.e8c78f95.js"
+        "/page-layout.471faf4e.js"
       ]
     },
     "page-color-scheme": {

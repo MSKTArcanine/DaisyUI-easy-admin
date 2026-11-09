@@ -1,6 +1,6 @@
 {#
     Button that closes the Modal it lives in. Wraps `<twig:ea:Button>` and adds the
-    Bootstrap `data-bs-dismiss="modal"` attribute, so callers don't have to remember
+    native `data-ea-dismiss="modal"` attribute, so callers don't have to remember
     it. The label goes in the default slot; any other Button prop (color, variant,
     icon, size, …) is forwarded.
 
@@ -10,4 +10,4 @@
     ## string The `type` attribute of the button.
     type = 'button',
 %}
-<twig:ea:Button type="{{ type }}" data-bs-dismiss="modal" {{ ...attributes }}>{{ block(outerBlocks.content) }}</twig:ea:Button>
+<twig:ea:Button type="{{ type }}" data-ea-dismiss="modal" data-ea-dialog-result="cancel" {{ ...attributes }}>{{ block(outerBlocks.content) }}</twig:ea:Button>

@@ -11,16 +11,16 @@ use Symfony\Component\DomCrawler\Crawler;
  */
 class PaginationTest extends AbstractFieldFunctionalTestCase
 {
-    private function renderPagination(string $template): Crawler
+    private function renderPagination(string $template, array $context = []): Crawler
     {
-        return new Crawler(static::getContainer()->get('twig')->createTemplate($template)->render());
+        return new Crawler(static::getContainer()->get('twig')->createTemplate($template)->render($context));
     }
 
     public function testDefaultRendering(): void
     {
         $crawler = $this->renderPagination('<twig:ea:Pagination currentPage="3" totalItems="100" pageSize="10" urlPattern="?page={page}" />');
 
-        // same DOM structure and CSS classes as the legacy crud/paginator.html.twig template
+        // preserve the existing structural hooks used by paginator overrides
         $this->assertCount(1, $crawler->filter('div.list-pagination'));
         $this->assertCount(1, $crawler->filter('div.list-pagination > div.list-pagination-counter'));
         $this->assertCount(1, $crawler->filter('div.list-pagination > nav.pager.list-pagination-paginator > ul.pagination'));
@@ -78,7 +78,7 @@ class PaginationTest extends AbstractFieldFunctionalTestCase
         $gaps = $crawler->filter('li.page-item.disabled span.page-link');
         $this->assertCount(2, $gaps);
         $this->assertSame('…', $gaps->first()->filter('[aria-hidden="true"]')->text());
-        $this->assertSame('More pages', $gaps->first()->filter('.visually-hidden')->text());
+        $this->assertSame('More pages', $gaps->first()->filter('.sr-only')->text());
     }
 
     public function testCounterIsEmptyWhenResultsCountIsDisabled(): void
@@ -130,8 +130,8 @@ class PaginationTest extends AbstractFieldFunctionalTestCase
         $crawler = $this->renderPagination('<twig:ea:Pagination currentPage="3" lastPage="10" urlPattern="?page={page}" :showPreviousNextLabels="false" />');
 
         $this->assertCount(0, $crawler->filter('li.page-item-previous .btn-label'));
-        $this->assertSame('Previous', $crawler->filter('li.page-item-previous .visually-hidden')->text());
-        $this->assertSame('Next', $crawler->filter('li.page-item-next .visually-hidden')->text());
+        $this->assertSame('Previous', $crawler->filter('li.page-item-previous .sr-only')->text());
+        $this->assertSame('Next', $crawler->filter('li.page-item-next .sr-only')->text());
     }
 
     public function testSmallSizeAndRadius(): void
@@ -140,6 +140,8 @@ class PaginationTest extends AbstractFieldFunctionalTestCase
 
         $this->assertCount(1, $crawler->filter('ul.pagination.pagination-sm'));
         $this->assertCount(0, $crawler->filter('a.page-link:not(.ea-rounded-full)'));
+        $this->assertCount(0, $crawler->filter('a.page-link:not(.btn-sm)'));
+        $this->assertSame('page', $crawler->filter('a[aria-current]')->attr('aria-current'));
     }
 
     public function testPreviousLabelBlockOverride(): void
@@ -165,5 +167,20 @@ class PaginationTest extends AbstractFieldFunctionalTestCase
 
         $this->assertCount(0, $crawler->filter('nav'));
         $this->assertSame('5', $crawler->filter('.list-pagination-counter strong')->text());
+    }
+
+    public function testCounterBlockAndCallerAttributesArePreserved(): void
+    {
+        $crawler = $this->renderPagination(<<<'TWIG'
+            <twig:ea:Pagination currentPage="3" totalItems="100" pageSize="10" urlPattern="{{ url_pattern }}" role="region" aria-label="Category results" data-note="{{ note }}"><twig:block name="counter"><strong>Custom count</strong></twig:block></twig:ea:Pagination>
+            TWIG, ['url_pattern' => '?page={page}&sort=name', 'note' => '<script>"quoted"</script>']);
+        $root = $crawler->filter('div.list-pagination');
+
+        self::assertSame('region', $root->attr('role'));
+        self::assertSame('Category results', $root->attr('aria-label'));
+        self::assertSame('<script>"quoted"</script>', $root->attr('data-note'));
+        self::assertSame('Custom count', $crawler->filter('.list-pagination-counter strong')->text());
+        self::assertSame('?page=4&sort=name', $crawler->filter('a[rel="next"]')->attr('href'));
+        self::assertCount(0, $crawler->filter('script'));
     }
 }

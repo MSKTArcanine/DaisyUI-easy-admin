@@ -1,8 +1,9 @@
 # Rendering boundary and target architecture
 
-Status: Prompt 1 design decisions, 2026-11-09. These are implementation targets,
-not claims that a build or rendering migration has passed. Source evidence is
-in [baseline.md](baseline.md) and [inventory.md](inventory.md).
+Status: Prompt 1 design decisions with implementation addenda through Prompt 4,
+2026-11-09. The initial decisions are targets; the stage addenda and reports
+identify verified results. Source evidence is in [baseline.md](baseline.md)
+and [inventory.md](inventory.md).
 
 ## D1. Preserve backend and configuration contracts
 
@@ -330,3 +331,56 @@ use explicit blocks for the new forEach-return rule; their calls and effects
 are unchanged. Legacy specificity/important-style advisories remain visible
 warnings, alongside existing JS advisories. No unsafe automatic fixes were
 applied. Production assets were regenerated using the normal build.
+
+## D13. Adapt existing components at the render boundary
+
+Prompt 4 keeps the existing `ea` TwigComponent system, PHP props, option enums,
+public computed methods, template paths and slots. An internal, explicitly
+registered `src/Twig/PresentationExtension.php` translates bounded presentation
+values through `ea_ui_classes` and `ea_ui_attrs`. It does not mutate a builder,
+DTO, form value, action URL, CSRF token or backend configuration.
+
+Class mapping is contextual: buttons, badges and alerts map legacy semantic
+roles to daisyUI roles; layout maps supported column/offset tokens. Caller
+classes and unknown custom tokens survive. Recognized conflicting color/style/
+size tokens resolve in caller order, so a caller override does not depend on
+stylesheet rule order. Native and prefixed component attributes continue through
+TwigComponent's escaping and attribute-merging implementation. Attribute mapping
+is restricted to UI triggers/targets/dismissal; action metadata remains intact.
+The used `ComponentAttributes::all()`, `only()`, `without()`, `defaults()` and
+`render()` methods also exist in the allowed
+[TwigComponent 2.32 baseline](https://github.com/symfony/ux-twig-component/blob/v2.32.0/src/ComponentAttributes.php).
+Current execution uses TwigComponent 3.7; the older dependency matrix still
+requires installation verification.
+
+The layout adapter preserves the configured twelve-column meaning, including
+base/sm/md/lg/xl/xxl widths, equal/auto columns, offsets and explicit row breaks.
+Its media queries use **576/768/992/1200/1400px**. It does not redefine Tailwind's
+breakpoints. Numeric `FieldTrait::setColumns()` and `FormField::addColumn()`
+currently produce `col-md-N`; those public outputs and their 768px activation
+remain unchanged. Default field widths and explicit field widths retain their
+different wrapping behavior. Widths also apply inside vertical form columns;
+logical margins preserve RTL offsets. Generated row-break triples are mapped
+as a unit.
+
+This is a narrow configuration adapter, not a general Bootstrap stylesheet.
+Bootstrap order, gutter, display and arbitrary component utility classes outside
+the documented contexts are not recreated. Unknown tokens remain in HTML for
+application CSS. Consumers using such tokens must provide equivalent Tailwind
+utilities or custom CSS. Unsupported/malformed column tokens are preserved,
+not silently interpreted as another width. Final consumer guidance is required
+in Prompt 9.
+
+`assets/js/ui/interactions.js` provides native dialogs, menus and tabs behind
+independent `data-ea-*` hooks. It preserves keyboard navigation, Escape and focus
+restoration without a frontend framework. The existing tab hash/history and
+edit/detail URL behavior stays in `assets/js/tabs.js`. The old Bootstrap menu
+handlers in `page-layout.js` are removed with this replacement to avoid duplicate
+handlers; the file retains its early layout-preference initialization.
+
+During staged development, a narrow bridge recognizes legacy UI attributes on
+migrated elements. The isolated `assets/css/migration-{components,dialog}.css`
+files let existing Bootstrap pages use the migrated primitives and native
+dialog. Neither loads daisyUI into a Bootstrap page. Remove these temporary
+compatibility stylesheets and obsolete runtime
+bridges at final cutover after all product emitters are migrated.

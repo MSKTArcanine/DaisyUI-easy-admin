@@ -128,3 +128,27 @@ minimum supported engine versions remain separate verification work. The
 consuming package installation/AssetMapper build is established in later
 stages. Record these limits in `docs/ui-migration/coverage.md` and close them in
 their assigned migration stages.
+
+## Isolated component and layout proof
+
+Build the local CSS/production map, then run the focused component checks:
+
+```bash
+make build-ui-assets
+EASYADMIN_BROWSER_ALL_ENGINES=1 yarn test:browser build.spec.js layout.spec.js primitives.spec.js
+```
+
+`/ui-preview` and `/ui-neutral` prove development/production delivery and the
+omitted Preflight reset. `/ui-layout` measures the actual twelve-column and
+legacy breakpoint meanings without JavaScript or Bootstrap. `/ui-primitives`
+uses the existing Twig components and a local AssetMapper module to verify
+native dialogs, menus and tabs. Its confirmation form performs a real
+CSRF-protected POST; canceling or rejecting invalid data must not send it.
+`/ui-primitives/override` exercises child Twig blocks alongside component slots.
+
+These isolated documents load the new stylesheet only. The ordinary `/admin`
+application still loads its legacy stylesheet at this stage, with temporary
+component/dialog compatibility CSS and the new native interactions. Remove
+that compatibility CSS and adapt temporary preview routes at final cutover;
+retain the behavioral and distribution checks. Do not capture later rendering
+into the original `references/` directory.

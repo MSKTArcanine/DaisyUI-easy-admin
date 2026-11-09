@@ -1,7 +1,6 @@
 {#
-    Button that opens a Modal. Wraps `<twig:ea:Button>` and adds the Bootstrap
-    attributes needed to open the target modal, so callers don't have to remember
-    `data-bs-toggle`/`data-bs-target`. The label goes in the default slot; any other
+    Button that opens a Modal. Wraps `<twig:ea:Button>` and adds the native interaction
+    attributes needed to open the target dialog. The label goes in the default slot; any other
     Button prop (color, variant, icon, size, …) is forwarded.
 
     Usage: <twig:ea:Modal:Trigger target="#my-modal" color="primary">Open</twig:ea:Modal:Trigger>
@@ -12,4 +11,4 @@
     ## string The `type` attribute of the button.
     type = 'button',
 %}
-<twig:ea:Button type="{{ type }}" data-bs-toggle="modal" data-bs-target="{{ target }}" {{ ...attributes }}>{{ block(outerBlocks.content) }}</twig:ea:Button>
+<twig:ea:Button type="{{ type }}" data-ea-toggle="modal" data-ea-target="{{ target }}" {{ ...attributes }}>{{ block(outerBlocks.content) }}</twig:ea:Button>

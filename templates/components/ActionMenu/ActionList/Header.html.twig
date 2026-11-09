@@ -8,10 +8,11 @@
     ## array Extra HTML attributes for the `<li>` element.
     htmlAttributes = {},
 %}
+{% set attributes = attributes.only().defaults(attributes.all|ea_ui_attrs) %}
 
 {% set has_label = label is ea_is_not_empty %}
 {% if has_label or icon is not empty %}
-    <li {{ attributes.defaults({class: 'dropdown-header'}|merge(htmlAttributes)) }}>
+    <li {{ attributes.defaults({class: 'dropdown-header'}|merge(htmlAttributes|ea_ui_attrs)) }}>
         {%- if icon %}<twig:ea:Icon {{ ...attributes.nested('icon').defaults({name: icon}) }} /> {% endif -%}
         {%- if has_label -%}<span {{ attributes.nested('label') }}>{{ renderLabelRaw ? label|raw : label }}</span>{%- endif -%}
     </li>

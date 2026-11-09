@@ -1,10 +1,16 @@
+{% set caller_classes = attributes.render('class')|default('') %}
+{% set ui_attributes = attributes.only().defaults(ea_ui_attrs(attributes.all)).without('class') %}
+{% set button_classes = ea_ui_classes(this.defaultCssClass() ~ ' ' ~ caller_classes, 'button') %}
+
 {# the inner content is the same for all button elements: leading icon + label + trailing icon #}
 {% set button_content %}
     {%- if this.icon and not this.withTrailingIcon -%}
         <twig:ea:Icon name="{{ this.icon }}" class="btn-icon" />
     {%- endif -%}
     {%- if block('content') is defined and block('content') is not empty -%}
-        <span {{- attributes.nested('label').defaults({class: 'btn-label'}) }}>{{ block('content') }}</span>
+        {% set label_attributes = attributes.nested('label') %}
+        {% set label_classes = ea_ui_classes('btn-label ' ~ (label_attributes.render('class')|default(''))) %}
+        <span {{- label_attributes.without('class').defaults({class: label_classes}) }}>{{ block('content') }}</span>
     {%- endif -%}
     {%- if this.icon and this.withTrailingIcon -%}
         <twig:ea:Icon name="{{ this.icon }}" class="btn-icon btn-icon-trailing" />
@@ -12,16 +18,16 @@
 {% endset %}
 
 {% if this.htmlElement.isLink %}
-    {% set link_defaults = {class: this.defaultCssClass(), role: 'button'} %}
+    {% set link_defaults = {class: button_classes, role: 'button'} %}
     {% if this.inactive %}
         {% set link_defaults = link_defaults|merge({'aria-disabled': 'true', tabindex: '-1'}) %}
     {% elseif this.href %}
         {% set link_defaults = link_defaults|merge({href: this.href}) %}
     {% endif %}
 
-    <a {{- attributes.defaults(link_defaults) }}>{{ button_content }}</a>
+    <a {{- ui_attributes.defaults(link_defaults) }}>{{ button_content }}</a>
 {% else %}
-    {% set button_defaults = {class: this.defaultCssClass(), type: this.type.value} %}
+    {% set button_defaults = {class: button_classes, type: this.type.value} %}
     {% if this.name %}{% set button_defaults = button_defaults|merge({name: this.name}) %}{% endif %}
     {% if this.value is not null %}{% set button_defaults = button_defaults|merge({value: this.value}) %}{% endif %}
     {% if this.inactive %}{% set button_defaults = button_defaults|merge({disabled: true}) %}{% endif %}
@@ -34,9 +40,9 @@
                 <input type="hidden" name="_method" value="{{ this.method }}">
             {% endif %}
 
-            <button {{- attributes.defaults(button_defaults) }}>{{ button_content }}</button>
+            <button {{- ui_attributes.defaults(button_defaults) }}>{{ button_content }}</button>
         </form>
     {% else %}
-        <button {{- attributes.defaults(button_defaults) }}>{{ button_content }}</button>
+        <button {{- ui_attributes.defaults(button_defaults) }}>{{ button_content }}</button>
     {% endif %}
 {% endif %}

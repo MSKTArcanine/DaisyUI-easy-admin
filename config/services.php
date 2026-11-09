@@ -113,6 +113,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Flag;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Icon;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Pagination;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\PresentationExtension;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Reference;
@@ -184,6 +185,9 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, service('service_locator_'.AdminUrlGenerator::class))
             ->arg(1, service(AdminContextProvider::class))
             ->arg(2, service('translator'))
+            ->tag('twig.extension')
+
+        ->set(PresentationExtension::class)
             ->tag('twig.extension')
 
         ->set(EaCrudFormTypeExtension::class)

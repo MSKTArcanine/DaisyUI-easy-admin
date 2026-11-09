@@ -1,3 +1,4 @@
+{% set attributes = attributes.only().defaults(attributes.all|ea_ui_attrs) %}
 <li {{ attributes }}>
     {## Custom contents displayed as an item of the list. -#}
     <twig:block name="content"></twig:block>

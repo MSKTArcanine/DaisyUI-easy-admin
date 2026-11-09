@@ -14,14 +14,15 @@
     badge = null,
 %}
 
-<li {{ attributes.defaults({class: 'nav-item'}) }}>
-    <a class="{{ html_classes('nav-link', {active: active}) }}" href="#{{ paneId }}" id="tablist-{{ paneId }}" data-bs-toggle="tab">
+{% set attributes = attributes.only().defaults(attributes.all|ea_ui_attrs) %}
+<li {{ attributes.defaults({class: 'nav-item', role: 'presentation'}) }}>
+    <a class="{{ html_classes('tab nav-link', {active: active, 'tab-active': active}) }}" href="#{{ paneId }}" id="tablist-{{ paneId }}" data-ea-toggle="tab" role="tab" aria-controls="{{ paneId }}" aria-selected="{{ active ? 'true' : 'false' }}" tabindex="{{ active ? '0' : '-1' }}">
         {%- if icon %}<twig:ea:Icon name="{{ icon }}" class="tab-nav-item-icon" />{% endif -%}
         {# 'data-content' repeats the plain label text: CSS uses it to reserve the width
            of the semibold label, so tabs don't shift when the selected tab changes #}
         <span class="tab-nav-item-label" data-content="{{ label|striptags }}">{{- label|raw -}}</span>
         {%- if errorCount > 0 -%}
-            <twig:ea:Badge color="danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': errorCount}, 'EasyAdminBundle') }}">{{ errorCount }}</twig:ea:Badge>
+            <twig:ea:Badge color="danger" data-ea-error-count title="{{ 'form.tab.error_badge_title'|trans({'%count%': errorCount}, 'EasyAdminBundle') }}">{{ errorCount }}</twig:ea:Badge>
         {%- endif -%}
         {%- if badge is not null and badge.hasVisibleContent -%}
             {%- set badge_attributes = badge.htmlStyle ? badge.htmlAttributes|merge({style: badge.htmlStyle}) : badge.htmlAttributes -%}

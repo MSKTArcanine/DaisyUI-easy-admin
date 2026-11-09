@@ -195,10 +195,11 @@ class TabsTest extends AbstractCrudTestCase
     {
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
 
-        // check that tab links have data-bs-toggle="tab" for Bootstrap tab behavior
-        $tabLinks = $crawler->filter('.nav-tabs .nav-link');
+        // tab behavior is identified independently from visual classes
+        $tabLinks = $crawler->filter('[role="tablist"] [role="tab"]');
+        static::assertCount(4, $tabLinks);
         foreach ($tabLinks as $tabLink) {
-            static::assertSame('tab', $tabLink->getAttribute('data-bs-toggle'));
+            static::assertSame('tab', $tabLink->getAttribute('data-ea-toggle'));
         }
     }
 

@@ -1,4 +1,5 @@
-<div {{ attributes.defaults({class: 'dropdown-overlay'}) }}>
+{% set attributes = attributes.only().defaults(attributes.all|ea_ui_attrs) %}
+<div {{ attributes.defaults({class: 'dropdown-overlay', 'data-ea-menu-overlay': true}) }}>
     {## The contents of the floating panel (usually an `ActionList` sub-component). -#}
     <twig:block name="content"></twig:block>
 </div>

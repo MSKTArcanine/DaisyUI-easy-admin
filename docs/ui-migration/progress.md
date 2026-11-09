@@ -49,7 +49,7 @@ and commit each stage before switching to the next title-derived branch.
   required AssetMapper build/delivery, explicit sources/static class maps,
   theme/layer/Preflight decisions, application override discovery, isolated
   Bootstrap-free Twig fixture. Development and minified production proof.
-- [ ] **4. Establish reusable Twig rendering and presentation adapters.**
+- [x] **4. Establish reusable Twig rendering and presentation adapters.**
   T06/P01-P05/J02/J10: existing component props/slots/classes/attrs/escaping,
   semantic styles, dialog/menu foundations and bounded legacy layout adapter.
   Test columns/defaults/rows/offsets/exact breakpoints and template overrides.
@@ -237,3 +237,61 @@ fixture as a migrated EasyAdmin shell or forms.
 
 Next: **Prompt 4 - Establish reusable Twig rendering and presentation adapters**,
 on `establish_reusable_twig_rendering_and_presentation_adapters`.
+
+## Prompt 4 stage report
+
+Branch: `establish_reusable_twig_rendering_and_presentation_adapters`.
+
+Changes made:
+
+- Adapted existing Button, Badge, Alert, Switch, Pagination, ActionMenu, Modal
+  and Tabs templates to daisyUI, preserving PHP props/enums/computed APIs,
+  slots, native/prefixed attributes, translations and escaping.
+- Added one internal presentation extension and explicitly registered it.
+  Bounded semantic/layout mappings preserve caller overrides, supported legacy
+  widths/offsets/rows, exact breakpoint meanings and unrelated custom classes.
+- Added scoped primitive/layout/interaction CSS and native dialog/menu/tab
+  behavior. Kept tab hashes/history/action links, keyboard/focus behavior,
+  disabled actions, dialog validation/cancellation, supported dismissal and
+  auto-close policies, and idempotent dynamic initialization.
+- Removed competing Bootstrap menu handlers from `page-layout.js`; retained
+  early layout preferences. Updated filter-target lookup and error-counter
+  hooks without changing action payloads, URL sanitization or form processing.
+- Added isolated real-Twig layout/component routes and browser proof, plus
+  exhaustive mapping/rendering tests. Updated existing style-coupled assertions
+  while retaining their semantic, payload, label, dot-marker and error checks.
+- Isolated temporary legacy-only CSS/attribute bridging for the remaining
+  Bootstrap pages. No document loads Bootstrap and daisyUI styles together.
+  Regenerated distributed assets using the normal build and manifest fixer.
+
+Validation results (details in `reports/stage-4-components.json`):
+
+| Command/check | Result |
+| --- | --- |
+| `make tests` | Passed: 4140 tests, 12145 assertions |
+| Focused mapping rerun after additional dismissal-policy assertions | Passed: 221 tests, 248 assertions |
+| Focused all-engine build/layout/native-component proof | Passed: 57/57, no skipped/retried cases |
+| `EASYADMIN_BROWSER_ALL_ENGINES=1 make tests-browser` | 129 passed, 3 unchanged DirtyForm baseline failures, 0 skipped/retried |
+| Layout measurements | Every span/offset at ten boundary widths; default/explicit wrapping, rows, RTL and vertical fields passed on all engines |
+| `make build-assets`, `make build-ui-assets`, production CSS proof | Passed; new CSS 155298 bytes; existing empty-public-path warning retained |
+| `yarn ci`, PHPStan, PHP CS Fixer | Passed; 1023 PHP files checked; existing legacy lint warnings remain visible |
+| Product and fixture Twig lint | Passed: 190 and 10 templates |
+| RST docs, local Markdown links, manifest targets, whitespace | Passed |
+| Independent source review | Fixed initial active-tab, disabled-link, menu focus/auto-close/positioning, selector-target and dialog-submission findings |
+
+Unresolved issues and boundaries:
+
+- The retained canceled-submit/unsaved-navigation failure remains assigned to
+  Prompt 7. No new regression failure remains from this stage.
+- The new layout adapter is proven in isolation; wire it into the real detail
+  and form renderers alongside their migrations in Prompts 6-7.
+- Shell, CRUD-specific interactions, complete form inheritance and independent
+  widgets remain assigned to Prompts 5-8. This stage does not claim those pages
+  are Bootstrap-free. Remove all isolated compatibility scaffolding in Prompt 10.
+- Exact minimum browser versions and the lower PHP/Symfony dependency matrix
+  still require separate verification; current three-engine results do not
+  constitute a minimum-version test. Consumer installation remains Prompt 9.
+
+Next: **Prompt 5 - Migrate the application shell**, on
+`migrate_the_application_shell`. Continue the authorized sequence through
+Prompt 10.

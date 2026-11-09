@@ -43,7 +43,7 @@ class Form {
                         // '.tab-nav-item-badge' are the custom badges configured for tabs, not error counters
                         document
                             .querySelectorAll(
-                                '.form-tabs-tablist .nav-item .badge-danger.badge:not(.tab-nav-item-badge), .form-fieldset-title-content .badge-danger.badge'
+                                '[data-ea-error-count], .form-tabs-tablist .nav-item .badge-danger.badge:not(.tab-nav-item-badge), .form-fieldset-title-content .badge-danger.badge'
                             )
                             .forEach((badge) => {
                                 badge.parentElement.removeChild(badge);
@@ -75,6 +75,7 @@ class Form {
                                         } else {
                                             const newErrorBadge = document.createElement('span');
                                             newErrorBadge.classList.add('badge', 'badge-danger');
+                                            newErrorBadge.setAttribute('data-ea-error-count', '');
                                             newErrorBadge.textContent = '1';
                                             navLinkTab.appendChild(newErrorBadge);
                                         }
@@ -95,6 +96,7 @@ class Form {
                                         } else {
                                             const newErrorBadge = document.createElement('span');
                                             newErrorBadge.classList.add('badge', 'badge-danger');
+                                            newErrorBadge.setAttribute('data-ea-error-count', '');
                                             newErrorBadge.textContent = '1';
                                             fieldsetTitleContent.appendChild(newErrorBadge);
                                         }

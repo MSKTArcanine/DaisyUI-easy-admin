@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Component;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\Size;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Rendering tests for the <twig:ea:Badge> component.
@@ -19,7 +20,7 @@ class BadgeTest extends AbstractFieldFunctionalTestCase
     public function testDefaultColorAndVariant(): void
     {
         self::assertSame(
-            '<span class="badge badge-secondary">Hello</span>',
+            '<span class="badge badge-neutral badge-soft">Hello</span>',
             $this->renderBadge('<twig:ea:Badge>Hello</twig:ea:Badge>')
         );
     }
@@ -27,7 +28,7 @@ class BadgeTest extends AbstractFieldFunctionalTestCase
     public function testNamedColor(): void
     {
         self::assertSame(
-            '<span class="badge badge-success">OK</span>',
+            '<span class="badge badge-success badge-soft">OK</span>',
             $this->renderBadge('<twig:ea:Badge color="success">OK</twig:ea:Badge>')
         );
     }
@@ -35,7 +36,7 @@ class BadgeTest extends AbstractFieldFunctionalTestCase
     public function testUnknownColorIsRenderedAsCustomColor(): void
     {
         self::assertSame(
-            '<span class="badge badge-currency">EUR</span>',
+            '<span class="badge badge-soft badge-currency">EUR</span>',
             $this->renderBadge('<twig:ea:Badge color="currency">EUR</twig:ea:Badge>')
         );
     }
@@ -43,7 +44,7 @@ class BadgeTest extends AbstractFieldFunctionalTestCase
     public function testEmptyColorRendersNoColorClass(): void
     {
         self::assertSame(
-            '<span class="badge">x</span>',
+            '<span class="badge badge-soft">x</span>',
             $this->renderBadge('<twig:ea:Badge color="">x</twig:ea:Badge>')
         );
     }
@@ -51,7 +52,7 @@ class BadgeTest extends AbstractFieldFunctionalTestCase
     public function testSmallSize(): void
     {
         self::assertSame(
-            '<span class="badge badge-secondary badge-sm">x</span>',
+            '<span class="badge badge-neutral badge-soft badge-sm">x</span>',
             $this->renderBadge('<twig:ea:Badge size="sm">x</twig:ea:Badge>')
         );
     }
@@ -59,7 +60,7 @@ class BadgeTest extends AbstractFieldFunctionalTestCase
     public function testSmallSizeAsEnum(): void
     {
         self::assertSame(
-            '<span class="badge badge-secondary badge-sm">x</span>',
+            '<span class="badge badge-neutral badge-soft badge-sm">x</span>',
             $this->renderBadge('<twig:ea:Badge size="{{ size }}">x</twig:ea:Badge>', ['size' => Size::Small])
         );
     }
@@ -67,7 +68,7 @@ class BadgeTest extends AbstractFieldFunctionalTestCase
     public function testRadiusFull(): void
     {
         self::assertSame(
-            '<span class="badge badge-secondary ea-rounded-full">x</span>',
+            '<span class="badge badge-neutral badge-soft ea-rounded-full">x</span>',
             $this->renderBadge('<twig:ea:Badge radius="full">x</twig:ea:Badge>')
         );
     }
@@ -80,7 +81,7 @@ class BadgeTest extends AbstractFieldFunctionalTestCase
     public function testExtraAttributesAreMerged(): void
     {
         self::assertSame(
-            '<span class="badge badge-info" title="hello">x</span>',
+            '<span class="badge badge-info badge-soft" title="hello">x</span>',
             $this->renderBadge('<twig:ea:Badge color="info" title="hello">x</twig:ea:Badge>')
         );
     }
@@ -88,7 +89,7 @@ class BadgeTest extends AbstractFieldFunctionalTestCase
     public function testCustomClassIsMergedWithDefaults(): void
     {
         self::assertSame(
-            '<span class="badge badge-info my-badge">x</span>',
+            '<span class="badge badge-info badge-soft my-badge">x</span>',
             $this->renderBadge('<twig:ea:Badge color="info" class="my-badge">x</twig:ea:Badge>')
         );
     }
@@ -112,7 +113,7 @@ class BadgeTest extends AbstractFieldFunctionalTestCase
     public function testVariant(): void
     {
         self::assertSame(
-            '<span class="badge badge-danger badge-variant-solid">x</span>',
+            '<span class="badge badge-error">x</span>',
             $this->renderBadge('<twig:ea:Badge color="danger" variant="solid">x</twig:ea:Badge>')
         );
     }
@@ -120,7 +121,7 @@ class BadgeTest extends AbstractFieldFunctionalTestCase
     public function testDotVariantRendersTheDotBeforeTheLabel(): void
     {
         self::assertSame(
-            '<span class="badge badge-success badge-variant-dot"><span class="badge-dot" aria-hidden="true"></span>Online</span>',
+            '<span class="badge badge-success badge-outline"><span class="badge-dot" aria-hidden="true"></span>Online</span>',
             $this->renderBadge('<twig:ea:Badge color="success" variant="dot">Online</twig:ea:Badge>')
         );
     }
@@ -141,7 +142,7 @@ class BadgeTest extends AbstractFieldFunctionalTestCase
     public function testLargeSize(): void
     {
         self::assertSame(
-            '<span class="badge badge-secondary badge-lg">x</span>',
+            '<span class="badge badge-neutral badge-soft badge-lg">x</span>',
             $this->renderBadge('<twig:ea:Badge size="lg">x</twig:ea:Badge>')
         );
     }
@@ -149,7 +150,7 @@ class BadgeTest extends AbstractFieldFunctionalTestCase
     public function testStyleAttributeIsRenderedAsHtmlAttribute(): void
     {
         self::assertSame(
-            '<span class="badge" style="background: red">x</span>',
+            '<span class="badge badge-soft" style="background: red">x</span>',
             $this->renderBadge('<twig:ea:Badge color="" style="background: red">x</twig:ea:Badge>')
         );
     }
@@ -158,8 +159,29 @@ class BadgeTest extends AbstractFieldFunctionalTestCase
     public function testColorInVariantStillWorks(): void
     {
         self::assertSame(
-            '<span class="badge badge-success">OK</span>',
+            '<span class="badge badge-success badge-soft">OK</span>',
             $this->renderBadge('<twig:ea:Badge variant="success">OK</twig:ea:Badge>')
         );
+    }
+
+    public function testCallerClassesOverrideColorStyleAndSize(): void
+    {
+        $crawler = new Crawler($this->renderBadge('<twig:ea:Badge color="danger" variant="solid" size="sm" class="badge-success badge-outline badge-lg custom-badge">Ready</twig:ea:Badge>'));
+
+        self::assertCount(1, $crawler->filter('span.badge.badge-success.badge-outline.badge-lg.custom-badge'));
+        self::assertCount(0, $crawler->filter('.badge-error, .badge-sm, .badge-soft'));
+        self::assertSame('Ready', $crawler->filter('span.badge')->text());
+    }
+
+    public function testContentSlotAndCallerAttributesRemainEscaped(): void
+    {
+        $crawler = new Crawler($this->renderBadge(<<<'TWIG'
+            <twig:ea:Badge role="status" data-message="{{ message }}"><twig:block name="content"><strong>{{ label }}</strong></twig:block></twig:ea:Badge>
+            TWIG, ['message' => '<script>"quoted"</script>', 'label' => '<img src=x onerror=alert(1)>']));
+
+        self::assertSame('status', $crawler->filter('.badge')->attr('role'));
+        self::assertSame('<script>"quoted"</script>', $crawler->filter('.badge')->attr('data-message'));
+        self::assertSame('<img src=x onerror=alert(1)>', $crawler->filter('.badge strong')->text());
+        self::assertCount(0, $crawler->filter('img, script'));
     }
 }

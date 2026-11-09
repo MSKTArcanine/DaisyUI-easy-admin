@@ -1,6 +1,5 @@
 {#
-This component creates modal windows using Bootstrap modal JavaScript logic
-but with a modern look and feel inspired by libraries like shadcn.
+This component renders a native dialog with the shared EasyAdmin interactions.
 
 To open/close the modal use the `<twig:ea:Modal:Trigger target="#id">` and
 `<twig:ea:Modal:Close>` helpers.
@@ -13,7 +12,7 @@ Usage examples:
     <twig:ea:Modal id="delete-modal" title="Delete this item?" description="This action cannot be undone.">
         <twig:block name="footer">
             <twig:ea:Modal:Close>Cancel</twig:ea:Modal:Close>
-            <twig:ea:Button color="danger" variant="solid" data-bs-dismiss="modal">Delete</twig:ea:Button>
+            <twig:ea:Button color="danger" variant="solid" data-ea-dismiss="modal">Delete</twig:ea:Button>
         </twig:block>
     </twig:ea:Modal>
 
@@ -29,7 +28,7 @@ Usage examples:
     <twig:ea:Modal id="warn-modal" topIcon="internal:circle-exclamation" title="Are you sure?">
         <twig:block name="footer">
             <twig:ea:Modal:Close>No</twig:ea:Modal:Close>
-            <twig:ea:Button color="primary" data-bs-dismiss="modal">Yes</twig:ea:Button>
+            <twig:ea:Button color="primary" data-ea-dismiss="modal">Yes</twig:ea:Button>
         </twig:block>
     </twig:ea:Modal>
 #}
@@ -53,24 +52,27 @@ Usage examples:
     footerClass = '',
 %}
 {% set modalIcon = topIcon ?? icon %}
-<div {{ attributes.defaults({class: 'modal fade', tabindex: '-1'}) }}>
-    <div class="modal-dialog {{ size ? 'modal-dialog-' ~ size }}">
-        <div class="modal-content">
+{% set attributes = attributes.only().defaults(attributes.all|ea_ui_attrs) %}
+{% set dialog_id = attributes.all.id|default(ea_uid('ea-dialog-')) %}
+{% set dialog_attrs = {id: dialog_id, class: html_classes('modal ea-dialog', size ? 'ea-dialog-' ~ size), tabindex: '-1', 'data-ea-dialog': true} %}
+{% if title %}{% set dialog_attrs = dialog_attrs|merge({'aria-labelledby': dialog_id ~ '-title'}) %}{% endif %}
+{% if description %}{% set dialog_attrs = dialog_attrs|merge({'aria-describedby': dialog_id ~ '-description'}) %}{% endif %}
+<dialog {{ attributes.defaults(dialog_attrs) }}>
+    <div class="modal-box modal-content ea-dialog-panel" data-ea-dialog-panel>
             {% if block('header') is not empty %}
-                <div class="modal-header {{ headerClass }}">{## The contents of the modal header; the header is not rendered when this block is empty. ##}{% block header %}{% endblock %}</div>
+                <div class="modal-header {{ ea_ui_classes(headerClass) }}">{## The contents of the modal header; the header is not rendered when this block is empty. ##}{% block header %}{% endblock %}</div>
             {% endif %}
-            <div class="modal-body {{ bodyClass }} {{ modalIcon ? (topIcon ? 'modal-body--top-icon' : 'modal-body--icon') }}">
+            <div class="modal-body {{ ea_ui_classes(bodyClass) }} {{ modalIcon ? (topIcon ? 'modal-body--top-icon' : 'modal-body--icon') }}">
                 {% if modalIcon %}<span class="modal-icon {{ topIcon ? 'modal-icon--top' }}"><twig:ea:Icon name="{{ modalIcon }}" /></span>{% endif %}
                 <div class="modal-body-content">
-                    {% if title %}<h4>{{ title|raw }}</h4>{% endif %}
-                    {% if description %}<p>{{ description|raw }}</p>{% endif %}
+                    {% if title %}<h4 id="{{ dialog_id }}-title">{{ title|raw }}</h4>{% endif %}
+                    {% if description %}<p id="{{ dialog_id }}-description">{{ description|raw }}</p>{% endif %}
                     {## Custom contents displayed below the title and the description. -#}
                     {% block body %}{% endblock %}
                 </div>
             </div>
             {% if block('footer') is not empty %}
-                <div class="modal-footer {{ footerClass }}">{## The contents of the modal footer (usually its buttons); the footer is not rendered when this block is empty. ##}{% block footer %}{% endblock %}</div>
+                <div class="modal-footer {{ ea_ui_classes(footerClass) }}">{## The contents of the modal footer (usually its buttons); the footer is not rendered when this block is empty. ##}{% block footer %}{% endblock %}</div>
             {% endif %}
-        </div>
     </div>
-</div>
+</dialog>

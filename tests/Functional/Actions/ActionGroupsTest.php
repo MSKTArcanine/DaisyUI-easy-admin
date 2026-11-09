@@ -394,7 +394,7 @@ class ActionGroupsTest extends AbstractCrudTestCase
 
         $regularDropdown = $regularDropdowns->first();
         static::assertCount(1, $regularDropdown->filter('button.dropdown-toggle'));
-        static::assertSame('dropdown', $regularDropdown->filter('button.dropdown-toggle')->attr('data-bs-toggle'));
+        static::assertSame('dropdown', $regularDropdown->filter('button.dropdown-toggle')->attr('data-ea-toggle'));
         static::assertSame('true', $regularDropdown->filter('button.dropdown-toggle')->attr('aria-haspopup'));
         static::assertCount(1, $regularDropdown->filter('.dropdown-menu'));
 

@@ -1,4 +1,6 @@
-<div {{ attributes.defaults({class: this.defaultCssClass(), role: 'alert'}) }}>
+{% set caller_classes = attributes.render('class')|default('') %}
+{% set ui_attributes = attributes.only().defaults(ea_ui_attrs(attributes.all)).without('class') %}
+<div {{ ui_attributes.defaults({class: ea_ui_classes(this.defaultCssClass() ~ ' alert-soft ' ~ caller_classes, 'alert'), role: 'alert', 'data-ea-alert': true}) }}>
     {% if this.icon %}
         <twig:ea:Icon name="{{ this.icon }}" class="alert-icon" />
     {% endif %}
@@ -21,6 +23,6 @@
     {% endif %}
 
     {% if this.withDismissButton %}
-        <twig:ea:Button type="button" variant="ghost" size="sm" icon="internal:xmark" class="btn-close" data-bs-dismiss="alert" aria-label="Close" />
+        <twig:ea:Button type="button" variant="ghost" size="sm" icon="internal:xmark" class="ea-alert-dismiss" data-ea-dismiss="alert" aria-label="{{ 'action.close'|trans(domain: 'EasyAdminBundle') }}" />
     {% endif %}
 </div>

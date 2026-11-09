@@ -1,0 +1,181 @@
+@layer utilities {
+    [data-ea-ui] .icon {
+        align-items: center;
+        block-size: 1em;
+        display: inline-flex;
+        flex-shrink: 0;
+        inline-size: 1em;
+        justify-content: center;
+        vertical-align: middle;
+    }
+
+    [data-ea-ui] .icon > svg {
+        block-size: 100%;
+        inline-size: 100%;
+        max-block-size: 1em;
+        max-inline-size: 1em;
+    }
+
+    [data-ea-ui] .icon.ea-icon-sm {
+        font-size: var(--icon-size-sm, 1rem);
+    }
+
+    [data-ea-ui] .icon.ea-icon-md {
+        font-size: var(--icon-size-md, 1.25rem);
+    }
+
+    [data-ea-ui] .icon.ea-icon-lg {
+        font-size: var(--icon-size-lg, 1.5rem);
+    }
+
+    [data-ea-ui] .btn > .icon,
+    [data-ea-ui] .badge > .icon {
+        block-size: 1em;
+        flex-shrink: 0;
+        inline-size: 1em;
+    }
+
+    [data-ea-ui] .btn-label {
+        min-inline-size: 0;
+    }
+
+    [data-ea-ui] .badge-dot {
+        background-color: currentColor;
+        block-size: var(--ea-sp-3, calc(var(--spacing) * 1.5));
+        border-radius: var(--border-radius-full, 50rem);
+        flex-shrink: 0;
+        inline-size: var(--ea-sp-3, calc(var(--spacing) * 1.5));
+    }
+
+    [data-ea-ui] .badge-dismiss {
+        align-items: center;
+        background: transparent;
+        border: 0;
+        border-radius: var(--border-radius-sm, calc(var(--radius-field) / 2));
+        color: inherit;
+        cursor: pointer;
+        display: inline-flex;
+        justify-content: center;
+        padding: 0;
+    }
+
+    [data-ea-ui] .badge-dismiss > .icon {
+        block-size: 1em;
+        inline-size: 1em;
+    }
+
+    [data-ea-ui] .badge-dismiss:focus-visible {
+        outline: var(--ea-focus-ring-width, 3px) solid currentColor;
+        outline-offset: 2px;
+    }
+
+    [data-ea-ui] .ea-badge-light {
+        --badge-color: var(--color-base-200);
+        --badge-fg: var(--color-base-content);
+    }
+
+    [data-ea-ui] .ea-badge-dark {
+        --badge-color: var(--color-neutral);
+        --badge-fg: var(--color-neutral-content);
+    }
+
+    [data-ea-ui] .ea-badge-light.badge-soft,
+    [data-ea-ui] .ea-badge-light.badge-outline,
+    [data-ea-ui] .ea-badge-dark.badge-soft,
+    [data-ea-ui] .ea-badge-dark.badge-outline {
+        color: var(--color-base-content);
+    }
+
+    [data-ea-ui] [data-ea-alert] {
+        align-items: flex-start;
+        display: flex;
+    }
+
+    [data-ea-ui] .alert-content {
+        flex: 1;
+        min-inline-size: 0;
+    }
+
+    [data-ea-ui] .alert-icon {
+        block-size: 1.5em;
+        flex-shrink: 0;
+        inline-size: 1.5em;
+    }
+
+    [data-ea-ui] .alert-title {
+        font-weight: var(--font-weight-semibold, 600);
+    }
+
+    [data-ea-ui] .alert-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--ea-sp-4, calc(var(--spacing) * 2));
+        margin-block-start: var(--ea-sp-4, calc(var(--spacing) * 2));
+    }
+
+    [data-ea-ui] .ea-alert-dismiss {
+        flex-shrink: 0;
+    }
+
+    [data-ea-ui] .ea-alert-primary {
+        --alert-color: var(--color-primary);
+    }
+
+    [data-ea-ui] .ea-alert-secondary {
+        --alert-color: var(--color-secondary);
+    }
+
+    [data-ea-ui] .ea-alert-light {
+        --alert-color: var(--color-base-200);
+        color: var(--color-base-content);
+    }
+
+    [data-ea-ui] .ea-alert-dark {
+        --alert-color: var(--color-neutral);
+        color: var(--color-base-content);
+    }
+
+    [data-ea-ui] .ea-switch {
+        align-items: center;
+        display: inline-flex;
+        vertical-align: middle;
+    }
+
+    [data-ea-ui] .ea-switch-track {
+        display: none;
+    }
+
+    [data-ea-ui] .page-link[aria-current='page'] {
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
+        color: var(--color-primary-content);
+    }
+
+    [data-ea-ui] .page-link[aria-disabled='true'] {
+        cursor: default;
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}
+
+@layer utilities {
+    [data-ea-ui] .ea-rounded-none {
+        border-radius: var(--border-radius-none, 0);
+    }
+
+    [data-ea-ui] .ea-rounded-sm {
+        border-radius: var(--border-radius-sm, calc(var(--radius-field) / 2));
+    }
+
+    [data-ea-ui] .ea-rounded-md {
+        border-radius: var(--border-radius, var(--radius-field));
+    }
+
+    [data-ea-ui] .ea-rounded-lg {
+        border-radius: var(--border-radius-lg, calc(var(--radius-field) * 2));
+    }
+
+    [data-ea-ui] .ea-rounded-full {
+        border-radius: var(--border-radius-full, 50rem);
+    }
+}

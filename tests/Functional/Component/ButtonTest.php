@@ -4,22 +4,23 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Component;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Rendering tests for the <twig:ea:Button> component.
  */
 class ButtonTest extends AbstractFieldFunctionalTestCase
 {
-    private function renderButton(string $template): string
+    private function renderButton(string $template, array $context = []): string
     {
-        return trim(static::getContainer()->get('twig')->createTemplate($template)->render());
+        return trim(static::getContainer()->get('twig')->createTemplate($template)->render($context));
     }
 
     public function testDefaultButton(): void
     {
         $html = $this->renderButton('<twig:ea:Button>Save</twig:ea:Button>');
 
-        self::assertStringContainsString('<button class="btn btn-secondary btn-outline" type="submit">', $html);
+        self::assertStringContainsString('<button class="btn btn-neutral btn-outline" type="submit">', $html);
         self::assertStringContainsString('<span class="btn-label">Save</span>', $html);
         self::assertStringContainsString('</button>', $html);
     }
@@ -28,14 +29,14 @@ class ButtonTest extends AbstractFieldFunctionalTestCase
     {
         $html = $this->renderButton('<twig:ea:Button color="danger" variant="solid" class="my-button">x</twig:ea:Button>');
 
-        self::assertStringContainsString('class="btn btn-danger btn-solid my-button"', $html);
+        self::assertStringContainsString('class="btn btn-error my-button"', $html);
     }
 
     public function testLinkWithHref(): void
     {
         $html = $this->renderButton('<twig:ea:Button htmlElement="a" href="https://example.com">Go</twig:ea:Button>');
 
-        self::assertStringContainsString('<a class="btn btn-secondary btn-outline" role="button" href="https://example.com">', $html);
+        self::assertStringContainsString('<a class="btn btn-neutral btn-outline" role="button" href="https://example.com">', $html);
         self::assertStringContainsString('</a>', $html);
     }
 
@@ -54,7 +55,7 @@ class ButtonTest extends AbstractFieldFunctionalTestCase
         self::assertStringNotContainsString('href', $html);
         self::assertStringContainsString('aria-disabled="true"', $html);
         self::assertStringContainsString('tabindex="-1"', $html);
-        self::assertStringContainsString('class="btn btn-secondary btn-outline disabled"', $html);
+        self::assertStringContainsString('class="btn btn-neutral btn-outline btn-disabled"', $html);
     }
 
     public function testInactiveButtonIsDisabled(): void
@@ -62,7 +63,7 @@ class ButtonTest extends AbstractFieldFunctionalTestCase
         $html = $this->renderButton('<twig:ea:Button inactive>x</twig:ea:Button>');
 
         self::assertStringContainsString('disabled', $html);
-        self::assertStringContainsString('class="btn btn-secondary btn-outline disabled"', $html);
+        self::assertStringContainsString('class="btn btn-neutral btn-outline btn-disabled"', $html);
     }
 
     public function testFormButton(): void
@@ -74,7 +75,7 @@ class ButtonTest extends AbstractFieldFunctionalTestCase
         self::assertStringContainsString('<form action="/delete" method="POST" class="action-delete">', $html);
         self::assertSame(1, substr_count($html, 'id="delete-button"'));
         self::assertSame(1, substr_count($html, 'data-foo="bar"'));
-        self::assertStringContainsString('<button class="btn btn-secondary btn-outline action-delete"', $html);
+        self::assertStringContainsString('<button class="btn btn-neutral btn-outline action-delete"', $html);
         self::assertStringNotContainsString('_method', $html);
     }
 
@@ -116,7 +117,7 @@ class ButtonTest extends AbstractFieldFunctionalTestCase
     {
         $html = $this->renderButton('<twig:ea:Button label:class="visually-hidden">x</twig:ea:Button>');
 
-        self::assertStringContainsString('<span class="btn-label visually-hidden">x</span>', $html);
+        self::assertStringContainsString('<span class="btn-label sr-only">x</span>', $html);
         self::assertStringNotContainsString('label:class', $html);
     }
 
@@ -162,6 +163,45 @@ class ButtonTest extends AbstractFieldFunctionalTestCase
             <twig:ea:Button htmlElement="{{ element }}" color="{{ color }}" variant="{{ variant }}" href="/foo">x</twig:ea:Button>
             TWIG);
 
-        self::assertStringContainsString('<a class="btn btn-danger btn-ghost" role="button" href="/foo">', $html);
+        self::assertStringContainsString('<a class="btn btn-error btn-ghost" role="button" href="/foo">', $html);
+    }
+
+    public function testCallerSemanticClassesOverrideTheConfiguredDefaults(): void
+    {
+        $crawler = new Crawler($this->renderButton('<twig:ea:Button color="danger" variant="solid" size="sm" class="btn-info btn-outline btn-lg custom-action">Save</twig:ea:Button>'));
+
+        self::assertCount(1, $crawler->filter('button.btn.btn-info.btn-outline.btn-lg.custom-action'));
+        self::assertCount(0, $crawler->filter('.btn-error, .btn-sm, .btn-solid'));
+        self::assertSame('Save', $crawler->filter('button')->text());
+    }
+
+    public function testBehaviorAttributesAreAdaptedWithoutDuplicatingOrChangingCallerValues(): void
+    {
+        $crawler = new Crawler($this->renderButton(<<<'TWIG'
+            <twig:ea:Button htmlElement="a" href="{{ help_url }}" role="link" data-bs-toggle="modal" data-bs-target="#legacy" data-ea-target="#caller" data-message="{{ message }}" label:data-help="safe">Help</twig:ea:Button>
+            TWIG, ['help_url' => '/help?section=actions&page=2', 'message' => '<script>"quoted"</script>']));
+        $link = $crawler->filter('a');
+
+        self::assertSame('link', $link->attr('role'));
+        self::assertSame('/help?section=actions&page=2', $link->attr('href'));
+        self::assertSame('modal', $link->attr('data-ea-toggle'));
+        self::assertSame('#caller', $link->attr('data-ea-target'));
+        self::assertNull($link->attr('data-bs-toggle'));
+        self::assertNull($link->attr('data-bs-target'));
+        self::assertSame('<script>"quoted"</script>', $link->attr('data-message'));
+        self::assertSame('safe', $link->filter('.btn-label')->attr('data-help'));
+        self::assertNull($link->attr('label:data-help'));
+        self::assertCount(0, $crawler->filter('script'));
+    }
+
+    public function testLabelSlotRemainsEscapedAndCanBeOverridden(): void
+    {
+        $html = $this->renderButton(<<<'TWIG'
+            <twig:ea:Button><twig:block name="content"><strong>{{ message }}</strong></twig:block></twig:ea:Button>
+            TWIG, ['message' => '<script>alert(1)</script>']);
+        $crawler = new Crawler($html);
+
+        self::assertSame('<script>alert(1)</script>', $crawler->filter('.btn-label strong')->text());
+        self::assertCount(0, $crawler->filter('script'));
     }
 }

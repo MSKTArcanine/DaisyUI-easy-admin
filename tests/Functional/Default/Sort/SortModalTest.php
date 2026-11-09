@@ -36,7 +36,7 @@ class SortModalTest extends AbstractCrudTestCase
         $this->client->request('GET', $this->generateIndexUrl());
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('.datagrid-sort.d-md-none button[data-bs-toggle="modal"][data-bs-target="#modal-sort"]');
+        $this->assertSelectorExists('.datagrid-sort.d-md-none button[data-ea-toggle="modal"][data-ea-target="#modal-sort"]');
         $this->assertSelectorTextSame('.datagrid-sort button .btn-label', 'Sort');
         $this->assertSelectorTextSame('#modal-sort .modal-body h4', 'Sort by');
     }

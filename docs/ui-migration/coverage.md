@@ -1,9 +1,10 @@
 # Behavioral coverage and verification plan
 
-Status: Prompt 2 behavioral baseline. The source-audit matrix below records
+Status: Behavioral baseline and migration evidence through Prompt 4. The
+source-audit matrix below records
 existing infrastructure and the coverage required during migration. Executed
-baseline results and remaining gaps are recorded after that matrix. Product
-rendering and backend code remain unchanged in this stage.
+baseline results and remaining gaps are recorded after that matrix. The
+Prompt 2 baseline predates product rendering changes.
 
 ## Existing coverage and required additions
 
@@ -226,3 +227,31 @@ behavioral failure is accepted. Both the existing Encore development/production
 builds and new Tailwind/AssetMapper builds pass; see
 `reports/stage-3-build.json`. The source-only component fixture does not prove
 real EasyAdmin templates migrated; that remains Prompts 4-8 work.
+
+## Prompt 4 focused coverage
+
+- `tests/Unit/Twig/PresentationExtensionTest.php` exhaustively covers every
+  supported width/offset/breakpoint, row pattern, contextual semantic role,
+  caller precedence and UI-attribute mapping. It also asserts that numeric
+  public setters still emit `col-md-N` and that default field columns remain
+  distinct from explicit columns. Unsupported tokens and unrelated action
+  metadata remain intact.
+- `tests/Browser/layout.spec.js` measures compiled styles without Bootstrap:
+  all spans/offsets across ten boundary widths, explicit packing/wrapping,
+  default row breaks, offset reset, RTL, numeric/equal/auto vertical fields,
+  semantic caller overrides and unlayered application CSS.
+- `tests/Browser/primitives.spec.js` exercises native dialogs, menu keyboard/
+  pointer behavior, editable menu content, auto-close modes, tabs/history/RTL,
+  dynamic initialization, alert dismissal and child-template/slot overrides.
+  Dialog opening/canceling must send no submission; confirmation verifies a
+  real CSRF-protected POST and exact submitted fields.
+- Existing component and consumer tests retain their payload, attribute,
+  escaping, label and override assertions. Assertions coupled to Bootstrap
+  classes/attributes are updated to the corresponding semantic classes or
+  behavior hooks, including error counters. Dot badges remain distinguishable
+  from ordinary outline badges through their inner marker.
+
+The existing DirtyForm cancellation regression remains in the normal suite for
+Prompt 7. Shell, CRUD-specific interactions, form inheritance and independent
+widget initialization still require their later-stage verification; the shared
+component proof does not claim those surfaces are complete.

@@ -13,8 +13,8 @@
             "!**/package.json",
             "!**/node_modules",
             "!**/var",
-            "!**/tests/Browser/results/**",
-            "!**/tests/Browser/public/assets-built/**",
+            "!**/tests/Browser/results",
+            "!**/tests/Browser/public/assets-built",
             "!**/.claude",
             "!**/assets/js/autocomplete.js",
             "!**/assets/js/field-collection.js",
@@ -64,7 +64,12 @@
             }
         },
         {
-            "includes": ["assets/css/ui-preview.css", "assets/css/ui/**"],
+            "includes": [
+                "assets/css/app.css",
+                "assets/css/ui-preview.css",
+                "assets/css/ui/**",
+                "assets/css/migration-*.css"
+            ],
             "css": {
                 "formatter": {
                     "quoteStyle": "single"

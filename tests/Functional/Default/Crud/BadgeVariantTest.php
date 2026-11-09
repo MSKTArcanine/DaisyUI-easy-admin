@@ -49,8 +49,10 @@ class BadgeVariantTest extends AbstractCrudTestCase
 
     private function assertBadgeVariants(Crawler $crawler): void
     {
-        $this->assertSame('badge badge-boolean-true badge-variant-dot', $crawler->filter('.field-boolean')->eq(0)->filter('.badge')->attr('class'));
-        $this->assertSame('badge badge-boolean-true badge-variant-outline', $crawler->filter('.field-boolean')->eq(1)->filter('.badge')->attr('class'));
-        $this->assertSame('badge badge-danger badge-variant-solid', $crawler->filter('.field-select .badge')->attr('class'));
+        $this->assertSame('badge badge-boolean-true badge-outline', $crawler->filter('.field-boolean')->eq(0)->filter('.badge')->attr('class'));
+        $this->assertCount(1, $crawler->filter('.field-boolean')->eq(0)->filter('.badge .badge-dot'));
+        $this->assertSame('badge badge-boolean-true badge-outline', $crawler->filter('.field-boolean')->eq(1)->filter('.badge')->attr('class'));
+        $this->assertCount(0, $crawler->filter('.field-boolean')->eq(1)->filter('.badge .badge-dot'));
+        $this->assertSame('badge badge-error', $crawler->filter('.field-select .badge')->attr('class'));
     }
 }

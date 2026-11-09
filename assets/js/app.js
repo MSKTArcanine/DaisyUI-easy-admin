@@ -5,6 +5,7 @@ import Mark from 'mark.js/src/vanilla';
 import Autocomplete from './autocomplete';
 import { sanitizeUrl, toggleVisibilityClasses } from './helpers';
 import { initTabs } from './tabs';
+import { initEasyAdminUI } from './ui/interactions';
 
 // Provide Bootstrap variable globally to allow custom backend pages to use it
 window.bootstrap = bootstrap;
@@ -24,6 +25,8 @@ class App {
     constructor() {
         this.#sidebarWidthLocalStorageKey = 'ea/sidebar/width';
         this.#contentWidthLocalStorageKey = 'ea/content/width';
+
+        initEasyAdminUI();
 
         this.#removeHashFormUrl();
         initTabs();
@@ -304,7 +307,9 @@ class App {
             return;
         }
 
-        const filterModal = document.querySelector(filterButton.getAttribute('data-bs-target'));
+        const filterModal = document.querySelector(
+            filterButton.getAttribute('data-ea-target') ?? filterButton.getAttribute('data-bs-target')
+        );
 
         // the filter URL is fetched and its response is injected into the page (see below),
         // so it must be same-origin to prevent loading attacker-controlled remote HTML

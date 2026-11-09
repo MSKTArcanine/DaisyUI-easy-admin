@@ -28,15 +28,22 @@
         'ea-switch-disabled': disabled,
     },
 ) %}
+{% set caller_classes = attributes.render('class')|default('') %}
+{% set ui_attributes = attributes.only().defaults(ea_ui_attrs(attributes.all)).without('class') %}
+{% set input_classes = ea_ui_classes(html_classes('ea-switch-input toggle',
+    size_value != 'md' ? 'ea-switch-' ~ size_value,
+    variant_value in ['success', 'warning', 'danger'] ? 'ea-switch-' ~ variant_value,
+    caller_classes,
+), 'switch') %}
+{% set input_defaults = {type: 'checkbox', role: 'switch', class: input_classes, value: value, autocomplete: 'off'} %}
+{% if id %}{% set input_defaults = input_defaults|merge({id: id}) %}{% endif %}
+{% if name %}{% set input_defaults = input_defaults|merge({name: name}) %}{% endif %}
+{% if checked %}{% set input_defaults = input_defaults|merge({checked: true}) %}{% endif %}
+{% if disabled %}{% set input_defaults = input_defaults|merge({disabled: true}) %}{% endif %}
+{% if required %}{% set input_defaults = input_defaults|merge({required: true}) %}{% endif %}
+{% if ariaLabel %}{% set input_defaults = input_defaults|merge({'aria-label': ariaLabel}) %}{% endif %}
 
 <span class="{{ css_class }}">
-    <input type="checkbox" role="switch" class="{{ html_classes('ea-switch-input', attributes.render('class')|default('')) }}"
-        {% if id %}id="{{ id }}"{% endif %}
-        {% if name %}name="{{ name }}"{% endif %}
-        value="{{ value }}"
-        {{ checked ? 'checked' }} {{ disabled ? 'disabled' }} {{ required ? 'required' }}
-        {% if ariaLabel %}aria-label="{{ ariaLabel }}"{% endif %}
-        autocomplete="off"
-        {{ attributes }}>
+    <input {{- ui_attributes.defaults(input_defaults) }}>
     <span class="ea-switch-track" aria-hidden="true"><span class="ea-switch-thumb"></span></span>
 </span>{#--#}

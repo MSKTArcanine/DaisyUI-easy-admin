@@ -8,7 +8,7 @@
 %}
 
 {% set submenu %}
-    <ul class="dropdown-menu">
+    <ul class="dropdown-menu menu bg-base-100 rounded-box shadow-md" data-ea-menu hidden>
         {% for subItem in group.items %}
             {% if subItem is iterable and subItem.type is defined %}
                 {% if subItem.type == 'divider' %}
@@ -21,7 +21,7 @@
                 <twig:ea:ActionMenu:ActionList:Item
                     class="{{ subItem.cssClass }} dropdown-item-variant-{{ subItem.color.value }}"
                     label="{{ subItem.label|trans }}" icon="{{ subItem.icon }}"
-                    htmlAttributes="{{ subItem.htmlAttributes|ea_html_attrs }}"
+                    htmlAttributes="{{ subItem.htmlAttributes|ea_html_attrs|ea_ui_attrs }}"
                     url="{{ subItem.linkUrl }}" renderLabelRaw="true"
                     renderAsForm="{{ subItem.isRenderedAsForm }}" />
             {% endif %}
@@ -32,24 +32,24 @@
 <li class="dropend dropdown-submenu">
     {% if group.hasMainAction and group.mainAction %}
         {# split dropdown: main action + submenu toggle. The submenu is rendered next to the toggle
-           (Bootstrap looks for it there) and it's placed next to the whole item, not next to the toggle #}
-        <div class="dropend d-flex position-relative">
+           (the interaction module locates it there) and it's placed next to the whole item, not next to the toggle #}
+        <div class="dropend d-flex position-relative flex relative">
             <twig:ea:ActionMenu:ActionList:Item
                 :wrapInListItem="false"
                 class="flex-grow-1 border-end-0 {{ group.mainAction.cssClass }}"
                 label="{{ group.mainAction.label is ea_is_not_empty ? group.mainAction.label|trans }}"
                 icon="{{ group.icon }}"
-                htmlAttributes="{{ group.mainAction.htmlAttributes|ea_html_attrs }}"
+                htmlAttributes="{{ group.mainAction.htmlAttributes|ea_html_attrs|ea_ui_attrs }}"
                 url="{{ group.mainAction.linkUrl }}"
                 renderAsForm="{{ group.mainAction.isRenderedAsForm }}" />
-            <a class="dropdown-toggle dropdown-toggle-split dropdown-item border-start-0" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" data-bs-reference="parent" aria-haspopup="true" aria-expanded="false" aria-label="{{ 'action.toggle_dropdown'|trans(domain: 'EasyAdminBundle') }}">
+            <a class="dropdown-toggle dropdown-toggle-split dropdown-item border-start-0" data-ea-menu-item data-ea-menu-split href="#" role="button" data-ea-toggle="dropdown" data-ea-auto-close="outside" data-ea-reference="parent" aria-haspopup="true" aria-expanded="false" aria-label="{{ 'action.toggle_dropdown'|trans(domain: 'EasyAdminBundle') }}">
                 <twig:ea:Icon name="internal:chevron-right" class="dropdown-submenu-chevron" />
             </a>
             {{ submenu }}
         </div>
     {% else %}
         {# regular submenu toggle #}
-        <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+        <a class="dropdown-item dropdown-toggle" data-ea-menu-item href="#" role="button" data-ea-toggle="dropdown" data-ea-auto-close="outside" aria-haspopup="true" aria-expanded="false">
             {% if group.icon %}
                 <twig:ea:Icon name="{{ group.icon }}" />
             {% endif %}

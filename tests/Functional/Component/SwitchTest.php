@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Component;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\Size;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
@@ -54,7 +55,7 @@ class SwitchTest extends AbstractFieldFunctionalTestCase
     {
         $html = $this->renderSwitch('<twig:ea:Switch class="custom" />');
 
-        self::assertMatchesRegularExpression('/<input[^>]+class="ea-switch-input custom"/', $html);
+        self::assertMatchesRegularExpression('/<input[^>]+class="ea-switch-input toggle custom"/', $html);
         self::assertStringContainsString('<span class="ea-switch">', $html);
     }
 
@@ -74,7 +75,56 @@ class SwitchTest extends AbstractFieldFunctionalTestCase
 
         $html = $this->renderCheckboxThroughFormTheme($form);
 
-        self::assertMatchesRegularExpression('/<input[^>]+class="ea-switch-input is-invalid"/', $html);
+        self::assertMatchesRegularExpression('/<input[^>]+class="ea-switch-input toggle is-invalid"/', $html);
+    }
+
+    public function testNativeInputStateAndBehaviorAttributesArePreserved(): void
+    {
+        $crawler = new Crawler($this->renderSwitch('<twig:ea:Switch id="active" name="category[active]" value="enabled" checked disabled required size="lg" variant="danger" ariaLabel="Active category" data-toggle-url="{{ toggle_url }}" />', ['toggle_url' => '/category/1?field=active&value=0']));
+        $input = $crawler->filter('input');
+
+        self::assertCount(1, $input);
+        self::assertSame('checkbox', $input->attr('type'));
+        self::assertSame('switch', $input->attr('role'));
+        self::assertSame('active', $input->attr('id'));
+        self::assertSame('category[active]', $input->attr('name'));
+        self::assertSame('enabled', $input->attr('value'));
+        self::assertNotNull($input->attr('checked'));
+        self::assertNotNull($input->attr('disabled'));
+        self::assertNotNull($input->attr('required'));
+        self::assertSame('Active category', $input->attr('aria-label'));
+        self::assertSame('/category/1?field=active&value=0', $input->attr('data-toggle-url'));
+        self::assertCount(1, $crawler->filter('input.toggle.toggle-lg.toggle-error'));
+    }
+
+    public function testCallerColorSizeRoleAndEscapedAttributesOverrideDefaults(): void
+    {
+        $crawler = new Crawler($this->renderSwitch(<<<'TWIG'
+            <twig:ea:Switch variant="danger" size="sm" role="checkbox" class="toggle-success toggle-lg custom-switch" data-note="{{ note }}" />
+            TWIG, ['note' => '<script>"quoted"</script>']));
+
+        self::assertCount(1, $crawler->filter('input.ea-switch-input.toggle.toggle-success.toggle-lg.custom-switch'));
+        self::assertCount(0, $crawler->filter('input.toggle-error, input.toggle-sm'));
+        self::assertSame('checkbox', $crawler->filter('input')->attr('role'));
+        self::assertSame('<script>"quoted"</script>', $crawler->filter('input')->attr('data-note'));
+        self::assertCount(0, $crawler->filter('script'));
+    }
+
+    public function testSymfonyCheckboxSubmissionPreservesBooleanValuesAndInputIdentity(): void
+    {
+        $checkedForm = $this->createSwitchForm();
+        $checkedForm->submit(['monoblock' => '1']);
+        $uncheckedForm = $this->createSwitchForm();
+        $uncheckedForm->submit([]);
+
+        self::assertTrue($checkedForm->isValid());
+        self::assertTrue($checkedForm->get('monoblock')->getData());
+        self::assertFalse($uncheckedForm->get('monoblock')->getData());
+        $input = (new Crawler($this->renderCheckboxThroughFormTheme($checkedForm)))->filter('input');
+        self::assertSame('device_monoblock', $input->attr('id'));
+        self::assertSame('device[monoblock]', $input->attr('name'));
+        self::assertSame('1', $input->attr('value'));
+        self::assertNotNull($input->attr('checked'));
     }
 
     private function createSwitchForm(): FormInterface

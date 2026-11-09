@@ -18,6 +18,7 @@
     ## bool Internal: if false, the `<li>` wrapper is not rendered, so the item can be embedded in custom markup (e.g. the split dropdown of ItemGroup).
     wrapInListItem = true,
 %}
+{% set attributes = attributes.only().defaults(attributes.all|ea_ui_attrs) %}
 
 {% set is_selectable = selected is not null %}
 {# `aria-checked` is the source of truth for the selected state; the legacy `active`
@@ -30,7 +31,7 @@
         <form action="{{ url }}" method="POST" {% if formId %}id="{{ formId }}"{% endif %}></form>
     {% endif %}
 
-    <a {{ attributes.defaults({class: item_class}|merge(htmlAttributes)) }}
+    <a {{ attributes.defaults({class: item_class, 'data-ea-menu-item': true}|merge(htmlAttributes|ea_ui_attrs)) }}
         {% if is_selectable %}aria-checked="{{ selected ? 'true' : 'false' }}"{% endif %}
         {% if renderAsForm %}
             href="#"

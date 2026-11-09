@@ -8,8 +8,9 @@
     translationDomain = 'messages',
 %}
 
+{% set attributes = attributes.only().defaults(attributes.all|ea_ui_attrs) %}
 <div {{ attributes.defaults({class: 'form-tabs-tablist'}) }}>
-    <ul class="nav nav-tabs">
+    <ul class="tabs tabs-border nav nav-tabs" role="tablist" data-ea-tab-list>
         {% if tabs is null %}
             {## Your own `<twig:ea:Tabs:Item>` elements (only rendered when `tabs` is null). -#}
             <twig:block name="content"></twig:block>

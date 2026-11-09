@@ -1,0 +1,89 @@
+/* Temporary styling for migrated primitives on the remaining legacy pages.
+   This file is loaded only with the legacy theme and is removed at cutover. */
+@layer ea.components {
+    .ea .sr-only {
+        position: absolute;
+        inline-size: 1px;
+        block-size: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+    }
+
+    .ea .btn-error {
+        --button-c-tone: var(--button-danger-tone);
+        --button-c-solid-color: var(--button-danger-solid-color);
+        --button-c-color: var(--button-danger-color);
+        --button-c-outline-color: var(--button-danger-outline-color);
+        --button-c-light-bg: var(--button-danger-light-bg);
+        --button-c-light-hover-bg: var(--button-danger-light-hover-bg);
+        --button-c-outline-border-color: var(--button-danger-outline-border-color);
+    }
+
+    .ea :is(.btn-error, .btn-neutral):not(.btn-outline, .btn-soft, .btn-ghost, .btn-link) {
+        --button-bg: var(--button-c-tone);
+        --button-color: var(--button-c-solid-color);
+        --button-hover-color: var(--button-c-solid-color);
+        --button-hover-bg: color-mix(in oklab, var(--button-c-tone) 88%, var(--body-bg));
+        --button-border-color: transparent;
+    }
+
+    .ea .btn-soft {
+        --button-bg: var(--button-c-light-bg);
+        --button-hover-bg: var(--button-c-light-hover-bg);
+        --button-color: var(--button-c-color);
+        --button-hover-color: var(--button-c-color);
+        --button-border-color: transparent;
+    }
+
+    .ea .btn-disabled {
+        opacity: var(--form-control-disabled-opacity, 0.5);
+        pointer-events: none;
+    }
+
+    .ea .badge-error {
+        --badge-tone: var(--badge-danger-tone);
+        --badge-color: var(--badge-danger-color);
+        --badge-solid-color: var(--badge-danger-solid-color);
+        --badge-outline-color: var(--badge-danger-outline-color);
+    }
+
+    .ea .badge-outline {
+        background-color: transparent;
+        color: var(--badge-outline-color);
+        box-shadow: inset 0 0 0 var(--border-width) var(--badge-outline-border-color);
+    }
+
+    .ea .alert-error {
+        --bs-alert-bg: var(--alert-danger-bg);
+        --bs-alert-border-color: var(--alert-danger-border-color);
+        --bs-alert-color: var(--alert-danger-color);
+    }
+
+    .ea .ea-alert-primary {
+        --bs-alert-bg: var(--alert-primary-bg);
+        --bs-alert-border-color: var(--alert-primary-border-color);
+        --bs-alert-color: var(--alert-primary-color);
+    }
+
+    .ea .ea-alert-secondary {
+        --bs-alert-bg: var(--alert-secondary-bg);
+        --bs-alert-border-color: var(--alert-secondary-border-color);
+        --bs-alert-color: var(--alert-secondary-color);
+    }
+
+    .ea .ea-alert-light {
+        --bs-alert-bg: var(--alert-light-bg);
+        --bs-alert-border-color: var(--alert-light-border-color);
+        --bs-alert-color: var(--alert-light-color);
+    }
+
+    .ea .ea-alert-dark {
+        --bs-alert-bg: var(--alert-dark-bg);
+        --bs-alert-border-color: var(--alert-dark-border-color);
+        --bs-alert-color: var(--alert-dark-color);
+    }
+}

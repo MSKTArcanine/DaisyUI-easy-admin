@@ -59,7 +59,7 @@ final class Kernel extends BaseKernel
             'test' => false,
             'session' => ['storage_factory_id' => 'session.storage.factory.native', 'save_path' => self::storageDir().'/sessions'],
             'asset_mapper' => [
-                'paths' => [\dirname(__DIR__, 2).'/assets/css' => 'easyadmin', __DIR__.'/public' => ''],
+                'paths' => [\dirname(__DIR__, 2).'/assets/css' => 'easyadmin', \dirname(__DIR__, 2).'/assets/js/ui' => 'easyadmin-ui', __DIR__.'/public' => ''],
                 'excluded_patterns' => [
                     '*/assets/css/app.css',
                     '*/assets/css/layers.css',

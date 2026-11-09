@@ -4,14 +4,15 @@
     ## 'start'|'end' The edge of the button that the menu is aligned to: 'start' opens the menu towards the end side (e.g. to the right) and 'end' towards the start side. If there's no room, the menu opens to the other side.
     align = 'start',
 %}
+{% set attributes = attributes.only().defaults(attributes.all|ea_ui_attrs) %}
 
 {% set css_class = html_classes(
-    'dropdown-menu',
+    'dropdown-menu menu bg-base-100 rounded-box shadow-md',
     'end' == align ? 'dropdown-menu-end',
     hasSubmenus ? 'dropdown-has-submenus',
 ) %}
 
-<ul {{ attributes.defaults({class: css_class}) }}>
+<ul {{ attributes.defaults({class: css_class, 'data-ea-menu': true, 'data-ea-align': align, hidden: true}) }}>
     {## The items of the list (`Item`, `ItemGroup`, `Header`, `Divider`, etc. sub-components). -#}
     <twig:block name="content"></twig:block>
 </ul>

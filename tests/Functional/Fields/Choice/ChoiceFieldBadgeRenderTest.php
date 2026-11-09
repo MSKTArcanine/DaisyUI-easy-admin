@@ -34,7 +34,7 @@ class ChoiceFieldBadgeRenderTest extends AbstractFieldFunctionalTestCase
             new TranslatableChoiceMessage(t('Published'), 'success'),
         ], true);
 
-        self::assertSame('<span class="badge badge-success">Published</span>', $html);
+        self::assertSame('<span class="badge badge-success badge-soft">Published</span>', $html);
     }
 
     public function testMultipleChoicesAreRenderedAsSeparateBadges(): void
@@ -45,7 +45,7 @@ class ChoiceFieldBadgeRenderTest extends AbstractFieldFunctionalTestCase
         ], true);
 
         self::assertSame(
-            '<span class="badge badge-secondary">Draft</span><span class="badge badge-warning">Archived</span>',
+            '<span class="badge badge-neutral badge-soft">Draft</span><span class="badge badge-warning badge-soft">Archived</span>',
             $html
         );
     }

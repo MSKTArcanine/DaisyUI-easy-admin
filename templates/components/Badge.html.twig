@@ -1,4 +1,6 @@
-<span {{- attributes.defaults({class: this.defaultCssClass()}) }}>
+{%- set caller_classes = attributes.render('class')|default('') -%}
+{%- set ui_attributes = attributes.only().defaults(ea_ui_attrs(attributes.all)).without('class') -%}
+<span {{- ui_attributes.defaults({class: ea_ui_classes(this.defaultCssClass() ~ ' ' ~ caller_classes, 'badge')}) }}>
     {%- if this.hasDot %}<span class="badge-dot" aria-hidden="true"></span>{% endif -%}
     {%- if this.icon %}<twig:ea:Icon name="{{ this.icon }}" />{% endif -%}
     {## The text of the badge. -#}

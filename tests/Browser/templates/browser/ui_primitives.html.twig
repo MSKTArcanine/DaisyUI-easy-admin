@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" dir="{{ direction }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="{{ asset('easyadmin/ui-preview.css') }}">
+    <title>{{ 'Shared rendering primitives'|trans }}</title>
+    {{ importmap('ui-interactions') }}
+</head>
+<body data-ea-ui data-theme="easyadmin-light">
+<main class="p-6">
+    <h1>{{ 'Shared rendering primitives'|trans }}</h1>
+    {% block fixture_header %}<p data-testid="fixture-header">{{ 'Parent template content'|trans }}</p>{% endblock %}
+    <form id="primitive-form" method="post" action="{{ path('browser_ui_primitives_submit') }}">
+        <input type="hidden" name="token" value="{{ csrf_token('primitive-form') }}">
+        <twig:ea:Modal:Trigger target="#primitive-dialog" id="open-dialog" class="caller-trigger" data-extra="{{ quoted_attribute }}" label:class="caller-label">{{ 'Open dialog'|trans }}</twig:ea:Modal:Trigger>
+    </form>
+    <twig:ea:Modal id="primitive-dialog" title="{{ 'Dialog title'|trans }}" description="{{ 'Dialog description'|trans }}" headerClass="caller-header" bodyClass="caller-body" footerClass="caller-footer" data-extra="{{ quoted_attribute }}">
+        <twig:block name="header"><p data-testid="dialog-header">{{ 'Custom dialog header'|trans }}</p></twig:block>
+        <twig:block name="body">
+            <p data-testid="dialog-body">{{ 'Custom dialog body'|trans }}</p>
+            <label for="dialog-value">{{ 'Dialog value'|trans }}</label>
+            <input id="dialog-value" name="value" form="primitive-form" value="Original value" class="input" required>
+        </twig:block>
+        <twig:block name="footer">
+            <twig:ea:Modal:Close id="cancel-dialog">{{ 'Cancel dialog'|trans }}</twig:ea:Modal:Close>
+            <twig:ea:Button type="submit" form="primitive-form" name="submit" value="confirmed" data-ea-dismiss="modal" id="confirm-dialog">{{ 'Confirm dialog'|trans }}</twig:ea:Button>
+        </twig:block>
+    </twig:ea:Modal>
+
+    <twig:ea:ActionMenu id="primitive-menu" class="caller-menu">
+        <twig:ea:ActionMenu:Button id="open-menu" data-extra="{{ quoted_attribute }}">{{ 'Open choices'|trans }}</twig:ea:ActionMenu:Button>
+        <twig:ea:ActionMenu:Overlay>
+            <twig:ea:ActionMenu:ActionList hasSubmenus id="choices">
+                <twig:ea:ActionMenu:ActionList:Item label="{{ 'First choice'|trans }}" url="/ui-primitives?selection=first" id="first-choice" class="caller-item" data-extra="{{ quoted_attribute }}" label:class="caller-item-label" />
+                <twig:ea:ActionMenu:ActionList:Item label="{{ 'Disabled choice'|trans }}" url="/ui-primitives?selection=disabled" aria-disabled="true" />
+                <twig:ea:ActionMenu:ActionList:ItemGroup group="{{ group }}" />
+                <twig:ea:ActionMenu:ActionList:CheckboxList label="{{ 'Options'|trans }}">
+                    <twig:ea:ActionMenu:ActionList:Item label="{{ 'Checked choice'|trans }}" url="#" selected="true" />
+                </twig:ea:ActionMenu:ActionList:CheckboxList>
+                <twig:ea:ActionMenu:ActionList:Item label="{{ unsafe_label }}" url="#" id="escaped-choice" />
+                <twig:ea:ActionMenu:ActionList:Content>
+                    <form method="get" action="/ui-primitives">
+                        <label for="menu-input">{{ 'Menu input'|trans }}</label>
+                        <input id="menu-input" name="menu_input" class="input">
+                    </form>
+                </twig:ea:ActionMenu:ActionList:Content>
+            </twig:ea:ActionMenu:ActionList>
+        </twig:ea:ActionMenu:Overlay>
+    </twig:ea:ActionMenu>
+
+    <twig:ea:Tabs id="primitive-tabs">
+        <twig:ea:Tabs:Item paneId="pane-first" label="{{ 'First panel'|trans }}" active="{{ app.request.query.get('active') != 'second' }}" />
+        <twig:ea:Tabs:Item paneId="pane-second" label="{{ 'Second panel'|trans }}" active="{{ app.request.query.get('active') == 'second' }}" errorCount="2" />
+    </twig:ea:Tabs>
+    <div class="tab-content">
+        <section id="pane-first" class="tab-pane active">{{ 'First panel content'|trans }}</section>
+        <section id="pane-second" class="tab-pane">{{ 'Second panel content'|trans }}</section>
+    </div>
+    <a href="/ui-primitives?destination=edit" data-action-name="edit" id="tab-edit-link">{{ 'Edit link'|trans }}</a>
+
+    <twig:ea:Alert withDismissButton id="dismissible-alert">{{ 'Dismissible fixture alert'|trans }}</twig:ea:Alert>
+    <button type="button" id="outside-control" class="fixed bottom-4 right-4">{{ 'Outside control'|trans }}</button>
+</main>
+</body>
+</html>

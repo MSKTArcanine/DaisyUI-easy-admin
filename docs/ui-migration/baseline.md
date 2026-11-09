@@ -227,3 +227,24 @@ bundle was regenerated through the existing manifest fixer after compatible
 lint-format changes; hashes in the immutable source-baseline section above
 remain historical. Current build evidence is in
 [stage-3-build.json](reports/stage-3-build.json).
+
+## Prompt 4 component baseline
+
+The stage starts from `e684af9be` on
+`establish_reusable_twig_rendering_and_presentation_adapters`. Compiler,
+framework, package-manager and widget versions remain unchanged. The public
+component classes, option enums, builders and DTO outputs remain unchanged;
+`src/Twig/PresentationExtension.php` is the only new production PHP class,
+registered explicitly in `config/services.php` as an internal Twig extension.
+
+New isolated routes `/ui-layout` and `/ui-primitives` render actual existing
+Twig components with the compiled stylesheet and local AssetMapper module.
+They do not load `app.css`, `app.js` or Bootstrap. The normal app continues to
+use its legacy stylesheet during this stage. Its menus, tabs and dialogs use
+the new native interactions, with isolated temporary compatibility CSS. Remove
+that CSS and the legacy runtime bridge in Prompt 10.
+
+The layout proof measures every supported span and offset at 575/576,
+767/768, 991/992, 1199/1200 and 1399/1400px, including default wrapping,
+explicit widths, row breaks, offsets, RTL and widths inside vertical columns.
+The source baseline and original screenshots above remain immutable references.
