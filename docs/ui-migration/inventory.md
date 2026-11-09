@@ -11,6 +11,21 @@ tests, and original visual references without changing these rendering sources.
 See [coverage.md](coverage.md) and `reports/stage-2-browser.json`; one existing
 DirtyForm cancellation/unsaved-navigation failure remains visible for Prompt 7.
 
+Prompt 3 implements the build portion of B01-B04/C01-C02, with all rendering
+surfaces still pending. Added paths and evidence:
+
+| Path | Purpose | Verification |
+| --- | --- | --- |
+| `assets/css/ui-preview.css` | Isolated Tailwind/daisyUI entry, bounded discovery/variants and semantic themes | Local minified CSS parser proof and real computed styles on three engines |
+| `assets/css/ui/foundation.css` | Scoped defaults and spacing/font bridge; no Preflight | Neutral-page margin/heading/native button checks |
+| `tests/build/check-ui-css.js` | Production CSS/class/layer/isolation proof | `make check-ui-css` |
+| `tests/Browser/Controller/PreviewController.php` and `templates/browser/ui_*.html.twig` beneath `tests/Browser/` | Isolated build and neutral-style probes | `tests/Browser/build.spec.js`, development and production servers |
+| `tests/Browser/importmap.php`, `public/preview.js`, `Kernel.php`, `services.php` beneath `tests/Browser/` | Real AssetMapper/TailwindBundle/local ESM integration | Production manifest, module initialization, local network and token checks |
+
+The preview entry/routes are isolated migration scaffolding. Adapt or remove
+them at final cutover; retain meaningful build regressions against the final
+delivered assets. Main Bootstrap imports and dependency removal remain Prompt 10.
+
 ## Build, styles, delivery, and extension contracts
 
 | ID / stage | Location and current purpose | Replacement approach | Affected extension points | Required verification |

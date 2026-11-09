@@ -19,8 +19,9 @@
         border: var(--border-width) solid var(--form-input-border-color);
         border-radius: var(--form-control-border-radius);
         color: var(--form-input-text-color);
-        transition: border-color var(--ea-duration-fast) var(--ea-ease-out), background-color var(--ea-duration-fast)
-            var(--ea-ease-out);
+        transition:
+            border-color var(--ea-duration-fast) var(--ea-ease-out),
+            background-color var(--ea-duration-fast) var(--ea-ease-out);
     }
     .CodeMirror-wrap:focus-within {
         border-color: var(--form-input-focus-border-color);

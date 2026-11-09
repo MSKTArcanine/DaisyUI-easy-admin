@@ -59,7 +59,9 @@
 
 .ea-switch-input:checked ~ .ea-switch-track .ea-switch-thumb {
     background-color: var(--switch-checked-thumb-bg);
-    transform: translateX(calc(var(--ea-switch-width) - var(--ea-switch-thumb-size) - 2 * var(--ea-switch-thumb-inset)));
+    transform: translateX(
+        calc(var(--ea-switch-width) - var(--ea-switch-thumb-size) - 2 * var(--ea-switch-thumb-inset))
+    );
 }
 /* translateX() isn't direction-aware: in RTL the thumb starts on the right */
 .ea-switch-input:checked ~ .ea-switch-track .ea-switch-thumb:dir(rtl) {

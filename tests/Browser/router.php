@@ -12,6 +12,7 @@ if (!\in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1'], true)) {
 
 $path = rawurldecode(parse_url($_SERVER['REQUEST_URI'], \PHP_URL_PATH));
 $staticRoots = [
+    '/assets-built/' => __DIR__.'/public/assets-built',
     '/bundles/easyadmin/' => \dirname(__DIR__, 2).'/public',
     '/browser/' => __DIR__.'/public',
     '/uploads/' => Kernel::storageDir().'/uploads',

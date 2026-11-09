@@ -643,7 +643,9 @@ class App {
             return;
         }
 
-        clickableRows.forEach((row) => row.classList.add('ea-clickable-row'));
+        clickableRows.forEach((row) => {
+            row.classList.add('ea-clickable-row');
+        });
 
         const clickTrigger =
             clickableRows[0].closest('[data-default-action-trigger]')?.getAttribute('data-default-action-trigger') ||

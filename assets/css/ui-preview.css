@@ -1,0 +1,100 @@
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities) source(none);
+@import './ui/foundation.css';
+
+@source '../../templates';
+@source '../js';
+@source '../../src/Twig';
+@source '../../tests/Browser/templates';
+@source '../../tests/Browser/public';
+
+@source inline('btn btn-primary btn-secondary btn-success btn-warning btn-error btn-info btn-neutral btn-outline btn-soft btn-ghost btn-link btn-sm btn-md btn-lg btn-block');
+@source inline('badge badge-primary badge-secondary badge-success badge-warning badge-error badge-info badge-neutral badge-outline badge-soft badge-ghost badge-sm badge-md badge-lg');
+@source inline('alert alert-info alert-success alert-warning alert-error input input-error select select-error textarea textarea-error checkbox radio toggle table menu join modal modal-box');
+
+@plugin 'daisyui' {
+    themes: false;
+    root: '[data-ea-ui]';
+    exclude: rootcolor, rootscrollgutter, rootscrolllock, scrollbar, svg;
+    logs: false;
+}
+
+@plugin 'daisyui/theme' {
+    name: 'easyadmin-light';
+    default: false;
+    prefersdark: false;
+    root: '[data-ea-ui]';
+    color-scheme: light;
+
+    --color-base-100: oklch(1 0 0);
+    --color-base-200: oklch(0.97 0 0);
+    --color-base-300: oklch(0.922 0 0);
+    --color-base-content: oklch(0.205 0 0);
+    --color-primary: var(--ea-primary, oklch(0.205 0 0));
+    --color-primary-content: var(--ea-primary-foreground, oklch(0.985 0 0));
+    --color-secondary: oklch(0.556 0 0);
+    --color-secondary-content: oklch(0.985 0 0);
+    --color-accent: var(--ea-primary, oklch(0.205 0 0));
+    --color-accent-content: var(--ea-primary-foreground, oklch(0.985 0 0));
+    --color-neutral: oklch(0.269 0 0);
+    --color-neutral-content: oklch(0.985 0 0);
+    --color-info: oklch(0.546 0.245 262.88);
+    --color-info-content: oklch(0.985 0 0);
+    --color-success: oklch(0.527 0.154 150.069);
+    --color-success-content: oklch(0.985 0 0);
+    --color-warning: oklch(0.795 0.184 86.047);
+    --color-warning-content: oklch(0.205 0 0);
+    --color-error: oklch(0.577 0.245 27.325);
+    --color-error-content: oklch(0.985 0 0);
+
+    --radius-selector: var(--ea-radius, 0.25rem);
+    --radius-field: var(--ea-radius, 0.25rem);
+    --radius-box: calc(var(--ea-radius, 0.25rem) * 2);
+    --size-selector: calc(var(--ea-spacing, 0.125rem) * 2);
+    --size-field: calc(var(--ea-spacing, 0.125rem) * 2);
+    --border: 1px;
+    --depth: 0;
+    --noise: 0;
+}
+
+@plugin 'daisyui/theme' {
+    name: 'easyadmin-dark';
+    default: false;
+    prefersdark: false;
+    root: '[data-ea-ui]';
+    color-scheme: dark;
+
+    --color-base-100: oklch(0.145 0 0);
+    --color-base-200: oklch(0.205 0 0);
+    --color-base-300: oklch(0.269 0 0);
+    --color-base-content: oklch(0.922 0 0);
+    --color-primary: var(--ea-primary, oklch(0.922 0 0));
+    --color-primary-content: var(--ea-primary-foreground, oklch(0.205 0 0));
+    --color-secondary: oklch(0.708 0 0);
+    --color-secondary-content: oklch(0.205 0 0);
+    --color-accent: var(--ea-primary, oklch(0.922 0 0));
+    --color-accent-content: var(--ea-primary-foreground, oklch(0.205 0 0));
+    --color-neutral: oklch(0.439 0 0);
+    --color-neutral-content: oklch(0.985 0 0);
+    --color-info: oklch(0.707 0.165 254.624);
+    --color-info-content: oklch(0.205 0 0);
+    --color-success: oklch(0.723 0.219 149.579);
+    --color-success-content: oklch(0.205 0 0);
+    --color-warning: oklch(0.852 0.199 91.936);
+    --color-warning-content: oklch(0.205 0 0);
+    --color-error: oklch(0.704 0.191 22.216);
+    --color-error-content: oklch(0.205 0 0);
+
+    --radius-selector: var(--ea-radius, 0.25rem);
+    --radius-field: var(--ea-radius, 0.25rem);
+    --radius-box: calc(var(--ea-radius, 0.25rem) * 2);
+    --size-selector: calc(var(--ea-spacing, 0.125rem) * 2);
+    --size-field: calc(var(--ea-spacing, 0.125rem) * 2);
+    --border: 1px;
+    --depth: 0;
+    --noise: 0;
+}
+
+@custom-variant dark (&:where([data-theme='easyadmin-dark'], [data-theme='easyadmin-dark'] *));

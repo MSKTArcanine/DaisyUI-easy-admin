@@ -14,10 +14,12 @@
 .ea-dark-scheme {
     --font-family-system-sans-serif:
         system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --font-family-system-monospace: ui-monospace, "Roboto Mono", SFMono-Regular, Menlo, Monaco, Consolas,
-        "Liberation Mono", "Courier New", monospace;
+    --font-family-system-monospace:
+        ui-monospace, "Roboto Mono", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+        monospace;
     --font-family-sans-serif: "Inter Variable", "Inter Variable Fallback", var(--font-family-system-sans-serif);
-    --font-family-monospace: "JetBrains Mono Variable", "JetBrains Mono", "JetBrains Mono Variable Fallback",
+    --font-family-monospace:
+        "JetBrains Mono Variable", "JetBrains Mono", "JetBrains Mono Variable Fallback",
         var(--font-family-system-monospace);
     --font-family-base: var(--font-family-sans-serif);
 
@@ -58,12 +60,15 @@
     --line-height-normal: 1.5;
     --line-height-relaxed: 1.625;
 
-    --shadow-md: 0 4px 6px -1px color-mix(in srgb, var(--gray-900) 10%, transparent), 0 2px 4px -2px
-        color-mix(in srgb, var(--gray-900) 10%, transparent);
-    --shadow-lg: 0 10px 15px -3px color-mix(in srgb, var(--gray-900) 10%, transparent), 0 4px 6px -4px
-        color-mix(in srgb, var(--gray-900) 10%, transparent);
-    --shadow-xl: 0 20px 25px -5px color-mix(in srgb, var(--gray-900) 20%, transparent), 0 8px 10px -6px
-        color-mix(in srgb, var(--gray-900) 20%, transparent);
+    --shadow-md:
+        0 4px 6px -1px color-mix(in srgb, var(--gray-900) 10%, transparent),
+        0 2px 4px -2px color-mix(in srgb, var(--gray-900) 10%, transparent);
+    --shadow-lg:
+        0 10px 15px -3px color-mix(in srgb, var(--gray-900) 10%, transparent),
+        0 4px 6px -4px color-mix(in srgb, var(--gray-900) 10%, transparent);
+    --shadow-xl:
+        0 20px 25px -5px color-mix(in srgb, var(--gray-900) 20%, transparent),
+        0 8px 10px -6px color-mix(in srgb, var(--gray-900) 20%, transparent);
 
     --width-sm: 576px;
     --width-md: 768px;
@@ -120,7 +125,9 @@
     --main-content-border-radius: var(--border-radius-xl);
     --resize-handler-width: 10px; /* deprecated: kept for backward compatibility, unused internally */
     --content-section-border-color: var(--gray-200);
-    --resize-handler-hover-bg: var(--ea-primary-strong); /* deprecated: kept for backward compatibility, unused internally */
+    --resize-handler-hover-bg: var(
+        --ea-primary-strong
+    ); /* deprecated: kept for backward compatibility, unused internally */
     --layout-toggle-marker-color: var(--gray-400);
     --layout-toggle-marker-hover-color: var(--gray-600);
     --layout-toggle-label-bg: var(--gray-900);
@@ -188,7 +195,9 @@
     --datalist-value-color: var(--gray-600);
     --pagination-color: var(--gray-600);
     --pagination-hover-bg: var(--gray-100);
-    --pagination-hover-border-color: var(--gray-300); /* deprecated: kept for backward compatibility, unused internally */
+    --pagination-hover-border-color: var(
+        --gray-300
+    ); /* deprecated: kept for backward compatibility, unused internally */
     --pagination-disabled-color: var(--gray-400);
     --pagination-active-bg: transparent;
     --pagination-active-color: var(--text-color);
@@ -401,7 +410,11 @@
     );
     --alert-light-bg: var(--badge-light-bg);
     --alert-light-color: var(--badge-light-color);
-    --alert-light-border-color: color-mix(in srgb, var(--badge-light-tone) var(--alert-tint-border-amount), transparent);
+    --alert-light-border-color: color-mix(
+        in srgb,
+        var(--badge-light-tone) var(--alert-tint-border-amount),
+        transparent
+    );
     --alert-dark-bg: var(--badge-dark-bg);
     --alert-dark-color: var(--badge-dark-color);
     --alert-dark-border-color: color-mix(in srgb, var(--badge-dark-tone) var(--alert-tint-border-amount), transparent);
@@ -618,12 +631,15 @@
     --secondary-bg: var(--gray-800);
     --tertiary-bg: var(--gray-900);
 
-    --shadow-md: 0 4px 6px -1px color-mix(in srgb, var(--black) 30%, transparent), 0 2px 4px -2px
-        color-mix(in srgb, var(--black) 30%, transparent);
-    --shadow-lg: 0 10px 15px -3px color-mix(in srgb, var(--black) 30%, transparent), 0 4px 6px -4px
-        color-mix(in srgb, var(--black) 30%, transparent);
-    --shadow-xl: 0 20px 25px -5px color-mix(in srgb, var(--black) 40%, transparent), 0 8px 10px -6px
-        color-mix(in srgb, var(--black) 40%, transparent);
+    --shadow-md:
+        0 4px 6px -1px color-mix(in srgb, var(--black) 30%, transparent),
+        0 2px 4px -2px color-mix(in srgb, var(--black) 30%, transparent);
+    --shadow-lg:
+        0 10px 15px -3px color-mix(in srgb, var(--black) 30%, transparent),
+        0 4px 6px -4px color-mix(in srgb, var(--black) 30%, transparent);
+    --shadow-xl:
+        0 20px 25px -5px color-mix(in srgb, var(--black) 40%, transparent),
+        0 8px 10px -6px color-mix(in srgb, var(--black) 40%, transparent);
     --body-bg: var(--gray-900);
     --responsive-header-bg: var(--gray-800);
     --responsive-header-border-color: var(--gray-600);
@@ -651,7 +667,9 @@
     --sidebar-tooltip-bg: var(--gray-200);
     --sidebar-tooltip-color: var(--gray-900);
     --main-content-border-color: var(--gray-800);
-    --resize-handler-hover-bg: var(--ea-primary-strong); /* deprecated: kept for backward compatibility, unused internally */
+    --resize-handler-hover-bg: var(
+        --ea-primary-strong
+    ); /* deprecated: kept for backward compatibility, unused internally */
     --layout-toggle-marker-color: var(--gray-600);
     --layout-toggle-marker-hover-color: var(--gray-400);
     --layout-toggle-label-bg: var(--gray-100);
@@ -714,7 +732,9 @@
     --datalist-value-color: var(--gray-300);
     --pagination-color: var(--gray-400);
     --pagination-hover-bg: var(--gray-800);
-    --pagination-hover-border-color: var(--gray-600); /* deprecated: kept for backward compatibility, unused internally */
+    --pagination-hover-border-color: var(
+        --gray-600
+    ); /* deprecated: kept for backward compatibility, unused internally */
     --pagination-active-bg: transparent;
     --pagination-active-color: var(--text-color);
     --flag-outline-color: var(--border-secondary-color);

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <title>{{ 'Rendering build fixture'|trans }}</title>
+    <link rel="stylesheet" href="{{ asset('easyadmin/ui-preview.css') }}" data-testid="preview-stylesheet">
+    {{ importmap('ui-preview') }}
+</head>
+<body class="ea-ui" data-ea-ui data-theme="easyadmin-light">
+    <main class="p-6 bg-base-100 text-base-content">
+        <h1 class="text-2xl font-bold">{{ 'Rendering build fixture'|trans }}</h1>
+        <p>{{ 'Local Tailwind and daisyUI compilation with Symfony AssetMapper.'|trans }}</p>
+        <button type="button" class="btn btn-outline" data-testid="preview-theme-toggle" aria-pressed="false">{{ 'Toggle appearance'|trans }}</button>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="preview-grid">
+            <section class="rounded-box bg-base-200 p-6">
+                <h2 class="text-xl font-semibold">{{ 'Controls'|trans }}</h2>
+                <button type="button" class="btn btn-primary outline-offset-[7px]" data-testid="preview-primary">{{ 'Primary action'|trans }}</button>
+                <button type="button" class="btn btn-secondary">{{ 'Secondary action'|trans }}</button>
+                <button type="button" class="btn btn-success">{{ 'Success action'|trans }}</button>
+                <button type="button" class="btn btn-warning">{{ 'Warning action'|trans }}</button>
+                <button type="button" class="btn btn-error">{{ 'Danger action'|trans }}</button>
+                <button type="button" class="btn btn-info btn-ghost">{{ 'Information action'|trans }}</button>
+                <span class="badge badge-success">{{ 'Ready'|trans }}</span>
+                <div role="status" class="alert alert-info">{{ 'The stylesheet was compiled locally.'|trans }}</div>
+            </section>
+            <section class="rounded-box bg-base-200 p-6">
+                <h2 class="text-xl font-semibold">{{ 'Form controls'|trans }}</h2>
+                <label for="preview-name">{{ 'Name'|trans }}</label>
+                <input id="preview-name" name="name" value="Fixture value" class="input input-bordered">
+                <label for="preview-choice">{{ 'Choice'|trans }}</label>
+                <select id="preview-choice" class="select"><option>{{ 'First choice'|trans }}</option></select>
+                <label for="preview-notes">{{ 'Notes'|trans }}</label>
+                <textarea id="preview-notes" class="textarea">{{ 'Fixture notes'|trans }}</textarea>
+                <label><input type="checkbox" class="checkbox" checked> {{ 'Enabled'|trans }}</label>
+                <label><input type="checkbox" class="toggle"> {{ 'Preference'|trans }}</label>
+            </section>
+        </div>
+    </main>
+</body>
+</html>

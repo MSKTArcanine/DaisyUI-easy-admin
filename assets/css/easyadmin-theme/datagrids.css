@@ -92,7 +92,9 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions {
 }
 .datagrid thead th {
     border: 0;
-    box-shadow: inset 0 1px 0 var(--table-cell-border-color), inset 0 -1px 0 var(--table-cell-border-color);
+    box-shadow:
+        inset 0 1px 0 var(--table-cell-border-color),
+        inset 0 -1px 0 var(--table-cell-border-color);
     padding: 0;
 }
 .datagrid thead a,

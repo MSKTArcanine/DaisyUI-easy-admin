@@ -66,13 +66,19 @@ span.icon {
     inline-size: 1.25em;
     justify-content: center;
     vertical-align: -0.125em;
-    vertical-align: calc(0.5cap - 0.5 * var(--ea-icon-svg-size));
 }
 /* the glyphs of Font Awesome are centered 0.375em above the baseline of their font, which is the
    baseline of the icon box (SVG icons don't have one, so the bottom of the box is used) */
 span.icon:has(> i) {
     vertical-align: 0;
-    vertical-align: calc(0.5cap - 0.375em);
+}
+@supports (vertical-align: 1cap) {
+    span.icon {
+        vertical-align: calc(0.5cap - 0.5 * var(--ea-icon-svg-size));
+    }
+    span.icon:has(> i) {
+        vertical-align: calc(0.5cap - 0.375em);
+    }
 }
 span.icon svg {
     display: block;
@@ -139,25 +145,25 @@ a:not([class], [data-bs-toggle]):hover {
    The second selector is needed because 'a:hover' out-specifies single-class
    selectors */
 :is(
-        .alert-link,
-        .nav-link,
-        .navbar-brand,
-        .navbar-text a,
-        .list-group-item,
-        .list-group-item-action,
-        .carousel-control-prev,
-        .carousel-control-next
-    ),
+    .alert-link,
+    .nav-link,
+    .navbar-brand,
+    .navbar-text a,
+    .list-group-item,
+    .list-group-item-action,
+    .carousel-control-prev,
+    .carousel-control-next
+),
 :is(
-        .alert-link,
-        .nav-link,
-        .navbar-brand,
-        .navbar-text a,
-        .list-group-item,
-        .list-group-item-action,
-        .carousel-control-prev,
-        .carousel-control-next
-    ):is(:hover, :focus, :active) {
+    .alert-link,
+    .nav-link,
+    .navbar-brand,
+    .navbar-text a,
+    .list-group-item,
+    .list-group-item-action,
+    .carousel-control-prev,
+    .carousel-control-next
+):is(:hover, :focus, :active) {
     color: revert-layer;
     font-weight: revert-layer;
 }
@@ -522,7 +528,9 @@ body.ea-content-width-full .content-wrapper {
     inline-size: 100%;
     inset-inline-start: 0;
     position: absolute;
-    transition: rotate var(--ea-duration-fast) linear, background-color var(--ea-duration-fast) linear;
+    transition:
+        rotate var(--ea-duration-fast) linear,
+        background-color var(--ea-duration-fast) linear;
 }
 .ea-layout-toggle-marker::before {
     border-start-end-radius: var(--border-radius-pill);
@@ -557,7 +565,9 @@ body.ea-content-width-full .content-wrapper {
     padding: var(--ea-sp-1) var(--ea-sp-4);
     pointer-events: none;
     position: absolute;
-    transition: opacity var(--ea-duration-slow) var(--ea-ease-out), translate var(--ea-duration-slow) var(--ea-ease-out);
+    transition:
+        opacity var(--ea-duration-slow) var(--ea-ease-out),
+        translate var(--ea-duration-slow) var(--ea-ease-out);
     white-space: nowrap;
 }
 .ea-layout-toggle-sidebar .ea-layout-toggle-label {
@@ -813,7 +823,10 @@ body .content-header:has(+ .content-help) {
 }
 .page-actions-stack > * {
     grid-area: 1 / 1;
-    transition: transform 260ms cubic-bezier(0.3, 0.7, 0.2, 1), opacity 200ms ease-out, visibility 0s linear 0s;
+    transition:
+        transform 260ms cubic-bezier(0.3, 0.7, 0.2, 1),
+        opacity 200ms ease-out,
+        visibility 0s linear 0s;
 }
 .page-actions-stack > .batch-actions {
     opacity: 0;
@@ -962,14 +975,18 @@ body .content-header:has(+ .content-help) {
     background-color: var(--dropdown-bg);
     border: 0;
     border-radius: var(--dropdown-radius);
-    box-shadow: 0 0 0 var(--border-width) var(--dropdown-ring-color), var(--shadow-md);
+    box-shadow:
+        0 0 0 var(--border-width) var(--dropdown-ring-color),
+        var(--shadow-md);
     color: var(--dropdown-color);
     min-inline-size: 8rem;
     max-inline-size: 240px;
     padding: var(--dropdown-padding);
 }
 .dropdown-menu .dropdown-menu {
-    box-shadow: 0 0 0 var(--border-width) var(--dropdown-ring-color), var(--shadow-lg);
+    box-shadow:
+        0 0 0 var(--border-width) var(--dropdown-ring-color),
+        var(--shadow-lg);
     min-inline-size: 6rem;
 }
 .dropdown-menu a,

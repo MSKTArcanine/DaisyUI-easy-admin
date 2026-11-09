@@ -205,3 +205,24 @@ Composer lock stays ignored; resolved versions/source references are preserved
 in `reports/stage-2-environment.json`. Tests generate a dependency-version-only
 change in AdminRouteApp's tracked `config/reference.php`; that generated diff
 was restored rather than included in the migration.
+
+## Prompt 3 build coverage
+
+`tests/Browser/build.spec.js` adds five scenarios, run on Chromium, Firefox and
+WebKit (15 passing checks). They verify real development and production
+AssetMapper stylesheet/ESM responses, computed daisyUI and responsive styles,
+named light/dark themes, inherited application token overrides, local-only
+requests, no Bootstrap loading, compiled class inclusion, and an ordinary
+Symfony page that retains native styles without Preflight resets.
+
+`tests/build/check-ui-css.js` parses minified CSS with PostCSS and checks actual
+selector boundaries, required component/responsive/arbitrary classes, named
+layers/themes, and the absence of unresolved build directives, Bootstrap
+signatures and global element resets. It does not replace browser checks.
+
+All 3907 PHP tests/11825 assertions still pass. The expanded all-engine browser
+run has 87 passes and the same three DirtyForm baseline failures. No new
+behavioral failure is accepted. Both the existing Encore development/production
+builds and new Tailwind/AssetMapper builds pass; see
+`reports/stage-3-build.json`. The source-only component fixture does not prove
+real EasyAdmin templates migrated; that remains Prompts 4-8 work.

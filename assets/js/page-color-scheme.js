@@ -39,7 +39,9 @@ class ColorSchemeHandler {
                 `a.dropdown-appearance-item[data-ea-color-scheme="${currentScheme}"]`
             );
 
-            selectorOptions.forEach((selector) => setChecked(selector, false));
+            selectorOptions.forEach((selector) => {
+                setChecked(selector, false);
+            });
             if (selectorActiveOption) {
                 setChecked(selectorActiveOption, true);
             }
@@ -58,8 +60,12 @@ class ColorSchemeHandler {
                     const allSelectorActiveOptions = document.querySelectorAll(
                         `a.dropdown-appearance-item[data-ea-color-scheme="${selectedColorScheme}"]`
                     );
-                    allSelectorOptions.forEach((selectorOption) => setChecked(selectorOption, false));
-                    allSelectorActiveOptions.forEach((selectorOption) => setChecked(selectorOption, true));
+                    allSelectorOptions.forEach((selectorOption) => {
+                        setChecked(selectorOption, false);
+                    });
+                    allSelectorActiveOptions.forEach((selectorOption) => {
+                        setChecked(selectorOption, true);
+                    });
                 });
             });
         });

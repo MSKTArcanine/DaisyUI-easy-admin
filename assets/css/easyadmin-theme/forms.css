@@ -92,8 +92,10 @@ label.form-check-label {
     padding: var(--form-control-padding-y) var(--form-control-padding-x);
     white-space: nowrap;
     word-break: keep-all;
-    transition: border-color var(--ea-duration-fast) var(--ea-ease-out), background-color var(--ea-duration-fast)
-        var(--ea-ease-out), color var(--ea-duration-fast) var(--ea-ease-out);
+    transition:
+        border-color var(--ea-duration-fast) var(--ea-ease-out),
+        background-color var(--ea-duration-fast) var(--ea-ease-out),
+        color var(--ea-duration-fast) var(--ea-ease-out);
 }
 .form-widget input.form-control::placeholder,
 .form-widget textarea.form-control::placeholder {
@@ -233,8 +235,9 @@ label.form-check-label {
     box-shadow: none;
     block-size: 16px;
     inline-size: 16px;
-    transition: background-color var(--ea-duration-fast) var(--ea-ease-out), border-color var(--ea-duration-fast)
-        var(--ea-ease-out);
+    transition:
+        background-color var(--ea-duration-fast) var(--ea-ease-out),
+        border-color var(--ea-duration-fast) var(--ea-ease-out);
 }
 .form-check-input[type="checkbox"] {
     border-radius: 4px;
@@ -509,7 +512,9 @@ label.form-check-label {
     inset-inline-end: var(--ea-sp-6);
     position: absolute;
     transform: translateY(-50%) rotate(90deg);
-    transition: transform var(--ea-duration-slow) var(--ea-ease-out), color var(--ea-duration-fast) var(--ea-ease-out);
+    transition:
+        transform var(--ea-duration-slow) var(--ea-ease-out),
+        color var(--ea-duration-fast) var(--ea-ease-out);
 }
 .form-fieldset-header .form-fieldset-title-content.collapsed .form-fieldset-collapse-marker {
     transform: translateY(-50%) rotate(0deg);
@@ -535,8 +540,8 @@ label.form-check-label {
     overflow: clip;
     padding: var(--form-fieldset-spacing) var(--form-fieldset-spacing) 0;
     transition-duration: var(--ea-duration-slow);
-    transition-property: grid-template-rows, padding, border-color, border-width, background-color, flex-grow,
-        visibility;
+    transition-property:
+        grid-template-rows, padding, border-color, border-width, background-color, flex-grow, visibility;
     transition-timing-function: var(--ea-ease-out);
 }
 /* Bootstrap removes the 'collapse' class while it animates the panel, so the collapsed
@@ -588,8 +593,9 @@ label.form-check-label {
     flex-direction: column;
 }
 .form-column > .form-fieldset {
-    transition: background-color var(--ea-duration-fast) var(--ea-ease-out), flex-grow var(--ea-duration-slow)
-        var(--ea-ease-out);
+    transition:
+        background-color var(--ea-duration-fast) var(--ea-ease-out),
+        flex-grow var(--ea-duration-slow) var(--ea-ease-out);
 }
 .form-column > .form-fieldset > fieldset {
     flex-grow: 1;
@@ -821,8 +827,9 @@ form .invalid-feedback > .d-block + .d-block {
     margin-inline-end: var(--ea-sp-1);
     min-inline-size: calc(var(--form-control-height) - 2 * var(--border-width) - 0.25rem);
     padding: 0;
-    transition: background-color var(--ea-duration-fast) var(--ea-ease-out), color var(--ea-duration-fast)
-        var(--ea-ease-out);
+    transition:
+        background-color var(--ea-duration-fast) var(--ea-ease-out),
+        color var(--ea-duration-fast) var(--ea-ease-out);
 }
 .form-widget .ea-input-group .ea-input-addon-button:not(:disabled):hover {
     background-color: var(--secondary-bg);

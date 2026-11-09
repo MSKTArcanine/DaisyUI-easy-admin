@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\UX\TwigComponent\TwigComponentBundle;
+use Symfonycasts\TailwindBundle\SymfonycastsTailwindBundle;
 use Twig\Extra\TwigExtraBundle\TwigExtraBundle;
 
 final class Kernel extends BaseKernel
@@ -21,7 +22,8 @@ final class Kernel extends BaseKernel
 
     public function __construct()
     {
-        parent::__construct('browser', true);
+        $environment = getenv('EASYADMIN_BROWSER_ENV') ?: 'browser';
+        parent::__construct($environment, 'prod' !== $environment);
     }
 
     public static function storageDir(): string
@@ -31,7 +33,7 @@ final class Kernel extends BaseKernel
 
     public function registerBundles(): iterable
     {
-        return [new FrameworkBundle(), new SecurityBundle(), new TwigBundle(), new DoctrineBundle(), new TwigComponentBundle(), new TwigExtraBundle(), new EasyAdminBundle()];
+        return [new FrameworkBundle(), new SecurityBundle(), new TwigBundle(), new DoctrineBundle(), new TwigComponentBundle(), new TwigExtraBundle(), new EasyAdminBundle(), new SymfonycastsTailwindBundle()];
     }
 
     public function getProjectDir(): string
@@ -41,7 +43,7 @@ final class Kernel extends BaseKernel
 
     public function getCacheDir(): string
     {
-        return self::storageDir().'/cache';
+        return self::storageDir().'/cache/'.$this->environment;
     }
 
     public function getLogDir(): string
@@ -56,6 +58,24 @@ final class Kernel extends BaseKernel
             'secret' => 'easyadmin-browser-fixture',
             'test' => false,
             'session' => ['storage_factory_id' => 'session.storage.factory.native', 'save_path' => self::storageDir().'/sessions'],
+            'asset_mapper' => [
+                'paths' => [\dirname(__DIR__, 2).'/assets/css' => 'easyadmin', __DIR__.'/public' => ''],
+                'excluded_patterns' => [
+                    '*/assets/css/app.css',
+                    '*/assets/css/layers.css',
+                    '*/assets/css/form-type-*.css',
+                    '*/assets/css/easyadmin-theme/*',
+                    '*/tests/Browser/public/assets-built/*',
+                ],
+                'public_prefix' => 'prod' === $this->environment ? '/assets-built/' : '/assets/',
+                'missing_import_mode' => 'strict',
+                'importmap_path' => __DIR__.'/importmap.php',
+                'importmap_polyfill' => false,
+            ],
+        ]);
+        $container->loadFromExtension('symfonycasts_tailwind', [
+            'binary' => \dirname(__DIR__, 2).'/node_modules/.bin/tailwindcss',
+            'input_css' => [\dirname(__DIR__, 2).'/assets/css/ui-preview.css'],
         ]);
         $container->loadFromExtension('twig', ['default_path' => __DIR__.'/templates', 'strict_variables' => true]);
         $container->loadFromExtension('twig_component', ['anonymous_template_directory' => 'components/']);

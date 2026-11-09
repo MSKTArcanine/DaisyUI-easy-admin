@@ -14,6 +14,7 @@ yarn-error.log
 /tests/Browser/test-results/
 /tests/Browser/playwright-report/
 /tests/Browser/results/
+/tests/Browser/public/assets-built/
 /tests/Browser/var/
 
 /.claude/*

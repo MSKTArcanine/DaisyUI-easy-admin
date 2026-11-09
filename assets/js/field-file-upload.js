@@ -158,7 +158,9 @@ class FileUploadField {
     }
 
     #removeAllCards() {
-        this.#cardsContainer.querySelectorAll('[data-ea-fileupload-card]').forEach((card) => card.remove());
+        this.#cardsContainer.querySelectorAll('[data-ea-fileupload-card]').forEach((card) => {
+            card.remove();
+        });
     }
 
     #revokeAllObjectUrls() {

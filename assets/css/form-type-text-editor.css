@@ -8,8 +8,9 @@
         background: var(--form-control-bg);
         border: var(--border-width) solid var(--form-input-border-color);
         border-radius: var(--form-control-border-radius);
-        transition: border-color var(--ea-duration-fast) var(--ea-ease-out), background-color var(--ea-duration-fast)
-            var(--ea-ease-out);
+        transition:
+            border-color var(--ea-duration-fast) var(--ea-ease-out),
+            background-color var(--ea-duration-fast) var(--ea-ease-out);
     }
     .ea-text-editor-wrapper:focus-within {
         border-color: var(--form-input-focus-border-color);

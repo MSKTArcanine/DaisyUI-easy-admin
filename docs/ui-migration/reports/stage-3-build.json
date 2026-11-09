@@ -1,0 +1,46 @@
+{
+    "stage": 3,
+    "versions": {
+        "tailwindcss": "4.3.3",
+        "@tailwindcss/cli": "4.3.3",
+        "daisyui": "5.7.50",
+        "@biomejs/biome": "2.6.6",
+        "symfonycasts/tailwind-bundle": "1.0.0"
+    },
+    "commands": {
+        "make build-ui-dev": 0,
+        "make build-ui-assets": 0,
+        "make check-ui-css": 0,
+        "yarn dev": 0,
+        "make build-assets": 0,
+        "make tests": 0,
+        "make linter-phpstan": 0,
+        "make linter-cs-fixer": 0,
+        "make linter-twig": 0,
+        "yarn ci": 0
+    },
+    "php_tests": 3907,
+    "php_assertions": 11825,
+    "browser_stats": {
+        "startTime": "2026-11-09T19:34:46.589Z",
+        "duration": 127887.432,
+        "expected": 87,
+        "skipped": 0,
+        "unexpected": 3,
+        "flaky": 0
+    },
+    "browser_existing_failure": "DirtyForm cancellation/unsaved-navigation regression, once per engine",
+    "new_build_scenarios": {
+        "passed": 15,
+        "engines": ["chromium", "firefox", "webkit"]
+    },
+    "compiled_ui_css_bytes": 117494,
+    "distribution_manifest_sha256": "01ae1b0eb81b753f8e752254b3dba47a8e3e3b9eacd4c88257ce4bf60964931c",
+    "distribution_manifest_targets": 51,
+    "license_targets": ["app.17d72443.js.LICENSE.txt", "field-text-editor.e8abd05d.js.LICENSE.txt"],
+    "legacy_css_formatting": {
+        "normalized_identically": 12,
+        "cap_fallback_preserved_by_supports": "assets/css/easyadmin-theme/base.css"
+    },
+    "biome_advisories": "Existing legacy CSS important/specificity and JS advisories remain warnings/info; no checks disabled."
+}

@@ -209,3 +209,21 @@ assertions**. `yarn ci` passed (47 files), `make linter-phpstan` passed, and
 `make linter-twig` passed (190 files). Expected HTTP exception logs from security
 tests are not test failures. Composer 2.7.1 emits deprecations on PHP 8.5 during
 installation; no test deprecation policy was changed.
+
+## Prompt 3 build pins
+
+Yarn now pins `tailwindcss` and `@tailwindcss/cli` 4.3.3, `daisyui` 5.7.50,
+and Biome 2.6.6. Composer development requirements add
+`symfony/asset-mapper ^6.4|^7.0|^8.0` and
+`symfonycasts/tailwind-bundle 1.0.0`; the latter explicitly supports PHP 8.2+
+and that Symfony range. Runtime PHP requirements and package identity are
+unchanged. The reference's standalone compiler is replaced here by the exact
+Yarn-managed local CLI, driven through the same SymfonyCasts commands.
+
+`make build-ui-dev`, `make build-ui`, `make build-ui-assets`, and
+`make check-ui-css` are the new fixture build targets. The ordinary
+`yarn dev` and `make build-assets` Encore builds also pass. The normal production
+bundle was regenerated through the existing manifest fixer after compatible
+lint-format changes; hashes in the immutable source-baseline section above
+remain historical. Current build evidence is in
+[stage-3-build.json](reports/stage-3-build.json).

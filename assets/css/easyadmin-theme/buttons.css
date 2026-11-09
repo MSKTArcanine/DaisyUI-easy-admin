@@ -76,9 +76,9 @@
 /* dropdown triggers don't move, so the menu doesn't jump (Bootstrap doesn't add
    aria-haspopup to its toggles, so they are also matched by their data attribute) */
 .btn:not(:disabled):not(.disabled):not([aria-haspopup]):not([data-bs-toggle="dropdown"]):not(
-        .btn-link,
-        .dropdown-item
-    ):active {
+    .btn-link,
+    .dropdown-item
+):active {
     translate: 0 1px;
 }
 
@@ -187,21 +187,21 @@
 [class*="btn-outline-"]:not(:disabled):not(.disabled):is(:hover, :focus-visible, :active),
 .btn-secondary:not(.btn-solid, .btn-light, .btn-ghost, .btn-link, .btn-invisible),
 .btn-secondary:not(.btn-solid, .btn-light, .btn-ghost, .btn-link, .btn-invisible):not(:disabled):not(.disabled):is(
-        :hover,
-        :focus-visible,
-        :active
-    ) {
+    :hover,
+    :focus-visible,
+    :active
+) {
     background-clip: padding-box;
 }
 
 .btn-light,
 :is(.btn-success, .btn-warning, .btn-danger, .btn-info):not(
-        .btn-solid,
-        .btn-outline,
-        .btn-ghost,
-        .btn-link,
-        .btn-invisible
-    ) {
+    .btn-solid,
+    .btn-outline,
+    .btn-ghost,
+    .btn-link,
+    .btn-invisible
+) {
     --button-bg: var(--button-c-light-bg);
     --button-hover-bg: var(--button-c-light-hover-bg);
     --button-active-bg: var(--button-c-light-hover-bg);

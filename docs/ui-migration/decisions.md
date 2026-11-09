@@ -264,3 +264,69 @@ Retain DirtyForm as an independent widget unless its replacement is necessary;
 prefer a narrow integration fix preserving the cancelable EasyAdmin event and
 successful-submit behavior. Visual references remain historical artifacts,
 not pixel-match requirements for the new rendering.
+
+## D11. Asset build foundation implemented in Prompt 3
+
+The chosen CSS entry is `assets/css/ui-preview.css`, with small scoped defaults
+in `assets/css/ui/foundation.css`. It uses Tailwind 4 imports/directives,
+`source(none)`, explicit Twig/JS/Twig-helper/fixture source directories, and
+bounded complete component-variant inclusion lists. Themes are named
+`easyadmin-light` and `easyadmin-dark`. Semantic roles bridge inherited
+`--ea-primary`, `--ea-primary-foreground`, `--ea-radius`, `--ea-spacing`, and
+font variables. Tailwind spacing and daisyUI control sizing derive from the
+same spacing knob. Full `Theme` option integration remains shell-stage work.
+
+Preflight is omitted. daisyUI's global root color/scroll/gutter/lock/scrollbar/SVG
+base effects are excluded. Our small defaults apply under `[data-ea-ui]` only.
+No class prefix is used: daisyUI component selectors remain class-based and
+are not scoped by `root`; the option controls theme-variable/root-controller
+placement. Named theme selectors can apply to any matching `data-theme` node.
+Neither this setting nor a class prefix is universal style isolation.
+Actual ordinary-page tests verify default body margin, heading size and native
+button borders with the stylesheet present but no EasyAdmin theme root.
+
+The fixture maps only new CSS sources under `easyadmin/`; legacy source CSS is
+excluded because AssetMapper cannot compile webpack `~` imports. It provides
+`/ui-preview` and `/ui-neutral`, with local importmap module `ui-preview`.
+Development uses AssetMapper's `/assets/` controller. Production uses a separate
+`/assets-built/` prefix at `tests/Browser/public/assets-built/` so a compiled
+manifest cannot mask development resolution. These are fixture prefixes, not
+changes to distributed bundle entry names or asset packages.
+
+`make build-ui-assets` clears the fixture's production cache, runs local
+`tailwind:build --minify`, then `asset-map:compile`, and verifies compiled CSS.
+The compiled input replacement lives at
+`tests/Browser/var/tailwind/ui-preview.built.css`. The existing bundle public
+assets are automatically mapped too, but isolated preview documents load only
+the new stylesheet/module. Their network and CSS are checked for Bootstrap and
+external delivery. Bootstrap remains in the main package until final cutover.
+
+Symfony 8.1 conditionally omits Twig's importmap extension when AssetMapper is
+only a development dependency of a package whose TwigBundle requirement is
+runtime. The fixture explicitly registers Symfony's official ImportMapExtension
+and runtime services. This keeps optional build tooling out of the bundle's
+runtime requirements. A real AssetMapper consuming application installs it as
+an application dependency and must be verified separately in Prompt 9.
+
+## D12. Resolve the demonstrated linter incompatibility
+
+Biome 1.9.4 cannot parse Tailwind 4's import-source modifier or daisyUI plugin
+configuration. Upgrade to exact Biome 2.6.6 and enable
+`css.parser.tailwindDirectives`, using the official configuration migration.
+See [Biome's Tailwind parser option](https://biomejs.dev/reference/configuration/#cssparsertailwinddirectives).
+No lint rule was disabled to accept invalid CSS.
+
+Keep the previously checked languages (JSON, CSS and JS): Biome 1.9 did not
+implement Markdown checking, so the upgrade does not introduce unrelated
+Markdown reformatting of instructions, upgrades or skill provenance. Markdown
+links/records continue to receive explicit local checks; RST uses the existing
+Make linter. Add browser and CSS-proof JS to the checked source set. Generated
+browser/AssetMapper results remain excluded as generated artifacts.
+
+The new formatter reformats 13 legacy CSS files. Twelve normalize identically
+through Lightning CSS; the icon `cap` fallbacks in `base.css` move to equivalent
+`@supports` rules to retain older-engine fallback behavior. Six arrow callbacks
+use explicit blocks for the new forEach-return rule; their calls and effects
+are unchanged. Legacy specificity/important-style advisories remain visible
+warnings, alongside existing JS advisories. No unsafe automatic fixes were
+applied. Production assets were regenerated using the normal build.

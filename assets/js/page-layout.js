@@ -251,6 +251,8 @@ document.body.classList.add(
     document.addEventListener('hidden.bs.dropdown', (event) => {
         menuFor(event.target)
             ?.querySelectorAll(`${TOGGLE}.show`)
-            .forEach((toggle) => hideWithoutAnimation(toggle));
+            .forEach((toggle) => {
+                hideWithoutAnimation(toggle);
+            });
     });
 })();

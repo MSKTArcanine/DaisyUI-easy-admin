@@ -42,8 +42,9 @@
 .modal.fade .modal-dialog {
     transform: scale(0.95);
     opacity: 0;
-    transition: transform var(--ea-duration-fast) var(--ea-ease-in-out), opacity var(--ea-duration-fast)
-        var(--ea-ease-in-out);
+    transition:
+        transform var(--ea-duration-fast) var(--ea-ease-in-out),
+        opacity var(--ea-duration-fast) var(--ea-ease-in-out);
 }
 .modal.show .modal-dialog {
     transform: scale(1);

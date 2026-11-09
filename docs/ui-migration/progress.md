@@ -44,7 +44,7 @@ and commit each stage before switching to the next title-derived branch.
   real requests/persistence, security, cancellation and dynamic-widget tests;
   desktop/mobile/light/dark/RTL/keyboard visual references; record existing
   failures separately. Cover every row of the coverage matrix.
-- [ ] **3. Integrate Tailwind and daisyUI into the asset build.** B01-B04,
+- [x] **3. Integrate Tailwind and daisyUI into the asset build.** B01-B04,
   C01-C02: exact pins in package-manager resolution; local Tailwind 4 compiler,
   required AssetMapper build/delivery, explicit sources/static class maps,
   theme/layer/Preflight decisions, application override discovery, isolated
@@ -189,3 +189,51 @@ installation and AssetMapper builds have not been implemented yet.
 Next: **Prompt 3 - Integrate Tailwind and daisyUI into the asset build**, on
 `integrate_tailwind_and_daisyui_into_the_asset_build`. The sequential continuation
 through Prompt 10 is authorized; the known baseline failure remains visible.
+
+## Prompt 3 stage report
+
+Branch: `integrate_tailwind_and_daisyui_into_the_asset_build`.
+
+Changes made:
+
+- Pinned Tailwind/CLI 4.3.3 and daisyUI 5.7.50 with Yarn; added compatible
+  AssetMapper/TailwindBundle development dependencies through Composer.
+- Added isolated CSS sources, explicit discovery/bounded variants, semantic
+  light/dark themes, inherited token bridge and scoped defaults without
+  Preflight or daisyUI global base effects.
+- Added real development and production AssetMapper/ESM fixture routes, separate
+  build prefixes/caches, production CSS verification and five browser scenarios.
+- Added Make build targets and made browser tests build their required assets.
+  Original bundle entry names, named asset package and manifest fixer remain.
+- Resolved the demonstrated Biome 1.9/Tailwind 4 parser conflict with Biome
+  2.6.6. Preserved prior checked languages/rules, formatted compatible CSS,
+  retained icon-unit fallbacks and explicit callback effects. No backend or
+  public PHP configuration change.
+- Regenerated normal distributed assets through `make build-assets`.
+  Bootstrap remains in the main runtime; the isolated preview loads only the
+  compiled new stylesheet/module, as verified by network/CSS checks.
+
+Validation results (details in `reports/stage-3-build.json`):
+
+| Command/check | Result |
+| --- | --- |
+| `make build-ui-dev`, `make build-ui-assets`, `make check-ui-css` | Passed; minified CSS 117494 bytes, required classes/layers/themes present |
+| New `build.spec.js` on all engines | Passed: 15/15 |
+| Entire all-engine browser suite | 87 passed; same 3 retained DirtyForm failures; 0 skipped |
+| `yarn dev`, `make build-assets` | Passed; existing intentional empty-public-path warning reported |
+| Manifest/license/font targets | All present; 51 manifest mappings and five font licenses retained |
+| `make tests` | Passed: 3907 tests, 11825 assertions |
+| PHPStan, PHP CS Fixer, product/fixture Twig lint | Passed |
+| `yarn ci` | Passed; existing legacy specificity/important-style and JS advisories remain visible warnings/info |
+| CSS formatter normalization | 12 legacy files normalize identically; base icon fallbacks preserved through `@supports` |
+
+Compatibility details and the linter adaptation are in decisions D11-D12.
+Application overrides can use inherited tokens/plain CSS immediately; classes
+absent from the bundle require an application Tailwind build explicitly scanning
+application and bundle Twig/JS/presentation literals. Prove the complete
+consumer setup in Prompt 9. Minimum-version browser checks, widget styling and
+full Theme API coverage remain for later stages. Do not interpret the isolated
+fixture as a migrated EasyAdmin shell or forms.
+
+Next: **Prompt 4 - Establish reusable Twig rendering and presentation adapters**,
+on `establish_reusable_twig_rendering_and_presentation_adapters`.

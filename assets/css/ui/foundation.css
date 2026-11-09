@@ -1,0 +1,26 @@
+@layer base {
+    [data-ea-ui] {
+        --spacing: calc(var(--ea-spacing, 0.125rem) * 2);
+        background-color: var(--color-base-100);
+        color: var(--color-base-content);
+        font-family: var(--font-family-sans-serif, var(--font-sans));
+        font-size: var(--font-size-base, 0.875rem);
+        line-height: 1.5;
+        margin: 0;
+        min-block-size: 100vh;
+    }
+
+    [data-ea-ui],
+    [data-ea-ui] *,
+    [data-ea-ui] *::before,
+    [data-ea-ui] *::after {
+        box-sizing: border-box;
+    }
+
+    [data-ea-ui] button,
+    [data-ea-ui] input,
+    [data-ea-ui] select,
+    [data-ea-ui] textarea {
+        font: inherit;
+    }
+}

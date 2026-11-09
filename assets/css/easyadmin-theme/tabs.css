@@ -88,8 +88,9 @@
 @supports (anchor-scope: --ea-tabs) {
     .form-tabs-tablist {
         /* biome-ignore lint/correctness/noUnknownProperty: Biome doesn't know 'anchor-scope' yet */
-        anchor-scope: --ea-tab-1, --ea-tab-2, --ea-tab-3, --ea-tab-4, --ea-tab-5, --ea-tab-6, --ea-tab-7, --ea-tab-8,
-            --ea-tab-9, --ea-tab-10;
+        anchor-scope:
+            --ea-tab-1, --ea-tab-2, --ea-tab-3, --ea-tab-4, --ea-tab-5, --ea-tab-6, --ea-tab-7, --ea-tab-8, --ea-tab-9,
+            --ea-tab-10;
         position: relative;
     }
     .form-tabs-tablist .nav-tabs .nav-item:nth-child(-n + 10) > .nav-link::after {
@@ -103,8 +104,10 @@
         border-radius: var(--border-radius-sm);
         content: "";
         position: absolute;
-        transition: inset-inline-start var(--ea-duration-slow) var(--ea-ease-out), inline-size var(--ea-duration-slow)
-            var(--ea-ease-out), inset-block-start var(--ea-duration-slow) var(--ea-ease-out);
+        transition:
+            inset-inline-start var(--ea-duration-slow) var(--ea-ease-out),
+            inline-size var(--ea-duration-slow) var(--ea-ease-out),
+            inset-block-start var(--ea-duration-slow) var(--ea-ease-out);
     }
 
     .form-tabs-tablist .nav-tabs .nav-item:nth-child(1) > .nav-link {

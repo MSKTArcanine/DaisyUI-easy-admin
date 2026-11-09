@@ -28,8 +28,9 @@
     padding: var(--ea-sp-8) var(--ea-sp-10);
     position: fixed;
     inset-block: var(--main-content-gap);
-    transition: translate var(--ea-duration-drawer-close) var(--ea-ease-drawer), visibility 0s linear
-        var(--ea-duration-drawer-close);
+    transition:
+        translate var(--ea-duration-drawer-close) var(--ea-ease-drawer),
+        visibility 0s linear var(--ea-duration-drawer-close);
     translate: var(--ea-sidebar-closed-translate) 0;
     visibility: hidden;
     z-index: calc(var(--zindex-modal-backdrop) + 1);
@@ -420,8 +421,9 @@ span.icon.ea-sidebar-item-chevron svg {
         inset: calc(-1 * var(--ea-sp-2));
         position: absolute;
         scale: 0.75;
-        transition: background-color var(--ea-duration-fast) var(--ea-ease-out), scale var(--ea-duration-fast)
-            var(--ea-ease-out);
+        transition:
+            background-color var(--ea-duration-fast) var(--ea-ease-out),
+            scale var(--ea-duration-fast) var(--ea-ease-out);
     }
 
     /* badges are hidden in compact mode, so items with a badge show a small dot
@@ -595,7 +597,9 @@ span.icon.ea-sidebar-item-chevron svg {
         min-inline-size: 200px;
         opacity: 0;
         position: absolute;
-        transition: opacity var(--ea-duration-fast) var(--ea-ease-out), visibility 0s linear var(--ea-duration-fast);
+        transition:
+            opacity var(--ea-duration-fast) var(--ea-ease-out),
+            visibility 0s linear var(--ea-duration-fast);
         visibility: hidden;
         z-index: calc(var(--zindex-modal-backdrop) + 2);
     }
