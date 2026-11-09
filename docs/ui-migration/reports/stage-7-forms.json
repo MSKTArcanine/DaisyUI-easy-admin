@@ -1,0 +1,90 @@
+{
+    "stage": 7,
+    "branch": "replace_the_bootstrap_based_symfony_form_theme",
+    "parent_commit": "ae26717bb",
+    "upstream_commit": "bd0fb8448a41f69b3493c5bea84f793e46fe7c21",
+    "php": {
+        "command": "make tests",
+        "passed": true,
+        "tests": 4150,
+        "assertions": 12344
+    },
+    "new_core_http": {
+        "tests": 4,
+        "assertions": 62,
+        "passed": true
+    },
+    "full_browser_before_collection_row_attribute_refinement": {
+        "startTime": "2026-11-09T22:34:59.721Z",
+        "duration": 342437.592,
+        "expected": 270,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+    },
+    "final_collection_browser": {
+        "startTime": "2026-11-09T22:42:25.914Z",
+        "duration": 22643.621,
+        "expected": 12,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+    },
+    "engines": ["chromium", "firefox", "webkit"],
+    "original_dirty_regression": {
+        "unchanged": true,
+        "passed_all_engines": true,
+        "root_cause": "Native event dispatch can checkpoint microtasks between listeners; inspect cancellation after complete dispatch"
+    },
+    "inherited_blocks": {
+        "old_union": 90,
+        "new_union": 91,
+        "missing": []
+    },
+    "checks": {
+        "phpstan": true,
+        "php_cs_fixer_files": 1036,
+        "twig_product": 192,
+        "twig_browser_and_new_http_fixture": 14,
+        "frontend_files": 117,
+        "frontend_warnings": 154,
+        "frontend_infos": 0,
+        "rst_docs": true,
+        "normal_build_files": 64,
+        "manifest_targets": 55,
+        "assetmapper_assets": 90,
+        "compiled_css_bytes": 218852,
+        "original_references_unchanged": true
+    },
+    "actual_findings_fixed": [
+        "Canceled native submit losing dirty state",
+        "External associated save requestSubmit and missing new-page dialog",
+        "Identical nested placeholders corrupting parent indices",
+        "Preserve outer custom prototype placeholder snippets without rewriting nested metadata",
+        "Trusted prototype script execution and CSP nonces without eval",
+        "Caller collection entry row attributes and classes",
+        "Client invalid control border and section appearance",
+        "Narrow error-counter cleanup preserving custom field badges",
+        "Native hidden upload toolbar state"
+    ],
+    "test_setup_corrections": [
+        "Synthetic prototype string callback accepts null prototype value",
+        "Exact pathname assertions preserve existing ui query state",
+        "Wait actual saveAndContinue POST because current edit URL already matches",
+        "Ordinary form selector distinguishes form from compound widget with same caller attributes",
+        "Verify multipart server fields/bytes because browser navigation request buffer is unavailable",
+        "Model required nested descendants explicitly in fixture",
+        "Preserve Symfony PATCH omitted checkbox semantics; separately test POST clearing",
+        "Use available Symfony selector assertions and framework-neutral required-choice semantics"
+    ],
+    "remaining_stage8": [
+        "Independent widget lifecycle and skins",
+        "All remaining field/media views",
+        "Login, UI kit and auxiliary pages"
+    ],
+    "unverified": [
+        "Exact minimum browser versions",
+        "PHP8.2 runtime matrix",
+        "Optional external Vich/storage end-to-end integration"
+    ]
+}

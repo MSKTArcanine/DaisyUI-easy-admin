@@ -479,3 +479,45 @@ registry. This preserves raw legacy dropdowns and native editable target
 handlers without intercepting propagation. Overlay Escape still has priority.
 Remove this wrapper with the Bootstrap runtime in Prompt 10; retain the
 regressions.
+
+
+## D16. Complete neutral Symfony form theme and submission handling
+
+`templates/crud/form_theme.html.twig` now imports the existing local neutral
+`form_div_layout.html.twig` and one layout trait,
+`templates/crud/form_theme_layout.html.twig`. Preserve every original public
+block. The neutral base retains method overrides, multipart, names, values,
+rest/render flags and escaping. Explicit core blocks retain checkbox/radio
+label protocols, Switch configuration, expanded choices, compound dates/times,
+forced errors, labels/help/HTML opt-in and caller attributes. A private addon
+flag prevents duplicate money/percent symbols while standalone widgets retain
+their localized symbols. `crud/filter_theme.html.twig` reuses the main theme,
+so configured partial filter themes continue to override in the same order.
+
+The layout trait adapts real field widths and row breaks at the rendering
+edge. Ordinary forms without an AdminContext get neutral layout and safe empty
+collection rendering. Tabs, fieldsets and collection entries use native state
+and reveal invalid descendants. Client and server error states are associated
+with controls, and client-invalid controls receive the semantic error color.
+
+Keep DirtyForm 0.4.0. Its adapter snapshots dirty state and checks cancellation
+in a task after the complete native submit dispatch. A microtask is insufficient:
+browsers can run it between native event listeners, before EasyAdmin cancels
+submission. Keep the original regression unchanged. Associated external save
+buttons use `requestSubmit(originalButton)` after confirmation closes, retaining
+native validation, submitter fields, CSRF and cancelable EasyAdmin events.
+The new page now includes the existing confirmation template in an additive
+`action_confirmation` block. Existing delete/batch/filter submission contracts
+remain unchanged.
+
+Collections replace full parent ID/name prefixes, preserve identical nested
+placeholders, index custom outer prototype snippets within their owner, keep
+monotonic independent counters and initialize once. Activate trusted prototype
+scripts through script nodes with retained attributes/nonces, without eval.
+Lifecycle event names and detail objects are unchanged. Update upload toolbar
+visibility through the shared native-hidden helper alongside changed form
+markup; full widget lifecycle and skin completion remains Prompt 8.
+
+Temporary plain-control aliases live only in `migration-components.css` for
+remaining legacy pages. No daisyUI stylesheet is loaded with Bootstrap. Remove
+that support at final cutover. No production PHP processing or public API changed.

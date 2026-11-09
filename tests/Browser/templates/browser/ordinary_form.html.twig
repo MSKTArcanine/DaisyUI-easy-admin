@@ -1,0 +1,21 @@
+{% form_theme form '@EasyAdmin/crud/form_theme.html.twig' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <title>{{ 'Ordinary Symfony form'|trans }}</title>
+    <link rel="stylesheet" href="{{ asset('easyadmin/ui-preview.css') }}">
+</head>
+<body data-ea-ui data-theme="easyadmin-light">
+    <main class="p-6 mx-auto max-w-4xl">
+        <h1>{{ 'Ordinary Symfony form'|trans }}</h1>
+        <p id="ordinary-hint">{{ 'Caller description'|trans }}</p>
+        {{ form_start(form) }}
+        <div data-testid="standalone-money">{{ form_widget(form.standaloneMoney) }}</div>
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+    </main>
+</body>
+</html>

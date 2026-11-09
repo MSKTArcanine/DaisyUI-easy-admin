@@ -122,12 +122,16 @@ class FieldsetsLayoutTest extends AbstractCrudTestCase
         // the Address fieldset should be collapsible (but not collapsed by default)
         $addressFieldset = $crawler->filter('.fieldset-address');
 
-        // should have a collapse button/link
-        static::assertTrue(
-            $addressFieldset->filter('[data-bs-toggle="collapse"]')->count() > 0
-            || $addressFieldset->filter('.form-fieldset-collapse-marker')->count() > 0,
-            'Collapsible fieldset should have collapse toggle'
-        );
+        $collapseToggle = $addressFieldset->filter('[data-ea-toggle="collapse"]');
+        $fieldsetBody = $addressFieldset->filter('.form-fieldset-body[data-ea-collapse]');
+        static::assertCount(1, $collapseToggle);
+        static::assertCount(1, $fieldsetBody);
+        static::assertSame('true', $collapseToggle->attr('aria-expanded'));
+        static::assertSame($fieldsetBody->attr('id'), $collapseToggle->attr('aria-controls'));
+        static::assertSame('#'.$fieldsetBody->attr('id'), $collapseToggle->attr('data-ea-target'));
+        static::assertSame($collapseToggle->attr('data-ea-target'), $collapseToggle->attr('href'));
+        static::assertNull($fieldsetBody->attr('hidden'));
+        static::assertCount(1, $collapseToggle->filter('.form-fieldset-collapse-marker'));
     }
 
     public function testCollapsedFieldsetIsHiddenByDefault(): void
@@ -135,14 +139,17 @@ class FieldsetsLayoutTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
 
         // the Settings fieldset should be collapsed by default
-        // (the collapsed state is indicated by the body NOT having 'show' class and the header link having 'collapsed' class)
         $settingsFieldset = $crawler->filter('.fieldset-settings');
-        $fieldsetBody = $settingsFieldset->filter('.form-fieldset-body.collapse');
+        $fieldsetBody = $settingsFieldset->filter('.form-fieldset-body[data-ea-collapse][hidden]');
 
-        static::assertTrue($fieldsetBody->count() > 0, 'Fieldset body should have collapse class');
+        static::assertCount(1, $fieldsetBody, 'Collapsed fieldset body must be hidden before JavaScript initializes');
 
-        $collapseLink = $settingsFieldset->filter('.form-fieldset-collapse.collapsed');
-        static::assertTrue($collapseLink->count() > 0, 'Collapsed fieldset should have collapsed class on header');
+        $collapseLink = $settingsFieldset->filter('.form-fieldset-collapse.collapsed[data-ea-toggle="collapse"]');
+        static::assertCount(1, $collapseLink);
+        static::assertSame('false', $collapseLink->attr('aria-expanded'));
+        static::assertSame($fieldsetBody->attr('id'), $collapseLink->attr('aria-controls'));
+        static::assertSame('#'.$fieldsetBody->attr('id'), $collapseLink->attr('data-ea-target'));
+        static::assertSame($collapseLink->attr('data-ea-target'), $collapseLink->attr('href'));
     }
 
     public function testFormSubmissionWorksWithFieldsets(): void

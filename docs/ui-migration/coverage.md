@@ -311,3 +311,38 @@ Source review also found the original confirmation dispatch lacks external
 Symfony save buttons using only `form=...`; reproduce and fix in Prompt 7 while
 preserving submitter payload and validation. This is a source finding, not a
 claimed reproduced runtime failure yet.
+
+
+## Prompt 7 form coverage
+
+- `CoreFormThemeTest.php` adds four real HTTP cases (62 assertions): ordinary
+  forms with no AdminContext, POST/PUT and transformed values/session state,
+  CSRF rejection, multipart/rest/token/method fields, escaped and opted-in HTML
+  labels/help, caller attributes, switches/radios and standalone money/percent.
+- `ordinary-forms.spec.js` exercises browser-built multipart PATCH with exact
+  server-parsed request fields and uploaded bytes, compound/single dates/time,
+  intervals, choices, expanded choices, numbers/money/percent, repeated passwords,
+  disabled/readonly/hidden/color/range and CSRF. A separate POST case verifies
+  unchecked checkbox clearing; PATCH correctly preserves an omitted field.
+  Invalid responses retain values and associated errors/help outside an admin
+  context. Multipart navigation request buffers are unavailable from Playwright,
+  so the fixture reports the actual parsed server fields and uploaded contents.
+- `forms.spec.js` runs four real workflows in each staged style mode: new/edit
+  confirmed save with original submitter and persisted values, late native
+  validation after dialog close, canceled EasyAdmin submit with dirty protection
+  and resubmission, unrelated form submits and hidden error discovery. The new
+  UI also checks actual invalid border color and its removal after correction.
+- `nested.spec.js` verifies same placeholders at both levels, exact unique names
+  and IDs, monotonic child indices after removal, persisted nested arrays,
+  independent parent/child permissions, error discovery through every ancestor,
+  repeated script initialization and one lifecycle event. A trusted custom
+  prototype script executes once under enforced CSP with its nonce retained;
+  custom outer placeholder attributes/text/script snippets remain indexed.
+- Existing `widgets.spec.js` assertions are unchanged, including the original
+  canceled-submit DirtyForm regression. Existing PHP assertions use equivalent
+  native state/mapped layout/name/attribute semantics; raw label HTML remains
+  exact after normalizing formatting whitespace only.
+
+Original screenshot references remain unchanged. Minimum browser versions,
+optional storage/Vich integrations and remaining independent widget lifecycle
+coverage are separate limits; complete the latter in Prompt 8.

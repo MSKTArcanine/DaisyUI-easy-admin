@@ -530,3 +530,20 @@ not declare those pages or the normal delivered bundle Bootstrap-free.
 | C02-C04 | `assets/css/ui/{listing,detail,search,visibility}.css`, `assets/css/ui-preview.css` | Responsive table/detail/filter styling, scoped native hidden states and initial collapse visibility; repeated initialization and physical geometry verified. |
 | B02 temporary support | `assets/js/{app,ui-crud-preview}.js`, `webpack.config.js`, `public/licenses/` | Legacy app wrapper and isolated native CRUD entry; normal distribution rebuilt with full retained dependency licenses. Remove wrappers/scaffolding in Prompt 10. |
 | Behavioral proof | `tests/Browser/listing.spec.js`, `tests/Browser/Controller/ListingCrudController.php`, `tests/Functional/Filters/FilterFormRenderingTest.php`, DefaultApp filter rendering controller/themes | Real requests, values, persisted outcomes, permissions, empty/mobile states and extension behavior; existing assertions updated to equivalent semantic attributes/states. |
+
+
+## Prompt 7 implementation boundary
+
+| Inventory rows | Implemented paths | Replacement and verification |
+| --- | --- | --- |
+| T04-T05/P01-P02 | `templates/crud/form_theme.html.twig`, `templates/crud/form_theme_layout.html.twig`, `assets/css/ui/forms.css` | Complete neutral form blocks, preserved override names, ordinary/compound widgets, layout adapter, accessible help/errors, native tabs/fieldsets/collections; real typed submissions, server validation and physical client error-color checks. |
+| T04/J08 | `templates/crud/filter_theme.html.twig` | Reuse the complete neutral main theme; existing ordered custom partial themes and real filter GET contracts remain covered. |
+| J10-J11/J13/W07 | `assets/js/form.js`, `assets/js/field-collection.js` | Retained DirtyForm with complete-dispatch cancellation handling, idempotent dynamic forms/collections, parent-prefix-safe prototypes, unique IDs/indices, nested error discovery and original lifecycle events. Real persisted nested arrays and CSP nonce script execution verify behavior. |
+| P03/J07 | `assets/js/crud.js`, `templates/crud/new.html.twig` | Associated save uses the original submitter after confirmation closes; new-page existing dialog include added. Real new/edit cancel/confirm, exact submitter/CSRF/method/persistence and late native validation covered. |
+| J14/W03 partial | `assets/js/field-file-upload.js` | Native hidden state and legacy class state updated together for toolbar controls changed by the form theme. Full upload lifecycle/skin and multiple-file verification remains Prompt 8. |
+| Behavioral proof | `tests/Browser/{forms,nested,ordinary-forms}.spec.js`, Browser controller/form fixtures, `tests/Functional/FormLayout/CoreFormThemeTest.php`, DefaultApp core-form fixture | Ordinary POST/PATCH/PUT, multipart bytes, hidden/rest/CSRF, values and errors, custom attributes, standalone symbols, nested collection permissions/indices/persistence, repeated initialization and unchanged baseline unsaved-change test. |
+| Temporary staged support | `assets/css/migration-components.css`, legacy app CSS imports | Narrow legacy control aliases only; no second framework stylesheet in the same document. Remove in Prompt 10. |
+
+Independent widget skins, all remaining field/media renderers, login/UI-kit and
+auxiliary pages remain assigned to Prompt 8. The neutral form inheritance is
+complete; this stage does not claim the final package runtime is Bootstrap-free.

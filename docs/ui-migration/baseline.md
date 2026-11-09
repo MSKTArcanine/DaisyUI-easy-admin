@@ -273,3 +273,26 @@ preview uses compiled native CRUD interactions and AssetMapper-delivered CSS,
 without Bootstrap. Original upstream and screenshot references remain pinned.
 Public action/controller/query/persistence/security implementations are unchanged.
 The ordinary main Symfony form theme remains assigned to Prompt 7.
+
+## Prompt 7 form baseline
+
+This stage starts from `ae26717bb` on
+`replace_the_bootstrap_based_symfony_form_theme`. The inherited hierarchy is
+`crud/form_theme.html.twig` -> local `bootstrap_5_layout.html.twig` -> local
+`bootstrap_base_layout.html.twig` -> local `form_div_layout.html.twig`.
+The neutral base owns method overrides, multipart/start/end/rest, names/values
+and core widget escaping. Bootstrap adds checkbox/radio label protocols,
+expanded choices, switches, compound date/time rows and forced error rendering;
+retain their behavior explicitly in the neutral replacement.
+
+The ordinary browser fixture now exercises real Symfony widgets without an
+admin context, multipart PATCH method override, CSRF and typed values. The
+nested fixture reuses `FieldTestEntity.arrayField` with deterministic parent
+and child arrays and explicitly sets the same `__name__` placeholder at both
+levels. Before editing collection JavaScript, the real legacy browser run
+reproduced corrupt child names: expected
+`FieldTestEntity[arrayField][1][items][0]`, received
+`FieldTestEntity[arrayField][0][items][0]`. Replacing the outer placeholder
+also overwrote the nested placeholder metadata; the child replacement then
+rewrote the parent's numeric index. Keep the final expected names and persisted
+values assertions. The preexisting DirtyForm regression remains unchanged.

@@ -1,3 +1,5 @@
+import { toggleVisibilityClasses } from './helpers';
+
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-ea-fileupload-field]').forEach((container) => {
         new FileUploadField(container);
@@ -175,15 +177,11 @@ class FileUploadField {
         const hasCards = this.#cardsContainer.querySelectorAll('[data-ea-fileupload-card]').length > 0;
 
         if (this.#addButton) {
-            if (this.#isMultiple) {
-                this.#addButton.classList.remove('d-none');
-            } else {
-                this.#addButton.classList.toggle('d-none', hasCards);
-            }
+            toggleVisibilityClasses(this.#addButton, !this.#isMultiple && hasCards);
         }
 
         if (this.#clearAllButton) {
-            this.#clearAllButton.classList.toggle('d-none', !hasCards);
+            toggleVisibilityClasses(this.#clearAllButton, !hasCards);
         }
     }
 

@@ -90,7 +90,7 @@ class FormFieldLabelsTest extends AbstractCrudTestCase
         static::assertSelectorNotExists('.form-column.column-7.form-column-no-header');
         static::assertSame('<a href="https://example.com">Fieldset</a> <b>7</b>', trim($crawler->filter('.form-fieldset.fieldset-7 .form-fieldset-title-content')->html()), 'The "Fieldset 7" defines its label as a text string with HTML contents, which must be rendered instead of escaped.');
         static::assertSelectorNotExists('.form-fieldset.fieldset-7.form-fieldset-no-header');
-        static::assertSame($crawler->filter('label[for="FormTestEntity_phone"]')->html(), '<a href="https://example.com">Phone</a> <b>Lorem</b> Ipsum', 'The "phone" field defines its label as regular string with HTML contents, which must be rendered instead of escaped (HTML is allowed in field labels).');
+        static::assertSame(trim($crawler->filter('label[for="FormTestEntity_phone"]')->html()), '<a href="https://example.com">Phone</a> <b>Lorem</b> Ipsum', 'The "phone" field defines its label as regular string with HTML contents, which must be rendered instead of escaped (HTML is allowed in field labels).');
 
         // fields with a label defined as a translatable string with HTML contents
         static::assertSame('<span class="tab-nav-item-label" data-content="Tab 8"><span class="text-danger">Tab</span> <b>8</b></span>', trim($crawler->filter('ul.nav-tabs #tablist-tab-tab-8')->html()), 'The "Tab 8" defines its label as a translatable string with HTML contents, which must be rendered instead of escaped.');
@@ -99,7 +99,7 @@ class FormFieldLabelsTest extends AbstractCrudTestCase
         static::assertSelectorNotExists('.form-column.column-8.form-column-no-header');
         static::assertSame('<a href="https://example.com">Fieldset</a> <b>8</b>', trim($crawler->filter('.form-fieldset.fieldset-8 .form-fieldset-title-content')->html()), 'The "Fieldset 8" defines its label as a text string with HTML contents, which must be rendered instead of escaped.');
         static::assertSelectorNotExists('.form-fieldset.fieldset-8.form-fieldset-no-header');
-        static::assertSame($crawler->filter('label[for="FormTestEntity_street"]')->html(), '<a href="https://example.com">Street</a> <b>Lorem</b> Ipsum', 'The "street" field defines its label as translatable string with HTML contents, which must be rendered instead of escaped (HTML is allowed in field labels).');
+        static::assertSame(trim($crawler->filter('label[for="FormTestEntity_street"]')->html()), '<a href="https://example.com">Street</a> <b>Lorem</b> Ipsum', 'The "street" field defines its label as translatable string with HTML contents, which must be rendered instead of escaped (HTML is allowed in field labels).');
     }
 
     public function testFieldsLabelsOnDetailPage(): void

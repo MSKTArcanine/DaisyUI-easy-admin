@@ -1,200 +1,298 @@
 import DirtyForm from 'dirty-form';
-import { setTabAsActive } from './tabs';
+import { setCollapse, setTabAsActive } from './ui/interactions';
 
-document.addEventListener('DOMContentLoaded', () => {
-    new Form();
-});
+const KEY = Symbol.for('easyadmin.forms');
+const SELECTOR = '.ea-new-form,.ea-edit-form';
+const controls = (form) => [...form.elements].filter((element) => element.willValidate && !element.disabled);
+const invalidControls = (form) => controls(form).filter((element) => !element.validity.valid);
+const submitterFor = (element) => element.closest('button,input[type="submit"],input[type="image"]');
 
-class Form {
-    constructor() {
-        this.#createUnsavedFormChangesWarning();
-        this.#createFieldsWithErrors();
-        this.#preventMultipleFormSubmission();
-    }
+class EasyAdminDirtyForm extends DirtyForm {
+    #submissions = new WeakMap();
 
-    #createUnsavedFormChangesWarning() {
-        ['.ea-new-form', '.ea-edit-form'].forEach((formSelector) => {
-            const form = document.querySelector(formSelector);
-            if (null === form) {
-                return;
-            }
-
-            // although DirtyForm supports passing a custom message to display,
-            // modern browsers don't allow to display custom messages to protect users
-            new DirtyForm(form);
-        });
-    }
-
-    #createFieldsWithErrors() {
-        const handleFieldsWithErrors = (form, pageName) => {
-            // errors are intercepted before submit to avoid the browser error "An invalid form control
-            // with name='...' is not focusable" (e.g. for fields inside hidden tabs); the 'has-error'
-            // class of form groups is removed when clicking on them to support custom/complex fields
-            //
-            // the default submit buttons live outside the <form> element and are associated to it
-            // via the HTML 'form' attribute; that's why this uses form.elements (which includes
-            // those buttons) instead of form.querySelectorAll() (which only finds descendants)
-            Array.from(form.elements)
-                .filter((element) => 'submit' === element.type)
-                .forEach((button) => {
-                    button.addEventListener('click', function onSubmitButtonsClick(clickEvent) {
-                        let formHasErrors = false;
-
-                        // '.tab-nav-item-badge' are the custom badges configured for tabs, not error counters
-                        document
-                            .querySelectorAll(
-                                '[data-ea-error-count], .form-tabs-tablist .nav-item .badge-danger.badge:not(.tab-nav-item-badge), .form-fieldset-title-content .badge-danger.badge'
-                            )
-                            .forEach((badge) => {
-                                badge.parentElement.removeChild(badge);
-                            });
-                        document.querySelectorAll('.form-fieldset.has-fieldset-error').forEach((fieldset) => {
-                            fieldset.classList.remove('has-fieldset-error');
-                        });
-
-                        if (null !== form.getAttribute('novalidate')) {
-                            return;
-                        }
-
-                        form.querySelectorAll('input, select, textarea').forEach((input) => {
-                            if (!input.disabled && !input.validity.valid) {
-                                formHasErrors = true;
-
-                                const formTab = input.closest('div.tab-pane');
-                                if (formTab) {
-                                    const navLinkTab = document.querySelector(
-                                        `[data-bs-target="#${formTab.id}"], a[href="#${formTab.id}"]`
-                                    );
-
-                                    if (navLinkTab) {
-                                        navLinkTab.classList.add('has-error');
-
-                                        const badge = navLinkTab.querySelector('.badge:not(.tab-nav-item-badge)');
-                                        if (badge) {
-                                            badge.textContent = (Number.parseInt(badge.textContent) + 1).toString();
-                                        } else {
-                                            const newErrorBadge = document.createElement('span');
-                                            newErrorBadge.classList.add('badge', 'badge-danger');
-                                            newErrorBadge.setAttribute('data-ea-error-count', '');
-                                            newErrorBadge.textContent = '1';
-                                            navLinkTab.appendChild(newErrorBadge);
-                                        }
-                                    }
-                                }
-
-                                const formFieldset = input.closest('div.form-fieldset');
-                                if (formFieldset) {
-                                    const fieldsetTitleContent =
-                                        formFieldset.querySelector('.form-fieldset-title-content');
-
-                                    formFieldset.classList.add('has-fieldset-error');
-
-                                    if (fieldsetTitleContent) {
-                                        const badge = fieldsetTitleContent.querySelector('.badge');
-                                        if (badge) {
-                                            badge.textContent = (Number.parseInt(badge.textContent) + 1).toString();
-                                        } else {
-                                            const newErrorBadge = document.createElement('span');
-                                            newErrorBadge.classList.add('badge', 'badge-danger');
-                                            newErrorBadge.setAttribute('data-ea-error-count', '');
-                                            newErrorBadge.textContent = '1';
-                                            fieldsetTitleContent.appendChild(newErrorBadge);
-                                        }
-                                    }
-                                }
-
-                                const formGroup = input.closest('div.form-group');
-                                formGroup?.classList.add('has-error');
-                                formGroup?.addEventListener('click', () => formGroup.classList.remove('has-error'), {
-                                    once: true,
-                                });
-                            }
-                        });
-
-                        if (formHasErrors) {
-                            clickEvent.preventDefault();
-                            clickEvent.stopPropagation();
-
-                            const firstTabWithErrors = document.querySelector(
-                                '.form-tabs-tablist .nav-tabs .nav-item .nav-link.has-error'
-                            );
-                            if (null !== firstTabWithErrors) {
-                                setTabAsActive(firstTabWithErrors.id);
-                            }
-
-                            document
-                                .querySelectorAll('.form-fieldset.has-fieldset-error')
-                                .forEach((fieldsetWithErrors) => {
-                                    const collapsedBody = fieldsetWithErrors.querySelector(
-                                        '.form-fieldset-body.collapse:not(.show)'
-                                    );
-                                    if (collapsedBody) {
-                                        bootstrap.Collapse.getOrCreateInstance(collapsedBody, { toggle: false }).show();
-                                        const collapseToggle =
-                                            fieldsetWithErrors.querySelector('.form-fieldset-collapse');
-                                        if (collapseToggle) {
-                                            collapseToggle.classList.remove('collapsed');
-                                            collapseToggle.setAttribute('aria-expanded', 'true');
-                                        }
-                                    }
-                                });
-
-                            document.dispatchEvent(
-                                new CustomEvent('ea.form.error', {
-                                    cancelable: true,
-                                    detail: { page: pageName, form: form },
-                                })
-                            );
-                        }
-                    });
-                });
-
-            form.addEventListener('submit', (submitEvent) => {
-                const eaEvent = new CustomEvent('ea.form.submit', {
-                    cancelable: true,
-                    detail: { page: pageName, form: form },
-                });
-                const eaEventResult = document.dispatchEvent(eaEvent);
-                if (false === eaEventResult) {
-                    submitEvent.preventDefault();
-                    submitEvent.stopPropagation();
+    handleSubmit(event) {
+        if (event.target !== this.form) {
+            return;
+        }
+        let submission = this.#submissions.get(event);
+        if (!submission) {
+            submission = { dirty: this.isDirty };
+            this.#submissions.set(event, submission);
+            // native dispatch can run microtasks between listeners; inspect cancellation after the entire event
+            this.form.ownerDocument.defaultView.setTimeout(() => {
+                if (event.defaultPrevented) {
+                    this.isDirty ||= submission.dirty;
                 }
-            });
-        };
-
-        ['.ea-new-form', '.ea-edit-form'].forEach((formSelector) => {
-            const form = document.querySelector(formSelector);
-            if (null !== form) {
-                handleFieldsWithErrors(form, formSelector.includes('-new-') ? 'new' : 'edit');
-            }
-        });
+                this.#submissions.delete(event);
+            }, 0);
+        }
+        submission.dirty ||= this.isDirty;
+        this.isDirty = false;
     }
+}
 
-    #preventMultipleFormSubmission() {
-        ['.ea-new-form', '.ea-edit-form'].forEach((formSelector) => {
-            const form = document.querySelector(formSelector);
-            if (null === form) {
+function ancestors(element) {
+    const result = [];
+    for (let parent = element.parentElement; parent; parent = parent.parentElement) {
+        result.push(parent);
+    }
+    return result;
+}
+
+function tabFor(pane) {
+    return [...pane.ownerDocument.querySelectorAll('[data-ea-toggle="tab"]')].find(
+        (tab) => (tab.getAttribute('data-ea-target') ?? tab.getAttribute('href')) === `#${pane.id}`
+    );
+}
+
+function fieldsetTitle(fieldset) {
+    return [...fieldset.querySelectorAll('.form-fieldset-title-content')].find(
+        (title) => title.closest('.form-fieldset') === fieldset
+    );
+}
+
+function resetIndicators(state) {
+    const containers = new Set([state.form, ...state.indicators]);
+    for (const control of controls(state.form)) {
+        for (const parent of ancestors(control)) {
+            if (parent.matches('.tab-pane,[data-ea-tab-panel]')) {
+                const tab = tabFor(parent);
+                if (tab) {
+                    containers.add(tab);
+                }
+            }
+        }
+    }
+    for (const container of containers) {
+        for (const badge of container.querySelectorAll(
+            '[data-ea-error-count],.form-tabs-tablist .nav-item .badge-danger.badge:not(.tab-nav-item-badge),.form-fieldset-title-content .badge-danger.badge'
+        )) {
+            badge.remove();
+        }
+        container.classList.remove('has-error', 'has-fieldset-error');
+    }
+    state.indicators.clear();
+    for (const control of state.clientInvalid.keys()) {
+        const original = state.clientInvalid.get(control);
+        original === null ? control.removeAttribute('aria-invalid') : control.setAttribute('aria-invalid', original);
+    }
+    state.clientInvalid.clear();
+}
+
+function showErrors(state, invalid) {
+    resetIndicators(state);
+    const counters = new Map();
+    for (const control of invalid) {
+        state.clientInvalid.set(control, control.getAttribute('aria-invalid'));
+        control.setAttribute('aria-invalid', 'true');
+        const row = control.closest('.form-group');
+        if (row) {
+            row.classList.add('has-error');
+            state.indicators.add(row);
+        }
+        for (const parent of ancestors(control)) {
+            if (parent.matches('.tab-pane,[data-ea-tab-panel]')) {
+                const tab = tabFor(parent);
+                if (tab) {
+                    tab.classList.add('has-error');
+                    state.indicators.add(tab);
+                    counters.set(tab, (counters.get(tab) ?? 0) + 1);
+                }
+            }
+            if (parent.matches('.form-fieldset')) {
+                parent.classList.add('has-fieldset-error');
+                state.indicators.add(parent);
+                const title = fieldsetTitle(parent);
+                if (title) {
+                    counters.set(title, (counters.get(title) ?? 0) + 1);
+                }
+            }
+            if (parent.matches('[data-ea-collapse]')) {
+                setCollapse(parent, true);
+            }
+        }
+    }
+    for (const [container, count] of counters) {
+        const badge = state.form.ownerDocument.createElement('span');
+        badge.className = 'badge badge-error';
+        badge.setAttribute('data-ea-error-count', '');
+        badge.textContent = String(count);
+        container.append(badge);
+    }
+    for (const parent of ancestors(invalid[0]).reverse()) {
+        if (parent.matches('.tab-pane,[data-ea-tab-panel]')) {
+            const tab = tabFor(parent);
+            if (tab) {
+                setTabAsActive(tab.id);
+            }
+        }
+    }
+    state.form.ownerDocument.dispatchEvent(
+        new CustomEvent('ea.form.error', {
+            cancelable: true,
+            detail: { page: state.page, form: state.form },
+        })
+    );
+    state.reporting = true;
+    try {
+        invalid[0].focus();
+        invalid[0].reportValidity();
+    } finally {
+        state.reporting = false;
+    }
+}
+
+function validate(state, submitter) {
+    if (state.form.noValidate || submitter?.formNoValidate) {
+        return true;
+    }
+    const invalid = invalidControls(state.form);
+    if (invalid.length === 0) {
+        resetIndicators(state);
+        return true;
+    }
+    showErrors(state, invalid);
+    return false;
+}
+
+export function initForms(root = document) {
+    const document = root.ownerDocument ?? root;
+    document[KEY] ??= { forms: new Map() };
+    const registry = document[KEY];
+    const forms = [...(root.matches?.(SELECTOR) ? [root] : []), ...root.querySelectorAll(SELECTOR)];
+    for (const form of forms) {
+        if (registry.forms.has(form)) {
+            continue;
+        }
+        const state = {
+            form,
+            page: form.matches('.ea-new-form') ? 'new' : 'edit',
+            dirty: new EasyAdminDirtyForm(form),
+            indicators: new Set(),
+            clientInvalid: new Map(),
+            reporting: false,
+            pendingInvalid: false,
+            submitting: false,
+        };
+        registry.forms.set(form, state);
+        form.addEventListener('submit', (event) => {
+            if (state.submitting) {
+                event.preventDefault();
                 return;
             }
-
-            form.addEventListener(
-                'submit',
-                (submitEvent) => {
-                    if (submitEvent.defaultPrevented) {
-                        return;
-                    }
-
-                    // this timeout is needed to include the disabled button into the submitted form
-                    setTimeout(() => {
-                        Array.from(form.elements)
-                            .filter((element) => 'submit' === element.type)
-                            .forEach((button) => {
-                                button.setAttribute('disabled', 'disabled');
-                            });
-                    }, 1);
-                },
-                false
+            const allowed = document.dispatchEvent(
+                new CustomEvent('ea.form.submit', {
+                    cancelable: true,
+                    detail: { page: state.page, form },
+                })
             );
+            if (!allowed) {
+                event.preventDefault();
+                event.stopPropagation();
+                return;
+            }
+            if (event.defaultPrevented) {
+                return;
+            }
+            state.submitting = true;
+            document.defaultView.setTimeout(() => {
+                if (event.defaultPrevented) {
+                    state.submitting = false;
+                }
+            }, 0);
+            // serialize the original submitter before disabling its associated buttons
+            document.defaultView.setTimeout(() => {
+                if (!event.defaultPrevented) {
+                    for (const button of [...form.elements].filter((element) => element.type === 'submit')) {
+                        button.disabled = true;
+                    }
+                }
+            }, 1);
         });
     }
+    if (!registry.bound) {
+        registry.bound = true;
+        bind(document, registry);
+    }
+}
+
+function bind(document, registry) {
+    document.addEventListener('click', (event) => {
+        const row = event.target.closest('.form-group.has-error');
+        if (registry.forms.has(row?.closest('form'))) {
+            row.classList.remove('has-error');
+        }
+    });
+    document.addEventListener(
+        'click',
+        (event) => {
+            const button = submitterFor(event.target);
+            const state = registry.forms.get(button?.form);
+            if (button?.type !== 'submit' || !state) {
+                return;
+            }
+            if (!validate(state, button)) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        },
+        true
+    );
+    document.addEventListener(
+        'invalid',
+        (event) => {
+            const state = registry.forms.get(event.target.form);
+            if (!state || state.reporting || state.form.noValidate) {
+                return;
+            }
+            event.preventDefault();
+            if (!state.pendingInvalid) {
+                state.pendingInvalid = true;
+                queueMicrotask(() => {
+                    state.pendingInvalid = false;
+                    const invalid = invalidControls(state.form);
+                    if (invalid.length > 0) {
+                        showErrors(state, invalid);
+                    }
+                });
+            }
+        },
+        true
+    );
+    for (const name of ['input', 'change']) {
+        document.addEventListener(name, (event) => {
+            const state = registry.forms.get(event.target.form);
+            if (!state || event.target.type === 'hidden' || event.target.disabled) {
+                return;
+            }
+            state.dirty.checkValue(event);
+            if (['checkbox', 'radio'].includes(event.target.type)) {
+                state.dirty.isDirty = true;
+            }
+            if (event.target.validity?.valid && state.clientInvalid.has(event.target)) {
+                const original = state.clientInvalid.get(event.target);
+                original === null
+                    ? event.target.removeAttribute('aria-invalid')
+                    : event.target.setAttribute('aria-invalid', original);
+                state.clientInvalid.delete(event.target);
+                event.target.closest('.form-group')?.classList.remove('has-error');
+            }
+        });
+    }
+    for (const name of ['ea.collection.item-added', 'ea.collection.item-removed']) {
+        document.addEventListener(name, (event) => {
+            const form = event.detail?.collection?.closest('form');
+            const state = registry.forms.get(form);
+            if (state) {
+                state.dirty.isDirty = true;
+            }
+            initForms(event.detail?.newElement ?? document);
+        });
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => initForms());
+} else {
+    initForms();
 }

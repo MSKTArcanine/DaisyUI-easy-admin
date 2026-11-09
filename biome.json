@@ -17,7 +17,6 @@
             "!**/tests/Browser/public/assets-built",
             "!**/.claude",
             "!**/assets/js/autocomplete.js",
-            "!**/assets/js/field-collection.js",
             "!**/public/entrypoints.json",
             "!**/public/manifest.json"
         ]

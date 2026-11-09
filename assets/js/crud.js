@@ -3,7 +3,7 @@ import Autocomplete from './autocomplete';
 import { sanitizeUrl, toggleVisibilityClasses } from './helpers';
 import { initOverlays } from './overlays';
 import { initTabs } from './tabs';
-import { initEasyAdminUI } from './ui/interactions';
+import { closeDialog, initEasyAdminUI } from './ui/interactions';
 import { initShell } from './ui/shell';
 
 const buttonColorClasses = [
@@ -584,6 +584,29 @@ class CrudApp {
                             const form = document.querySelector('#action-confirmation-form');
                             form.setAttribute('action', formAction);
                             form.submit();
+                        }
+                        return;
+                    }
+
+                    // associated CRUD save buttons need native validation, events and their original payload
+                    const associatedForm = actionElement.form;
+                    if (actionElement.type === 'submit' && associatedForm?.matches('.ea-new-form,.ea-edit-form')) {
+                        if (!sanitizeUrl(associatedForm.action)) {
+                            return;
+                        }
+                        const submitAfterClose = (event) => {
+                            if (
+                                event.detail.reason === 'confirm' &&
+                                associatedForm.isConnected &&
+                                !actionElement.disabled
+                            ) {
+                                associatedForm.requestSubmit(actionElement);
+                            }
+                        };
+                        dialog.addEventListener('ea.modal.hidden', submitAfterClose, { once: true });
+                        closeDialog(dialog, 'confirm');
+                        if (dialog.open) {
+                            dialog.removeEventListener('ea.modal.hidden', submitAfterClose);
                         }
                         return;
                     }

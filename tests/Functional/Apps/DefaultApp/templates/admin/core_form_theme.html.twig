@@ -1,0 +1,19 @@
+{% form_theme form '@EasyAdmin/crud/form_theme.html.twig' %}
+<!DOCTYPE html>
+<html lang="en">
+<body>
+{{ form_start(form) }}
+    {{ form_errors(form) }}
+    <span id="application-description">{{ 'Application description'|trans }}</span>
+    {{ form_row(form.title) }}
+    {{ form_row(form.rich) }}
+    {{ form_row(form.active) }}
+    {{ form_row(form.mode) }}
+    <div id="standalone-money">{{ form_widget(form.amount) }}</div>
+    <div id="row-money">{{ form_row(form.rowAmount) }}</div>
+    <div id="standalone-percent">{{ form_widget(form.ratio) }}</div>
+    <div id="row-percent">{{ form_row(form.rowRatio) }}</div>
+    {{ form_row(form.tags) }}
+{{ form_end(form) }}
+</body>
+</html>

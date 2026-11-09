@@ -42,6 +42,7 @@ if ('seed' === $_SERVER['argv'][1]) {
         ->setCreatedAt(new DateTimeImmutable('2026-01-01T12:00:00Z'))->setAuthor($author)->addCategory($categories[0]);
     $manager->persist($post);
     $widget = (new FieldTestEntity())->setTextField('Widget 1')->setCollectionField(['Entry 1'])
+        ->setArrayField([['title' => 'Group 1', 'items' => ['Child 1']]])
         ->setCodeEditorField('const value = 1;')->setTextEditorField('<div>Rich text 1</div>')->setManyToOneAssociation($categories[0]);
     $manager->persist($widget);
     $layout = (new FormTestEntity())->setName('Layout 1')->setEmail('layout@example.com')
@@ -58,7 +59,7 @@ $widgets = array_map(static function (FieldTestEntity $widget): array {
     $filename = $widget->getFileField();
     $file = null !== $filename ? Kernel::storageDir().'/uploads/'.$filename : null;
 
-    return ['id' => $widget->getId(), 'text' => $widget->getTextField(), 'entries' => $widget->getCollectionField(),
+    return ['id' => $widget->getId(), 'text' => $widget->getTextField(), 'entries' => $widget->getCollectionField(), 'groups' => $widget->getArrayField(),
         'categoryId' => $widget->getManyToOneAssociation()?->getId(), 'file' => $filename,
         'fileContents' => null !== $file && is_file($file) ? file_get_contents($file) : null,
         'code' => $widget->getCodeEditorField(), 'richText' => $widget->getTextEditorField()];

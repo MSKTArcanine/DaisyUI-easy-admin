@@ -1,0 +1,317 @@
+{% block form_row %}
+    {% set field = form.vars.ea_vars.field|default(null) %}
+    {% if field is not null %}
+        <div class="{{ (field.columns ?? field.defaultColumns ?? '')|ea_ui_classes }}">
+            {{ block('ea_form_row_content') }}
+        </div>
+        {% if field.columns is null %}<div class="{{ 'flex-fill'|ea_ui_classes('row') }}"></div>{% endif %}
+    {% else %}
+        {{ block('ea_form_row_content') }}
+    {% endif %}
+{% endblock form_row %}
+
+{% block repeated_row %}
+    {% set field = form.vars.ea_vars.field|default(null) %}
+    {% set repeated_attr = row_attr|default({}) %}
+    {% set repeated_classes = (repeated_attr.class|default('') ~ ' ' ~ (field is not null ? (field.columns ?? field.defaultColumns ?? '') : ''))|ea_ui_classes %}
+    <div {% with {attr: repeated_attr|merge({class: repeated_classes})} %}{{ block('attributes') }}{% endwith %}>
+        {{ block('form_rows') }}
+    </div>
+    {% if field is not null and field.columns is null %}<div class="{{ 'flex-fill'|ea_ui_classes('row') }}"></div>{% endif %}
+{% endblock repeated_row %}
+
+{% block collection_row %}
+    {% if prototype is defined and not prototype.rendered %}
+        {% set row_attr = row_attr|merge({'data-prototype': form_row(prototype)}) %}
+    {% endif %}
+    {% set max_key = 0 %}
+    {% for key in form.children|keys %}
+        {% if key matches '/^\\d+$/' %}
+            {% set numeric_key = key|number_format(0, '', '', '') %}
+            {% if numeric_key > max_key %}{% set max_key = numeric_key %}{% endif %}
+        {% endif %}
+    {% endfor %}
+    {% set collection_field = form.vars.ea_vars.field|default(null) %}
+    {% set row_attr = row_attr|merge({
+        'data-ea-collection-field': 'true',
+        'data-entry-is-complex': collection_field is not null and collection_field.customOptions.get('entryIsComplex') ? 'true' : 'false',
+        'data-allow-add': allow_add ? 'true' : 'false',
+        'data-allow-delete': allow_delete ? 'true' : 'false',
+        'data-num-items': form.children is empty ? 0 : max_key + 1,
+        'data-form-type-name-placeholder': prototype is defined ? prototype.vars.name : '',
+        'data-ea-prototype-id': prototype is defined ? prototype.vars.id : '',
+        'data-ea-prototype-name': prototype is defined ? prototype.vars.full_name : '',
+    }) %}
+    {{ block('form_row') }}
+{% endblock collection_row %}
+
+{% block collection_widget %}
+    {# the "is iterable" check is needed because if an object implements __toString() and
+               returns an empty string, "is empty" returns true even if it's not a collection #}
+    {% set isEmptyCollection = value is null or (value is iterable and value is empty) %}
+    {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form.vars.ea_vars.field.fieldFqcn|default(false) %}
+
+    <div class="ea-form-collection-items">
+        {% if isEmptyCollection %}
+            {{ block('empty_collection') }}
+        {% elseif is_array_field %}
+            {{ block('form_widget') }}
+        {% else %}
+            <div class="accordion">
+                {{ block('form_widget') }}
+            </div>
+        {% endif %}
+    </div>
+
+    {% if isEmptyCollection or form.vars.prototype is defined %}
+        {% set attr = attr|merge({'data-empty-collection': block('empty_collection')}) %}
+    {% endif %}
+
+    {% if allow_add|default(false) and not disabled %}
+        <button type="button" class="btn btn-link field-collection-add-button">
+            <twig:ea:Icon name="internal:plus" class="me-1" />
+            {{ 'action.add_new_item'|trans({}, 'EasyAdminBundle') }}
+        </button>
+    {% endif %}
+{% endblock collection_widget %}
+
+{% block collection_entry_row %}
+    {% set parent_field = form_parent(form).vars.ea_vars.field|default(null) %}
+    {% set is_array_field = parent_field is not null and parent_field.fieldFqcn == 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' %}
+    {% set is_complex = parent_field is not null ? parent_field.customOptions.get('entryIsComplex')|default(false) : false %}
+    {% set to_string_method = parent_field is not null ? parent_field.customOptions.get('entryToStringMethod') : null %}
+    {% set allows_deleting_items = form_parent(form).vars.allow_delete|default(false) %}
+    {% set render_expanded = not form.vars.valid or (parent_field is not null and parent_field.customOptions.get('renderExpanded')|default(false)) %}
+    {% set entry_widget_attr = attr|default({}) %}
+    {% if form.vars.errors|length > 0 %}
+        {% set entry_descriptions = entry_widget_attr['aria-describedby']|default('')|split(' ') %}
+        {% if (id ~ '_errors') not in entry_descriptions %}{% set entry_descriptions = entry_descriptions|merge([id ~ '_errors']) %}{% endif %}
+        {% set entry_widget_attr = entry_widget_attr|merge({'aria-describedby': entry_descriptions|join(' ')|trim}) %}
+    {% endif %}
+    {% set delete_item_button %}
+        <button type="button" class="btn btn-link btn-error field-collection-delete-button"
+                title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}" aria-label="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">
+            <twig:ea:Icon name="internal:delete" />
+        </button>
+    {% endset %}
+
+    {% set entry_row_attr = row_attr|default({}) %}
+    {% set entry_row_classes = html_classes('field-collection-item', entry_row_attr.class|default(''), is_complex ? 'field-collection-item-complex', not form.vars.valid ? 'is-invalid') %}
+    <div {% with {attr: entry_row_attr|merge({class: entry_row_classes})} %}{{ block('attributes') }}{% endwith %}>
+        {% if is_array_field|default(false) %}
+            {{ form_label(form) }}
+            {{ form_widget(form, {attr: entry_widget_attr}) }}
+            {{ form_errors(form) }}
+            {% if allows_deleting_items and not disabled %}
+                {{ delete_item_button }}
+            {% endif %}
+        {% else %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button {{ render_expanded ? '' : 'collapsed' }}" type="button" data-ea-toggle="collapse" data-ea-target="#{{ id }}-contents" aria-expanded="{{ render_expanded ? 'true' : 'false' }}" aria-controls="{{ id }}-contents">
+                        <twig:ea:Icon name="internal:chevron-right" class="form-collection-item-collapse-marker" />
+                        {{ value|ea_as_string(to_string_method) }}
+                    </button>
+
+                    {% if allows_deleting_items and not disabled %}
+                        {{ delete_item_button }}
+                    {% endif %}
+                </h2>
+                <div id="{{ id }}-contents" class="accordion-collapse {{ render_expanded ? 'show' }}" data-ea-collapse{% if not render_expanded %} hidden{% endif %}>
+                    <div class="accordion-body">
+                        {{ form_errors(form) }}
+                        <div class="row ea-form-row">
+                            {{ form_widget(form, {attr: entry_widget_attr}) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock collection_entry_row %}
+
+{% block form_widget_compound %}
+    {% if 'collection' in block_prefixes %}
+        {% set is_empty_collection = value is null or (value is iterable and value is empty) %}
+        {% if is_empty_collection or form.vars.prototype is defined %}
+            {% set attr = attr|merge({'data-empty-collection': block('empty_collection')}) %}
+        {% endif %}
+        {% set attr = attr|merge({'data-ea-collection-items': 'true'}) %}
+    {% endif %}
+    <div class="form-widget-compound">
+        {{ block('ea_base_form_widget_compound') }}
+    </div>
+{% endblock form_widget_compound %}
+
+{% block empty_collection %}
+    <div class="empty collection-empty">
+        {{ include(ea() is not null ? ea().templatePath('label/empty') : '@EasyAdmin/label/empty.html.twig') }}
+    </div>
+{% endblock empty_collection %}
+
+{% block ea_crud_rest %}
+    {{ form_rest(form) }}
+{% endblock ea_crud_rest %}
+
+{% block ea_crud_widget %}
+    {% for field in form %}
+        {{ form_row(field) }}
+    {% endfor %}
+{% endblock ea_crud_widget %}
+
+{% block ea_form_row_row %}
+    {% set row_attributes = form.vars.row_attr|default({}) %}
+    {% set row_attributes = row_attributes|merge({class: row_attributes.class|default('')|ea_ui_classes('row')}) %}
+    <div {% with {attr: row_attributes} %}{{ block('attributes') }}{% endwith %}></div>
+{% endblock ea_form_row_row %}
+
+{% block ea_form_column_group_open_row %}
+    {# if columns are inside tabs, don't add a '.row' element because the tab pane already opens it #}
+    {% if not form.vars.ea_is_inside_tab|default(false) %}
+        <div class="row ea-form-row">
+    {% endif %}
+{% endblock ea_form_column_group_open_row %}
+
+{% block ea_form_column_group_close_row %}
+    {# if columns are inside tabs, we don't add a '.row' element because
+       the tab pane already opens it; so, don't close it here #}
+    {% if not form.vars.ea_is_inside_tab|default(false) %}
+        </div>
+    {% endif %}
+{% endblock ea_form_column_group_close_row %}
+
+{% block ea_form_column_open_row %}
+    {% set field = form.vars.ea_vars.field %}
+    {% set field_icon = field.getCustomOption('icon') %}
+    {% set has_label = field.label is ea_is_not_empty %}
+    {% set has_help = field.help is ea_is_not_empty %}
+    {% set column_has_title = field_icon != null or has_label or has_help %}
+
+    {% set column_attributes = form.vars.attr|default({}) %}
+    {% set column_classes = html_classes('form-column', not column_has_title ? 'form-column-no-header', field.cssClass|ea_ui_classes, column_attributes.class|default('')|ea_ui_classes) %}
+    <div {% with {attr: column_attributes|merge({class: column_classes})} %}{{ block('attributes') }}{% endwith %}>
+        {% if column_has_title %}
+            <div class="form-column-title">
+                <div class="form-column-title-content">
+                    {% if field_icon %}<twig:ea:Icon name="{{ field_icon }}" class="form-column-icon" />{% endif %}
+                    {% if has_label %}{{ field.label|trans(domain: ea().i18n.translationDomain)|raw }}{% endif %}
+                </div>
+
+                {% if has_help %}
+                    <div class="form-column-help">{{ field.help|trans(domain: ea().i18n.translationDomain)|raw }}</div>
+                {% endif %}
+            </div>
+        {% endif %}
+{% endblock ea_form_column_open_row %}
+
+{% block ea_form_column_close_row %}
+    </div>
+{% endblock ea_form_column_close_row %}
+
+{% block ea_form_fieldset_open_ealabel %}
+    {% if ea_is_collapsible %}
+        <twig:ea:Icon name="internal:chevron-right" class="form-fieldset-collapse-marker" aria-hidden="true" />
+    {% endif %}
+
+    {% if ea_icon %}
+        <twig:ea:Icon name="{{ ea_icon }}" class="form-fieldset-icon" />
+    {% endif %}
+
+    {{ form.vars.label|trans|raw }}
+{% endblock ea_form_fieldset_open_ealabel %}
+
+{% block ea_form_fieldset_open_label %}
+    {% set has_help = ea_help is ea_is_not_empty %}
+    {% set collapsed_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_COLLAPSED') %}
+    {% set fieldset_error_count_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_FIELDSET_ERROR_COUNT') %}
+    {% set fieldset_error_count = form.vars.ea_vars.field.getCustomOption(fieldset_error_count_option_name)|default(0) %}
+    {% set is_collapsed = form.vars.ea_vars.field.getCustomOption(collapsed_option_name)|default(false) and fieldset_error_count|default(0) == 0 and not fieldset_has_errors|default(false) %}
+
+    <div class="form-fieldset-header {{ ea_is_collapsible ? 'collapsible' }} {{ has_help ? 'with-help' }}">
+        <div class="form-fieldset-title">
+            {% if ea_is_collapsible %}
+                <a href="#content-{{ form.vars.name }}" data-ea-toggle="collapse" data-ea-target="#content-{{ form.vars.name }}"
+                   class="form-fieldset-title-content form-fieldset-collapse {{ is_collapsed ? 'collapsed' }}"
+                   aria-expanded="{{ is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ form.vars.name }}">
+                    {{ ea_form_ealabel(form) }}
+                    {%- if fieldset_error_count > 0 -%}
+                        <twig:ea:Badge color="danger" data-ea-error-count title="{{ 'form.tab.error_badge_title'|trans({'%count%': fieldset_error_count}, 'EasyAdminBundle') }}">{{ fieldset_error_count }}</twig:ea:Badge>
+                    {%- endif -%}
+                </a>
+            {% else %}
+                <span class="not-collapsible form-fieldset-title-content">
+                    {{ ea_form_ealabel(form) }}
+                    {%- if fieldset_error_count > 0 -%}
+                        <twig:ea:Badge color="danger" data-ea-error-count title="{{ 'form.tab.error_badge_title'|trans({'%count%': fieldset_error_count}, 'EasyAdminBundle') }}">{{ fieldset_error_count }}</twig:ea:Badge>
+                    {%- endif -%}
+                </span>
+            {% endif %}
+
+            {% if has_help %}
+                <div class="form-fieldset-help">{{ ea_help|trans|raw }}</div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock ea_form_fieldset_open_label %}
+
+{% block ea_form_fieldset_open_row %}
+    {% set has_help = ea_help is ea_is_not_empty %}
+    {% set has_label = form.vars.label is ea_is_not_empty %}
+    {% set fieldset_has_header = has_label or ea_icon or has_help %}
+    {% set collapsed_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_COLLAPSED') %}
+    {% set fieldset_error_count_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_FIELDSET_ERROR_COUNT') %}
+    {% set fieldset_has_errors = form.vars.ea_vars.field.getCustomOption(fieldset_error_count_option_name)|default(0) > 0 %}
+    {% set is_collapsed = form.vars.ea_vars.field.getCustomOption(collapsed_option_name)|default(false) and fieldset_error_count|default(0) == 0 and not fieldset_has_errors|default(false) %}
+
+    <div class="form-fieldset {{ not fieldset_has_header ? 'form-fieldset-no-header' }} {{ fieldset_has_errors ? 'has-fieldset-error' }} {{ ea_css_class|ea_ui_classes|ea_ui_classes('row') }} {{ form.vars.attr.class|default('')|ea_ui_classes }}" {% for key, value in form.vars.attr %}{% if key != 'class' %}{{ key }}="{{ value|e('html') }}" {% endif %}{% endfor %}>
+        <fieldset>
+            {% if fieldset_has_header %}
+                {{ form_label(form) }}
+            {% endif %}
+
+            <div id="content-{{ form.vars.name }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ not is_collapsed ? 'show' }}"{% if ea_is_collapsible %} data-ea-collapse{% if is_collapsed %} hidden{% endif %}{% endif %}>
+                <div class="row ea-form-row">
+{% endblock ea_form_fieldset_open_row %}
+
+{% block ea_form_fieldset_close_row %}
+                </div>
+            </div>
+        </fieldset>
+    </div>
+{% endblock ea_form_fieldset_close_row %}
+
+{% block ea_form_tablist_row %}
+    <twig:ea:Tabs tabs="{{ form.vars.ea_vars.field.getCustomOption('tabs') }}" translationDomain="{{ ea().i18n.translationDomain }}" />
+{% endblock ea_form_tablist_row %}
+
+{% block ea_form_tabpane_group_open_row %}
+    <div class="form-tabs-content">
+        <div class="tab-content" data-ea-tab-panels>
+{% endblock ea_form_tabpane_group_open_row %}
+
+{% block ea_form_tabpane_group_close_row %}
+        </div>
+    </div>
+{% endblock ea_form_tabpane_group_close_row %}
+
+{% block ea_form_tabpane_open_row %}
+    {% set tab_is_active_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_IS_ACTIVE') %}
+    {% set field = form.vars.ea_vars.field %}
+    {% set tab_is_active = field.getCustomOption(tab_is_active_option_name) %}
+    {% set tab_attributes = {role: 'tabpanel', 'aria-labelledby': 'tablist-' ~ ea_tab_id}|merge(form.vars.attr) %}
+    {% set tab_classes = html_classes('tab-pane', tab_is_active ? 'active', ea_css_class|ea_ui_classes|ea_ui_classes('row'), tab_attributes.class|default('')|ea_ui_classes) %}
+    {% set tab_attributes = tab_attributes|merge({id: ea_tab_id, class: tab_classes, 'data-ea-tab-panel': true, hidden: not tab_is_active}) %}
+    <div {% with {attr: tab_attributes} %}{{ block('attributes') }}{% endwith %}>
+        {% if ea_help %}
+            <div class="content-header-help tab-help">
+                {{ ea_help|trans(domain: ea().i18n.translationDomain)|raw }}
+            </div>
+        {% endif %}
+
+        <div class="row ea-form-row">
+{% endblock ea_form_tabpane_open_row %}
+
+{% block ea_form_tabpane_close_row %}
+        </div>
+    </div>
+{% endblock ea_form_tabpane_close_row %}

@@ -1,145 +1,65 @@
-{% use '@EasyAdmin/symfony-form-themes/bootstrap_5_layout.html.twig' %}
+{% use '@EasyAdmin/symfony-form-themes/form_div_layout.html.twig' with form_widget_compound as ea_base_form_widget_compound %}
+{% use '@EasyAdmin/crud/form_theme_layout.html.twig' %}
 
 {% block form_start %}
     {% if form.vars.errors|length > 0 and 'ea_crud' in form.vars.block_prefixes|default([]) %}
         {{ form_errors(form, {attr: {errorClass: 'global-invalid-feedback'}}) }}
     {% endif %}
-
     {{ parent() }}
-{% endblock form_start %}
+{% endblock %}
 
 {% block form_end %}
-        {% if not render_rest is defined or render_rest %}
-            {{ form_rest(form) }}
-        {% endif %}
+    {% if not render_rest is defined or render_rest %}{{ form_rest(form) }}{% endif %}
     </form>
 {% endblock %}
 
 {% block form_errors %}
     {% if errors|length > 0 %}
-        {% for error in errors %}
-            <div class="{{ attr.errorClass|default('') }} invalid-feedback d-block">{{ error.message }}</div>
-        {% endfor %}
-    {% endif %}
-{% endblock form_errors %}
-
-{# Widgets #}
-
-{% block form_widget_simple -%}
-    {% if type is not defined or type not in ['file', 'hidden'] %}
-        {%- set attr = attr|merge({class: (attr.class|default(''))|trim}) -%}
-    {% endif %}
-    {%- if type is defined and (type == 'range' or type == 'color') %}
-        {# Attribute "required" is not supported #}
-        {%- set required = false -%}
-    {% endif %}
-    {{- parent() -}}
-{%- endblock form_widget_simple %}
-
-{# the currency/percent symbols are rendered as input addons by the form_row block,
-   so these widgets must not wrap the input in their own Bootstrap .input-group #}
-{% block money_widget %}{{ block('form_widget_simple') }}{% endblock %}
-
-{% block percent_widget %}{{ block('form_widget_simple') }}{% endblock %}
-
-{% block datetime_widget %}
-    {%- if widget != 'single_text' -%}
-        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-inline')|trim}) -%}
-    {%- endif -%}
-    <div class="datetime-widget datetime-widget-datetime">
-        {{- parent() -}}
-    </div>
-{% endblock datetime_widget %}
-
-{% block date_widget -%}
-    <div class="datetime-widget datetime-widget-date">
-        {{- parent() -}}
-    </div>
-{%- endblock date_widget %}
-
-{% block time_widget -%}
-    <div class="datetime-widget datetime-widget-time">
-        {{- parent() -}}
-    </div>
-{%- endblock time_widget %}
-
-{% block file_widget -%}
-    {% if vich|default(false) %}
-        {%- set type = type|default('file') -%}
-        {{- block('form_widget_simple') -}}
-    {% else %}
-        {{- block('form_widget_simple') -}}
-    {% endif %}
-{%- endblock %}
-
-{# Rows #}
-
-{% block form_row %}
-    {% set row_attr = row_attr|merge({
-        class: row_attr.class|default('') ~ ' form-group',
-    }) %}
-    {# 'field' is null for Symfony forms not created with EasyAdmin fields (e.g. custom forms rendered on custom dashboard pages) #}
-    {% set field = form.vars.ea_vars.field|default(null) %}
-
-    <div class="{{ field.columns ?? field.defaultColumns ?? '' }}">
-        {%- set row_class = row_class|default(row_attr.class|default('mb-3')) -%}
-        <div {% with {attr: row_attr|merge({class: (row_class ~ ((not compound or force_error|default(false)) and not valid ? ' has-error'))|trim})} %}{{ block('attributes') }}{% endwith %}>
-            {{- form_label(form) -}}
-            <div class="form-widget">
-                {# 'ea_addons' merges the addons configured with the prepend()/append() field methods
-                   and the default symbols of money/percent fields (see EaCrudFormTypeExtension) #}
-                {% set ea_addons = ea_addons|default({prepend: [], append: []}) %}
-
-                {% if ea_addons.prepend is not empty or ea_addons.append is not empty %}
-                    <div class="ea-input-group {{ disabled ? 'ea-input-group-disabled' }}">
-                        {% for addon in ea_addons.prepend %}
-                            <span class="ea-input-addon ea-input-addon-prepend">
-                                {%- if addon.icon %}<twig:ea:Icon name="{{ addon.icon }}" />{% endif %}{% if addon.html %}{{ addon.html|trans|raw }}{% elseif addon.text %}{{ addon.text }}{% endif -%}
-                            </span>
-                        {% endfor %}
-                        {{ form_widget(form) }}
-                        {% for addon in ea_addons.append %}
-                            <span class="ea-input-addon ea-input-addon-append">
-                                {%- if addon.icon %}<twig:ea:Icon name="{{ addon.icon }}" />{% endif %}{% if addon.html %}{{ addon.html|trans|raw }}{% elseif addon.text %}{{ addon.text }}{% endif -%}
-                            </span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form_widget(form) }}
-                {% endif %}
-
-                {% if field.help ?? false %}
-                    <small class="form-text form-help">{{ field.help|trans(label_translation_parameters, translation_domain)|raw }}</small>
-                {% elseif form.vars.help ?? false %}
-                    <small class="form-text form-help">{{ form.vars.help|trans(form.vars.help_translation_parameters, form.vars.translation_domain)|raw }}</small>
-                {% endif %}
-
-                {{- form_errors(form) -}}
-            </div>
+        <div id="{{ id }}_errors" class="{{ html_classes('ea-form-errors invalid-feedback', attr.errorClass|default('')) }}" role="alert">
+            {% for error in errors %}<div class="form-error">{{ error.message }}</div>{% endfor %}
         </div>
-    </div>
-
-    {# if a field doesn't define its columns explicitly, insert a fill element to make the field take the entire row space #}
-    {% if field.columns|default(null) is null %}
-        <div class="flex-fill"></div>
     {% endif %}
-{% endblock form_row %}
+{% endblock %}
 
-{% block repeated_row %}
-    {% set field = form.vars.ea_vars.field|default(null) %}
-
-    <div class="{{ field.columns ?? field.defaultColumns ?? '' }}">
-        {{- block('form_rows') -}}
-    </div>
-
-    {# if a field doesn't define its columns explicitly, insert a fill element to make the field take the entire row space #}
-    {% if field.columns|default(null) is null %}
-        <div class="flex-fill"></div>
+{% block form_widget_simple %}
+    {% set widget_class = type|default('text') == 'hidden' ? '' : (type|default('text') == 'file' ? 'file-input' : (type|default('text') == 'range' ? 'range' : 'input')) %}
+    {% set invalid_class = widget_class == 'file-input' ? 'file-input-error' : (widget_class == 'range' ? 'range-error' : 'input-error') %}
+    {% if widget_class is not empty %}
+        {% set attr = attr|merge({class: html_classes(attr.class|default(''), widget_class, not valid ? invalid_class)}) %}
     {% endif %}
+    {{ parent() }}
+{% endblock %}
 
-{% endblock repeated_row %}
+{% block textarea_widget %}
+    {% set attr = attr|merge({class: html_classes(attr.class|default(''), 'textarea', {'textarea-error': not valid})}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block file_widget %}
+    {% set type = type|default('file') %}
+    {{ block('form_widget_simple') }}
+{% endblock %}
+
+{% block widget_attributes %}
+    {% if not valid %}{% set attr = attr|merge({'aria-invalid': 'true'}) %}{% endif %}
+    {{ parent() }}
+{% endblock %}
+
+{% block widget_container_attributes %}
+    {% if not valid %}{% set attr = attr|merge({'aria-invalid': 'true'}) %}{% endif %}
+    {{ parent() }}
+{% endblock %}
+
+{% block money_widget %}
+    {% if ea_widget_is_inside_addon_group|default(false) %}{{ block('form_widget_simple') }}{% else %}{{ parent() }}{% endif %}
+{% endblock %}
+
+{% block percent_widget %}
+    {% if ea_widget_is_inside_addon_group|default(false) %}{{ block('form_widget_simple') }}{% else %}{{ parent() }}{% endif %}
+{% endblock %}
 
 {% block choice_widget_collapsed %}
+    {% set attr = attr|merge({class: html_classes(attr.class|default(''), 'select', {'select-error': not valid})}) %}
     {% if 'ea-autocomplete' == attr['data-ea-widget']|default(false) %}
         {% set attr = attr|merge({
             'data-ea-i18n-no-results-found': 'autocomplete.no-results-found'|trans({}, 'EasyAdminBundle'),
@@ -147,189 +67,208 @@
             'data-ea-i18n-loading-more-results': 'autocomplete.loading-more-results'|trans({}, 'EasyAdminBundle'),
         }) %}
     {% endif %}
-
     {{ parent() }}
-{% endblock choice_widget_collapsed %}
+{% endblock %}
 
-{% block collection_row %}
-    {% if prototype is defined and not prototype.rendered %}
-        {% set row_attr = row_attr|merge({'data-prototype': form_row(prototype)}) %}
-    {% endif %}
-
-    {% set maxKey = 0 %}
-    {% for key in form.children|keys %}
-        {% if key matches '/^\\d+$/' %}
-            {% set intKey = key|number_format(0, '', '', '') %}
-            {% if intKey > maxKey %}
-                {% set maxKey = intKey %}
-            {% endif %}
-        {% endif %}
-    {% endfor %}
-
-    {% set row_attr = row_attr|merge({
-        'data-ea-collection-field': 'true',
-        'data-entry-is-complex': (form.vars.ea_vars.field.customOptions.get('entryIsComplex') ?? false) ? 'true' : 'false',
-        'data-allow-add': allow_add ? 'true' : 'false',
-        'data-allow-delete': allow_delete ? 'true' : 'false',
-        'data-num-items': form.children is empty ? 0 : maxKey + 1,
-        'data-form-type-name-placeholder': prototype is defined ? prototype.vars.name : '',
-    }) %}
-
-    {{ block('form_row') }}
-{% endblock collection_row %}
-
-{% block collection_widget %}
-    {# the "is iterable" check is needed because if an object implements __toString() and
-               returns an empty string, "is empty" returns true even if it's not a collection #}
-    {% set isEmptyCollection = value is null or (value is iterable and value is empty) %}
-    {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form.vars.ea_vars.field.fieldFqcn|default(false) %}
-
-    <div class="ea-form-collection-items">
-        {% if isEmptyCollection %}
-            {{ block('empty_collection') }}
-        {% elseif is_array_field %}
-            {{ block('form_widget') }}
-        {% else %}
-            <div class="accordion">
-                {{ block('form_widget') }}
-            </div>
-        {% endif %}
+{% block choice_widget_expanded %}
+    {% set attr = attr|merge({class: html_classes(attr.class|default(''), 'ea-expanded-choice', {'ea-choice-inline': '-inline' in label_attr.class|default('')})}) %}
+    <div {{ block('widget_container_attributes') }}>
+        {% for child in form %}
+            {{ form_widget(child, {parent_label_class: label_attr.class|default(''), translation_domain: choice_translation_domain, valid: valid}) }}
+        {% endfor %}
     </div>
+{% endblock %}
 
-    {% if isEmptyCollection or form.vars.prototype is defined %}
-        {% set attr = attr|merge({'data-empty-collection': block('empty_collection')}) %}
+{% block checkbox_widget %}
+    {% set parent_label_class = parent_label_class|default(label_attr.class|default('')) %}
+    {% if 'checkbox-switch' in parent_label_class %}
+        {% set switch_variant = 'checkbox-switch-success' in parent_label_class ? 'success' : ('checkbox-switch-warning' in parent_label_class ? 'warning' : ('checkbox-switch-danger' in parent_label_class ? 'danger' : null)) %}
+        {% if not valid %}{% set attr = attr|merge({class: html_classes(attr.class|default(''), 'is-invalid'), 'aria-invalid': 'true'}) %}{% endif %}
+        {% set switch_widget %}
+            <twig:ea:Switch id="{{ id }}" name="{{ full_name }}" value="{{ value }}" checked="{{ checked ?? false }}" disabled="{{ disabled ?? false }}" required="{{ required ?? false }}" variant="{{ switch_variant }}" {{ ...attr }} />
+        {% endset %}
+        <div class="ea-choice-row form-check ea-switch-check">{{ form_label(form, null, {widget: switch_widget}) }}</div>
+    {% else %}
+        {% set attr = attr|merge({class: html_classes(attr.class|default(''), 'checkbox form-check-input', {'checkbox-error': not valid})}) %}
+        <div class="{{ html_classes('ea-choice-row form-check', {'ea-choice-inline form-check-inline': 'checkbox-inline' in parent_label_class}) }}">
+            {{ form_label(form, null, {widget: parent()}) }}
+        </div>
     {% endif %}
+{% endblock %}
 
-    {% if allow_add|default(false) and not disabled %}
-        <button type="button" class="btn btn-link field-collection-add-button">
-            <twig:ea:Icon name="internal:plus" class="pr-1" />
-            {{ 'action.add_new_item'|trans({}, 'EasyAdminBundle') }}
-        </button>
-    {% endif %}
-{% endblock collection_widget %}
+{% block radio_widget %}
+    {% set parent_label_class = parent_label_class|default(label_attr.class|default('')) %}
+    {% set attr = attr|merge({class: html_classes(attr.class|default(''), 'radio form-check-input', {'radio-error': not valid})}) %}
+    <div class="{{ html_classes('ea-choice-row form-check', {'ea-choice-inline form-check-inline': 'radio-inline' in parent_label_class}) }}">
+        {{ form_label(form, null, {widget: parent()}) }}
+    </div>
+{% endblock %}
 
-{% block collection_entry_row %}
-    {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form_parent(form).vars.ea_vars.field.fieldFqcn|default(false) %}
-    {% set is_complex = form_parent(form).vars.ea_vars.field.customOptions.get('entryIsComplex') ?? false %}
-    {% set to_string_method = form_parent(form).vars.ea_vars.field.customOptions.get('entryToStringMethod') ?? null %}
-    {% set allows_deleting_items = form_parent(form).vars.allow_delete|default(false) %}
-    {% set render_expanded = not form.vars.valid or form_parent(form).vars.ea_vars.field.customOptions.get('renderExpanded')|default(false) %}
-    {% set delete_item_button %}
-        <button type="button" class="btn btn-link btn-link-danger field-collection-delete-button"
-                title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">
-            <twig:ea:Icon name="internal:delete" />
-        </button>
-    {% endset %}
+{% block checkbox_label %}{{ block('checkbox_radio_label') }}{% endblock %}
+{% block radio_label %}{{ block('checkbox_radio_label') }}{% endblock %}
 
-    <div class="field-collection-item {{ is_complex ? 'field-collection-item-complex' }} {{ not form.vars.valid ? 'is-invalid' }}">
-        {% if is_array_field|default(false) %}
-            {{ form_label(form) }}
-            {{ form_widget(form) }}
-            {% if allows_deleting_items and not disabled %}
-                {{ delete_item_button }}
+{% block checkbox_radio_label %}
+    {% if widget is defined %}
+        {% set label_attr = label_attr|merge({for: id, class: html_classes(label_attr.class|default(''), 'ea-choice-label form-check-label', {required: required})}) %}
+        {% set has_label = label is not same as(false) and label is not null and label is not same as('') %}
+        {% if label is not same as(false) and not has_label %}
+            {% set label = label_format is not empty ? label_format|replace({'%name%': name, '%id%': id}) : name|humanize %}
+        {% endif %}
+        {{ widget|raw }}
+        <label {% with {attr: label_attr} %}{{ block('attributes') }}{% endwith %}>
+            {% if label is not same as(false) %}
+                {% set translated_label = translation_domain is same as(false) ? label : label|trans(label_translation_parameters|default({}), translation_domain) %}
+                {{ label_html|default(false) ? translated_label|raw : translated_label }}
             {% endif %}
-        {% else %}
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button {{ render_expanded ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#{{ id }}-contents">
-                        <twig:ea:Icon name="internal:chevron-right" class="form-collection-item-collapse-marker" />
-                        {{ value|ea_as_string(to_string_method) }}
-                    </button>
+        </label>
+    {% endif %}
+{% endblock %}
 
-                    {% if allows_deleting_items and not disabled %}
-                        {{ delete_item_button }}
-                    {% endif %}
-                </h2>
-                <div id="{{ id }}-contents" class="accordion-collapse collapse {{ render_expanded ? 'show' }}">
-                    <div class="accordion-body">
-                        <div class="row">
-                            {{ form_widget(form) }}
-                        </div>
-                    </div>
+{% block choice_label %}
+    {% set label_attr = label_attr|merge({class: label_attr.class|default('')|replace({'checkbox-inline': '', 'radio-inline': '', 'checkbox-custom': '', 'radio-custom': '', 'switch-custom': ''})|trim}) %}
+    {{ block('form_label') }}
+{% endblock %}
+
+{% block form_label %}
+    {% if label is not same as(false) %}
+        {% if compound %}
+            {% set element = 'legend' %}
+            {% set label_attr = label_attr|merge({class: html_classes(label_attr.class|default(''), 'ea-form-label col-form-label')}) %}
+        {% else %}
+            {% set label_attr = label_attr|merge({for: id, class: html_classes(label_attr.class|default(''), 'ea-form-label form-control-label')}) %}
+        {% endif %}
+        {% if required %}{% set label_attr = label_attr|merge({class: html_classes(label_attr.class|default(''), 'required')}) %}{% endif %}
+        {% if label is null %}
+            {% set label = label_format is not empty ? label_format|replace({'%name%': name, '%id%': id}) : name|humanize %}
+        {% endif %}
+        <{{ element|default('label') }} {% with {attr: label_attr} %}{{ block('attributes') }}{% endwith %}>
+            {% set translated_label = translation_domain is same as(false) ? label : label|trans(label_translation_parameters|default({}), translation_domain) %}
+            {{ label_html|default(false) ? translated_label|raw : translated_label }}
+        </{{ element|default('label') }}>
+    {% endif %}
+{% endblock %}
+
+{% block form_help %}
+    {% set help_attr = help_attr|merge({class: html_classes(help_attr.class|default(''), 'form-help ea-form-help')}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block ea_form_row_content %}
+    {% set field = form.vars.ea_vars.field|default(null) %}
+    {% set field_help = field is not null and field.help is ea_is_not_empty %}
+    {% set row_help = field_help ? field.help : help %}
+    {% set has_help = row_help is not same as(false) and row_help is not null and row_help is not same as('') %}
+    {% set descriptions = attr['aria-describedby']|default('')|split(' ') %}
+    {% if has_help and (id ~ '_help') not in descriptions %}{% set descriptions = descriptions|merge([id ~ '_help']) %}{% endif %}
+    {% if errors|length > 0 and (id ~ '_errors') not in descriptions %}{% set descriptions = descriptions|merge([id ~ '_errors']) %}{% endif %}
+    {% if descriptions|join(' ')|trim is not empty %}{% set attr = attr|merge({'aria-describedby': descriptions|join(' ')|trim}) %}{% endif %}
+    {% set row_class = row_class|default(row_attr.class|default('')) %}
+    {% set row_attr = row_attr|merge({class: html_classes(row_class, 'form-group ea-form-group', {'has-error': (not compound or force_error|default(false)) and not valid})}) %}
+    {% set row_element = compound ? 'fieldset' : 'div' %}
+    <{{ row_element }} {% with {attr: row_attr} %}{{ block('attributes') }}{% endwith %}>
+        {{ form_label(form) }}
+        <div class="form-widget">
+            {% set ea_addons = ea_addons|default({prepend: [], append: []}) %}
+            {% set has_addons = ea_addons.prepend is not empty or ea_addons.append is not empty %}
+            {% if has_addons %}
+                <div class="ea-input-group {{ disabled ? 'ea-input-group-disabled' }}">
+                    {% for addon in ea_addons.prepend %}
+                        <span class="ea-input-addon ea-input-addon-prepend">
+                            {% if addon.icon %}<twig:ea:Icon name="{{ addon.icon }}" />{% endif %}{% if addon.html %}{{ addon.html|trans|raw }}{% elseif addon.text %}{{ addon.text }}{% endif %}
+                        </span>
+                    {% endfor %}
+                    {{ form_widget(form, {attr: attr, ea_widget_is_inside_addon_group: true}) }}
+                    {% for addon in ea_addons.append %}
+                        <span class="ea-input-addon ea-input-addon-append">
+                            {% if addon.icon %}<twig:ea:Icon name="{{ addon.icon }}" />{% endif %}{% if addon.html %}{{ addon.html|trans|raw }}{% elseif addon.text %}{{ addon.text }}{% endif %}
+                        </span>
+                    {% endfor %}
                 </div>
+            {% else %}
+                {{ form_widget(form, {attr: attr}) }}
+            {% endif %}
+            {% if field_help %}
+                {{ form_help(form, {help: row_help, help_html: true, help_translation_parameters: label_translation_parameters}) }}
+            {% else %}
+                {{ form_help(form) }}
+            {% endif %}
+            {{ form_errors(form) }}
+        </div>
+    </{{ row_element }}>
+{% endblock %}
+
+{% block choice_row %}{% set force_error = true %}{{ block('form_row') }}{% endblock %}
+{% block date_row %}{% set force_error = true %}{{ block('form_row') }}{% endblock %}
+{% block time_row %}{% set force_error = true %}{{ block('form_row') }}{% endblock %}
+{% block datetime_row %}{% set force_error = true %}{{ block('form_row') }}{% endblock %}
+
+{% block button_widget %}
+    {% set attr = attr|merge({class: ea_ui_classes('btn ' ~ (attr.class|default('btn-neutral btn-outline')), 'button')}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block submit_widget %}
+    {% set attr = attr|merge({class: attr.class|default('btn-primary')}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block button_row %}
+    {% set row_attr = row_attr|merge({class: html_classes(row_attr.class|default(''), 'form-group ea-form-group')}) %}
+    <div {% with {attr: row_attr} %}{{ block('attributes') }}{% endwith %}>{{ form_widget(form) }}</div>
+{% endblock %}
+
+{% block datetime_widget %}
+    <div class="datetime-widget datetime-widget-datetime">
+        {% if widget == 'single_text' %}
+            {{ block('form_widget_simple') }}
+        {% else %}
+            <div {{ block('widget_container_attributes') }}>
+                {{ form_widget(form.date, {datetime: true}) }}{{ form_errors(form.date) }}
+                {{ form_widget(form.time, {datetime: true}) }}{{ form_errors(form.time) }}
             </div>
         {% endif %}
     </div>
-{% endblock collection_entry_row %}
+{% endblock %}
 
-{% block form_widget_compound %}
-    <div class="form-widget-compound">
-        {% if 'collection' in block_prefixes %}
-            {# the "is iterable" check is needed because if an object implements __toString() and
-               returns an empty string, "is empty" returns true even if it's not a collection #}
-            {% set isEmptyCollection = value is null or (value is iterable and value is empty) %}
-            {% if isEmptyCollection %}
-                {{ block('empty_collection') }}
-            {% endif %}
-            {% if isEmptyCollection or form.vars.prototype is defined %}
-                {% set attr = attr|merge({'data-empty-collection': block('empty_collection')}) %}
-            {% endif %}
+{% block date_widget %}
+    {% if datetime|default(false) and errors|length > 0 %}
+        {% set attr = attr|merge({'aria-describedby': (attr['aria-describedby']|default('') ~ ' ' ~ id ~ '_errors')|trim}) %}
+    {% endif %}
+    <div class="datetime-widget datetime-widget-date">
+        {% if widget != 'single_text' %}
+            <div class="sr-only">{{ form_label(form.year) }}{{ form_label(form.month) }}{{ form_label(form.day) }}</div>
         {% endif %}
-
         {{ parent() }}
     </div>
-{% endblock form_widget_compound %}
+{% endblock %}
 
-{% block button_row -%}
-    <div class="form-group field-{{ block_prefixes|slice(-2)|first }} {{ ea().field.css_class|default('') }}">
-        {{- form_widget(form) -}}
+{% block time_widget %}
+    {% if datetime|default(false) and errors|length > 0 %}
+        {% set attr = attr|merge({'aria-describedby': (attr['aria-describedby']|default('') ~ ' ' ~ id ~ '_errors')|trim}) %}
+    {% endif %}
+    <div class="datetime-widget datetime-widget-time">
+        {% if widget != 'single_text' %}
+            <div class="sr-only">{{ form_label(form.hour) }}{% if with_minutes %}{{ form_label(form.minute) }}{% endif %}{% if with_seconds %}{{ form_label(form.second) }}{% endif %}</div>
+        {% endif %}
+        {{ parent() }}
     </div>
-{%- endblock button_row %}
+{% endblock %}
 
-{# Labels #}
-
-{% block form_label -%}
-    {% if label is same as(false) -%}
-        {# don't display anything, not even an empty <label> element; if you want to not display
-           any label contents but keep the form layout, use an empty string as the field label #}
-    {%- else -%}
-        {%- if compound is defined and compound -%}
-            {%- set element = 'legend' -%}
-            {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' col-form-label')|trim}) -%}
-        {%- else -%}
-            {%- set label_attr = label_attr|merge({for: id, class: (label_attr.class|default('') ~ ' form-control-label')|trim}) -%}
-        {%- endif -%}
-        {% if required -%}
-            {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) %}
-        {%- endif -%}
-        {% if label is same as('') -%}
-            {# don't process the label; this is used to not display any label content
-               but render an empty <label> element keep the form layout #}
-        {%- elseif label is null -%}
-            {%- if label_format is not empty -%}
-                {% set label = label_format|replace({
-                    '%name%': name,
-                    '%id%': id,
-                }) %}
-            {%- else -%}
-                {% set label = name|humanize %}
-            {%- endif -%}
-        {%- endif -%}
-        <{{ element|default('label') }}{% if label_attr %}{% with {attr: label_attr} %}{{ block('attributes') }}{% endwith %}{% endif %}>
-        {%- if translation_domain is same as(false) -%}
-            {%- if label_html|default(false) is same as(false) -%}
-                {{- label -}}
-            {%- else -%}
-                {{- label|raw -}}
-            {%- endif -%}
-        {%- else -%}
-            {%- if label_html|default(false) is same as(false) -%}
-                {{- label|trans(label_translation_parameters, translation_domain) -}}
-            {%- else -%}
-                {{- label|trans(label_translation_parameters, translation_domain)|raw -}}
-            {%- endif -%}
-        {%- endif -%}
-        </{{ element|default('label') }}>
-    {%- endif -%}
-{%- endblock form_label %}
-
-{# Errors #}
-
-{% block empty_collection %}
-    <div class="empty collection-empty">
-        {{ include(ea().templatePath('label/empty')) }}
-    </div>
-{% endblock empty_collection %}
+{% block dateinterval_widget %}
+    {% if widget == 'single_text' %}
+        {{ block('form_widget_simple') }}
+    {% else %}
+        {% set attr = attr|merge({class: html_classes(attr.class|default(''), 'datetime-widget datetime-widget-interval')}) %}
+        <div {{ block('widget_container_attributes') }}>
+            {% for part in ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds'] %}
+                {% if attribute(_context, 'with_' ~ part)|default(false) %}
+                    <div class="datetime-widget-part">{{ form_label(form[part]) }}{{ form_widget(form[part]) }}</div>
+                {% endif %}
+            {% endfor %}
+            {% if with_invert %}{{ form_widget(form.invert) }}{% endif %}
+        </div>
+    {% endif %}
+{% endblock %}
 
 {% block vich_file_row %}
     {% set force_error = true %}
@@ -358,7 +297,7 @@
 
         <div class="ea-vich-file-actions">
             {# the container element is needed to allow customizing the <input type="file" /> #}
-            <div class="btn btn-secondary input-file-container">
+            <div class="{{ ea_ui_classes('btn btn-secondary input-file-container', 'button') }}">
                 <twig:ea:Icon name="internal:upload" /> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
                 {{ form_widget(form.file, {attr: {onchange: file_upload_js}, vich: true}) }}
             </div>
@@ -406,7 +345,7 @@
 
         <div class="ea-vich-image-actions">
             {# the container element is needed to allow customizing the <input type="file" /> #}
-            <div class="btn btn-secondary input-file-container">
+            <div class="{{ ea_ui_classes('btn btn-secondary input-file-container', 'button') }}">
                 <twig:ea:Icon name="internal:upload" /> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
                 {{ form_widget(form.file, {attr: {onchange: file_upload_js}, vich: true}) }}
             </div>
@@ -419,18 +358,6 @@
     </div>
 {% endblock %}
 
-{% block ea_crud_rest %}
-    {{ form_rest(form) }}
-{% endblock ea_crud_rest %}
-
-{# EasyAdmin form type #}
-{% block ea_crud_widget %}
-    {% for field in form %}
-        {{ form_row(field) }}
-    {% endfor %}
-{% endblock ea_crud_widget %}
-
-{# EasyAdminAutocomplete form type #}
 {% block ea_autocomplete_widget %}
     {{ form_widget(form.autocomplete, {attr: attr|merge({required: required})}) }}
 {% endblock ea_autocomplete_widget %}
@@ -440,7 +367,6 @@
     {{ block('form_label') }}
 {% endblock ea_autocomplete_inner_label %}
 
-{# EasyAdmin's CodeEditor form type #}
 {% block ea_code_editor_widget %}
     {{ form_widget(form, {attr: attr|merge({
         'data-ea-code-editor-field': 'true',
@@ -452,10 +378,10 @@
     })}) }}
 {% endblock ea_code_editor_widget %}
 
-{# EasyAdmin's TextEditor form type #}
 {% block ea_text_editor_widget %}
     {{ form_widget(form, {attr: attr|merge({
-        class: 'ea-text-editor-content d-none',
+        class: html_classes(attr.class|default(''), 'ea-text-editor-content'),
+        hidden: true,
         'data-number-of-rows': form.vars.ea_vars.field.customOptions.get('numOfRows')|default(5),
         'data-trix-editor-config': form.vars.ea_vars.field.customOptions.get('trixEditorConfig')|default(null)|json_encode,
     })}) }}
@@ -464,202 +390,6 @@
         <trix-editor input="{{ id }}" class="trix-content" {% if disabled %}disabled{% endif %}></trix-editor>
     </div>
 {% endblock ea_text_editor_widget %}
-
-{# EasyAdminSection form type #}
-{% block ea_form_row_row %}
-    <div class="{{ form.vars.row_attr.class }}"></div>
-{% endblock %}
-
-{% block ea_form_column_group_open_row %}
-    {# if columns are inside tabs, don't add a '.row' element because the tab pane already opens it #}
-    {% if not form.vars.ea_is_inside_tab|default(false) %}
-        <div class="row">
-    {% endif %}
-{% endblock ea_form_column_group_open_row %}
-
-{% block ea_form_column_group_close_row %}
-    {# if columns are inside tabs, we don't add a '.row' element because
-       the tab pane already opens it; so, don't close it here #}
-    {% if not form.vars.ea_is_inside_tab|default(false) %}
-        </div>
-    {% endif %}
-{% endblock ea_form_column_group_close_row %}
-
-{% block ea_form_column_open_row %}
-    {% set field = form.vars.ea_vars.field %}
-    {% set field_icon = field.getCustomOption('icon') %}
-    {% set has_label = field.label is ea_is_not_empty %}
-    {% set has_help = field.help is ea_is_not_empty %}
-    {% set column_has_title = field_icon != null or has_label or has_help %}
-
-    <div class="form-column {{ not column_has_title ? 'form-column-no-header' }} {{ field.cssClass }}">
-        {% if column_has_title %}
-            <div class="form-column-title">
-                <div class="form-column-title-content">
-                    {% if field_icon %}<twig:ea:Icon name="{{ field_icon }}" class="form-column-icon" />{% endif %}
-                    {% if has_label %}{{ field.label|trans(domain: ea().i18n.translationDomain)|raw }}{% endif %}
-                </div>
-
-                {% if has_help %}
-                    <div class="form-column-help">{{ field.help|trans(domain: ea().i18n.translationDomain)|raw }}</div>
-                {% endif %}
-            </div>
-        {% endif %}
-{% endblock ea_form_column_open_row %}
-
-{% block ea_form_column_close_row %}
-    </div>
-{% endblock ea_form_column_close_row %}
-
-{% block ea_form_fieldset_open_ealabel %}
-    {% if ea_is_collapsible %}
-        <twig:ea:Icon name="internal:chevron-right" class="form-fieldset-collapse-marker" aria-hidden="true" />
-    {% endif %}
-
-    {% if ea_icon %}
-        <twig:ea:Icon name="{{ ea_icon }}" class="form-fieldset-icon" />
-    {% endif %}
-
-    {{ form.vars.label|trans|raw }}
-{% endblock ea_form_fieldset_open_ealabel %}
-
-{% block ea_form_fieldset_open_label %}
-    {% set has_help = ea_help is ea_is_not_empty %}
-    {% set collapsed_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_COLLAPSED') %}
-    {% set fieldset_error_count_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_FIELDSET_ERROR_COUNT') %}
-    {% set fieldset_error_count = form.vars.ea_vars.field.getCustomOption(fieldset_error_count_option_name)|default(0) %}
-    {% set is_collapsed = form.vars.ea_vars.field.getCustomOption(collapsed_option_name)|default(false) %}
-
-    <div class="form-fieldset-header {{ ea_is_collapsible ? 'collapsible' }} {{ has_help ? 'with-help' }}">
-        <div class="form-fieldset-title">
-            {% if ea_is_collapsible %}
-                <a href="#content-{{ form.vars.name }}" data-bs-toggle="collapse"
-                   class="form-fieldset-title-content form-fieldset-collapse {{ is_collapsed ? 'collapsed' }}"
-                   aria-expanded="{{ is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ form.vars.name }}">
-                    {{ ea_form_ealabel(form) }}
-                    {%- if fieldset_error_count > 0 -%}
-                        <twig:ea:Badge color="danger" data-ea-error-count title="{{ 'form.tab.error_badge_title'|trans({'%count%': fieldset_error_count}, 'EasyAdminBundle') }}">{{ fieldset_error_count }}</twig:ea:Badge>
-                    {%- endif -%}
-                </a>
-            {% else %}
-                <span class="not-collapsible form-fieldset-title-content">
-                    {{ ea_form_ealabel(form) }}
-                    {%- if fieldset_error_count > 0 -%}
-                        <twig:ea:Badge color="danger" data-ea-error-count title="{{ 'form.tab.error_badge_title'|trans({'%count%': fieldset_error_count}, 'EasyAdminBundle') }}">{{ fieldset_error_count }}</twig:ea:Badge>
-                    {%- endif -%}
-                </span>
-            {% endif %}
-
-            {% if has_help %}
-                <div class="form-fieldset-help">{{ ea_help|trans|raw }}</div>
-            {% endif %}
-        </div>
-    </div>
-{% endblock ea_form_fieldset_open_label %}
-
-{% block ea_form_fieldset_open_row %}
-    {% set has_help = ea_help is ea_is_not_empty %}
-    {% set has_label = form.vars.label is ea_is_not_empty %}
-    {% set fieldset_has_header = has_label or ea_icon or has_help %}
-    {% set collapsed_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_COLLAPSED') %}
-    {% set fieldset_error_count_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_FIELDSET_ERROR_COUNT') %}
-    {% set fieldset_has_errors = form.vars.ea_vars.field.getCustomOption(fieldset_error_count_option_name)|default(0) > 0 %}
-    {% set is_collapsed = form.vars.ea_vars.field.getCustomOption(collapsed_option_name)|default(false) %}
-
-    <div class="form-fieldset {{ not fieldset_has_header ? 'form-fieldset-no-header' }} {{ fieldset_has_errors ? 'has-fieldset-error' }} {{ ea_css_class }} {{ form.vars.attr.class|default('') }}" {% for key, value in form.vars.attr %}{% if key != 'class' %}{{ key }}="{{ value|e('html') }}" {% endif %}{% endfor %}>
-        <fieldset>
-            {% if fieldset_has_header %}
-                {{ form_label(form) }}
-            {% endif %}
-
-            <div id="content-{{ form.vars.name }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ ea_is_collapsible ? 'collapse' }} {{ not is_collapsed ? 'show' }}">
-                <div class="row">
-{% endblock ea_form_fieldset_open_row %}
-
-{% block ea_form_fieldset_close_row %}
-                </div>
-            </div>
-        </fieldset>
-    </div>
-{% endblock ea_form_fieldset_close_row %}
-
-{% block ea_form_tablist_row %}
-    <twig:ea:Tabs tabs="{{ form.vars.ea_vars.field.getCustomOption('tabs') }}" translationDomain="{{ ea().i18n.translationDomain }}" />
-{% endblock ea_form_tablist_row %}
-
-{% block ea_form_tabpane_group_open_row %}
-    <div class="form-tabs-content">
-        <div class="tab-content">
-{% endblock ea_form_tabpane_group_open_row %}
-
-{% block ea_form_tabpane_group_close_row %}
-        </div>
-    </div>
-{% endblock ea_form_tabpane_group_close_row %}
-
-{% block ea_form_tabpane_open_row %}
-    {% set tab_is_active_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_IS_ACTIVE') %}
-    {% set field = form.vars.ea_vars.field %}
-
-    <div id="{{ ea_tab_id }}" class="tab-pane {% if field.getCustomOption(tab_is_active_option_name) %}active{% endif %} {{ ea_css_class }}" {% for key, value in form.vars.attr %}{{ key }}="{{ value|e('html') }}"{% endfor %}>
-        {% if ea_help %}
-            <div class="content-header-help tab-help">
-                {{ ea_help|trans(domain: ea().i18n.translationDomain)|raw }}
-            </div>
-        {% endif %}
-
-        <div class="row">
-{% endblock ea_form_tabpane_open_row %}
-
-{% block ea_form_tabpane_close_row %}
-        </div>
-    </div>
-{% endblock ea_form_tabpane_close_row %}
-
-{# EasyAdminFilters form type #}
-{% block ea_filters_widget %}
-    {% set applied_filters = ea().request.query.all()['filters']|default([])|keys %}
-
-    {% for field in form %}
-        <div class="col-12">
-            <div class="filter-field px-3" data-filter-property="{{ field.vars.name }}">
-                <div class="filter-heading" id="filter-heading-{{ loop.index }}">
-                    <input type="checkbox" class="form-check-input filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
-                    <a data-bs-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}"
-                        {% for name, value in field.vars.label_attr|default([]) %}{{ name }}="{{ value|e('html') }}" {% endfor %}>
-                        {% set has_filter_label = field.vars.label is ea_is_not_empty %}
-                        {% set filter_label = has_filter_label ? field.vars.label : field.vars.name|humanize %}
-                        {{ filter_label|trans(domain: ea().i18n.translationDomain) }}
-                    </a>
-                </div>
-                <div id="filter-content-{{ loop.index }}" class="filter-content collapse {% if field.vars.name in applied_filters %}show{% endif %}" aria-labelledby="filter-heading-{{ loop.index }}">
-                    <div class="form-widget">
-                        {{ form_widget(field) }}
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endfor %}
-{% endblock ea_filters_widget %}
-
-{% block comparison_widget %}
-    {{ form_widget(form, {attr: form.vars.attr|merge({'data-ea-comparison-id': form.vars.id})}) }}
-{% endblock comparison_widget %}
-
-{% block ea_numeric_filter_widget %}
-    <div class="form-widget-compound">
-        {{ form_row(form.comparison) }}
-        {{ form_row(form.value) }}
-        <div data-ea-value2-of-comparison-id="{{ form.comparison.vars.id }}" class="{{ form.comparison.vars.value != 'between' ? 'd-none' }}">
-            {{ form_row(form.value2) }}
-        </div>
-    </div>
-    {{- form_errors(form) -}}
-{% endblock ea_numeric_filter_widget %}
-
-{% block ea_datetime_filter_widget %}
-    {{ block('ea_numeric_filter_widget') }}
-{% endblock ea_datetime_filter_widget %}
 
 {% block ea_fileupload_widget %}
     <div class="ea-fileupload"
@@ -673,11 +403,11 @@
         data-icon-download="{{ component('ea:Icon', {name: 'internal:download'})|e('html_attr') }}"
         data-icon-delete="{{ component('ea:Icon', {name: 'internal:xmark'})|e('html_attr') }}"
     >
-        {{ form_widget(form.file, {attr: form.file.vars.attr|merge({class: 'd-none', 'data-ea-fileupload-input': ''})}) }}
+        {{ form_widget(form.file, {attr: form.file.vars.attr|merge({class: form.file.vars.attr.class|default(''), hidden: true, 'data-ea-fileupload-input': ''})}) }}
 
         <div class="ea-fileupload-toolbar">
             {% set showAddButton = multiple or currentFiles is empty %}
-            <button type="button" class="btn btn-secondary btn-sm ea-fileupload-add-btn {{ not showAddButton ? 'd-none' }}" data-ea-fileupload-add>
+            <button type="button" class="{{ ea_ui_classes('btn btn-secondary btn-sm ea-fileupload-add-btn', 'button') }}" data-ea-fileupload-add{% if not showAddButton %} hidden{% endif %}>
                 <twig:ea:Icon name="internal:plus" class="btn-icon" />
                 <span class="btn-label">
                     {{ multiple
@@ -688,7 +418,7 @@
             </button>
 
             {% if multiple and allow_delete %}
-                <button type="button" class="btn btn-sm ea-fileupload-clear-all-btn {{ currentFiles is empty ? 'd-none' }}" data-ea-fileupload-clear-all>
+                <button type="button" class="{{ ea_ui_classes('btn btn-sm ea-fileupload-clear-all-btn', 'button') }}" data-ea-fileupload-clear-all{% if currentFiles is empty %} hidden{% endif %}>
                     {{ 'file_upload.clear_all'|trans({}, 'EasyAdminBundle') }}
                 </button>
             {% endif %}
@@ -745,9 +475,9 @@
         </div>
 
         {% if allow_delete %}
-            <div class="d-none">{{ form_widget(form.delete, {label: false}) }}</div>
+            <div hidden>{{ form_widget(form.delete, {label: false}) }}</div>
         {% endif %}
-        <div class="d-none">{{ form_widget(form.deleted_files) }}</div>
+        <div hidden>{{ form_widget(form.deleted_files) }}</div>
     </div>
     {{ form_errors(form.file) }}
 {% endblock %}
@@ -766,7 +496,7 @@
     {# when the field defines prepend/append addons, the form_row block already wrapped
        this widget in an '.ea-input-group', so don't render a nested group here #}
     {% set ea_addons = ea_addons|default({prepend: [], append: []}) %}
-    {% set is_inside_addon_group = ea_addons.prepend is not empty or ea_addons.append is not empty %}
+    {% set is_inside_addon_group = ea_widget_is_inside_addon_group|default(false) %}
 
     {% set slug_widget %}
         {{ block('form_widget') }}
@@ -784,3 +514,54 @@
         <div class="ea-input-group {{ disabled ? 'ea-input-group-disabled' }}">{{ slug_widget }}</div>
     {% endif %}
 {% endblock %}
+
+{% block ea_filters_widget %}
+    {% set applied_filters = ea().request.query.all()['filters']|default([])|keys %}
+    {% for field in form %}
+        {% set is_applied = field.vars.name in applied_filters %}
+        {% set content_id = 'filter-content-' ~ loop.index %}
+        {% set label_id = field.vars.label_attr.id|default('filter-label-' ~ loop.index) %}
+        {% set has_help = field.vars.help is not same as(false) and field.vars.help is not null and field.vars.help is not same as('') %}
+        {% set widget_attr = {'aria-labelledby': label_id}|merge(field.vars.attr) %}
+        {% set toggle_attr = {id: label_id, 'data-ea-toggle': 'collapse', href: '#' ~ content_id, role: 'button', 'aria-expanded': is_applied ? 'true' : 'false', 'aria-controls': content_id}|merge(field.vars.label_attr|default({})|ea_ui_attrs) %}
+        {% set descriptions = widget_attr['aria-describedby']|default('')|split(' ') %}
+        {% if has_help and (field.vars.id ~ '_help') not in descriptions %}{% set descriptions = descriptions|merge([field.vars.id ~ '_help']) %}{% endif %}
+        {% if field.vars.errors|length > 0 and (field.vars.id ~ '_errors') not in descriptions %}{% set descriptions = descriptions|merge([field.vars.id ~ '_errors']) %}{% endif %}
+        {% if descriptions|join(' ')|trim is not empty %}{% set widget_attr = widget_attr|merge({'aria-describedby': descriptions|join(' ')|trim}) %}{% endif %}
+        <div class="filter-field" data-filter-property="{{ field.vars.name }}">
+            <div class="filter-heading" id="filter-heading-{{ loop.index }}">
+                <input type="checkbox" class="checkbox filter-checkbox" aria-labelledby="{{ label_id }}"{% if is_applied %} checked{% endif %}>
+                <a {% with {attr: toggle_attr} %}{{ block('attributes') }}{% endwith %}>
+                    {% set has_filter_label = field.vars.label is ea_is_not_empty %}
+                    {% set filter_label = has_filter_label ? field.vars.label : field.vars.name|humanize %}
+                    {{ filter_label|trans(domain: ea().i18n.translationDomain) }}
+                </a>
+            </div>
+            <div id="{{ content_id }}" class="filter-content" data-ea-collapse aria-labelledby="filter-heading-{{ loop.index }}"{% if not is_applied %} hidden{% endif %}>
+                <div class="form-widget">
+                    {{ form_widget(field, {attr: widget_attr}) }}
+                    {{ form_help(field) }}
+                    {% if 'ea_numeric_filter' not in field.vars.block_prefixes and 'ea_datetime_filter' not in field.vars.block_prefixes %}{{ form_errors(field) }}{% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block comparison_widget %}
+    {{ form_widget(form, {attr: attr|merge({'data-ea-comparison-id': form.vars.id})}) }}
+{% endblock %}
+
+{% block ea_numeric_filter_widget %}
+    {% set attr = attr|merge({class: html_classes(attr.class|default(''), 'form-widget-compound')}) %}
+    <div {{ block('widget_container_attributes') }}>
+        {{ form_row(form.comparison) }}
+        {{ form_row(form.value) }}
+        <div data-ea-value2-of-comparison-id="{{ form.comparison.vars.id }}"{% if form.comparison.vars.value != 'between' %} hidden{% endif %}>
+            {{ form_row(form.value2) }}
+        </div>
+    </div>
+    {{ form_errors(form) }}
+{% endblock %}
+
+{% block ea_datetime_filter_widget %}{{ block('ea_numeric_filter_widget') }}{% endblock %}

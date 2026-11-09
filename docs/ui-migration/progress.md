@@ -62,7 +62,7 @@ and commit each stage before switching to the next title-derived branch.
   dialog/pagination, lazy filters/apply/reset, global/row/custom/group/batch
   actions, confirmation/tooltips/popovers, default row actions and selection.
   Real canceled/confirmed outcomes, exact URLs/query/POST/CSRF contracts.
-- [ ] **7. Replace the Bootstrap-based Symfony form theme.** T04-T05,
+- [x] **7. Replace the Bootstrap-based Symfony form theme.** T04-T05,
   P01-P02/J10-J11/J13/W07: inherited block audit; neutral complete widgets,
   hidden/rest/CSRF/multipart/errors/labels/help/attrs; ordinary forms, compound
   date/time/choices/repeated fields, tabs/columns/fieldsets/rows/addons and
@@ -396,3 +396,52 @@ Unresolved issues and next stage:
   and translated new-key placeholders remain explicit limits.
 - Continue with **Prompt 7 - Replace the Bootstrap-based Symfony form theme**
   on `replace_the_bootstrap_based_symfony_form_theme`, then through Prompt 10.
+
+
+## Prompt 7 stage report
+
+Branch: `replace_the_bootstrap_based_symfony_form_theme`.
+
+Changes made:
+
+- Replaced Bootstrap form inheritance with the local neutral Symfony base and
+  one reusable layout trait. All 90 inherited block names remain available;
+  the new union contains 91. Core widgets, ordinary forms, localized addons,
+  labels/help, hidden/rest/CSRF/multipart, layout, custom attributes and errors
+  retain their contracts. Filter rendering shares the same complete theme.
+- Migrated form tabs/fieldsets/collections and client invalid appearance.
+  Collection prototypes preserve identical nested placeholders, exact names,
+  unique indices, custom snippets and row attributes; scripts retain nonces.
+- Retained DirtyForm and fixed its canceled native-submit regression. Confirmed
+  external saves preserve the original submitter, validation and EasyAdmin
+  events. Added the existing confirmation dialog to the new page.
+- Added deterministic ordinary and nested fixtures with real HTTP/browser
+  submission and persistence checks; preserved original baseline assertions.
+  Regenerated normal assets and kept legacy support isolated from new CSS.
+
+Validation results (details in `reports/stage-7-forms.json`):
+
+| Command/check | Result |
+| --- | --- |
+| `make tests` | Passed: 4150 tests, 12344 assertions |
+| New core form HTTP suite | Passed: 4 tests, 62 assertions |
+| `EASYADMIN_BROWSER_ALL_ENGINES=1 make tests-browser` | Passed: 270/270, no skipped/retried cases; original DirtyForm test passes in all three engines |
+| Final collection row-attribute refinement | Passed: 12/12 nested cases across all three engines, followed by the complete passing PHP suite |
+| Ordinary multipart/typed/CSRF and nested persisted values | Passed; POST/PATCH semantics, actual uploaded bytes, server validation, permissions, error discovery and custom attributes verified |
+| CSP/dynamic initialization | Trusted prototype script runs once with retained response nonce; lifecycle payloads, unique IDs and custom placeholders verified |
+| Builds and CSS proof | Passed: normal 64-file distribution, 55 manifest targets, 90 mapped assets, 218852-byte isolated CSS |
+| PHPStan/PHP CS Fixer/Twig/frontend/docs | Passed: 1036 PHP files; 192 product plus 14 fixture Twig templates; 117 frontend files; existing 154 advisories visible |
+| Override/block/source review | No inherited block loss, caller attributes preserved, custom badges retained, no production PHP diff in this stage |
+
+Unresolved issues and next stage:
+
+- No known stage 7 behavioral failure remains. Independent widget lifecycle,
+  editor/media/upload styling, login/UI-kit and remaining auxiliary rendering
+  are explicitly assigned to Prompt 8; the delivered legacy app still loads
+  Bootstrap until cutover. This stage claims the new form preview is independent.
+- Minimum-engine and PHP8.2 runtime tests, optional external Vich/storage
+  integration and independent consumer installation remain separately recorded
+  verification limits. New translated keys still use allowed placeholders.
+- Continue with **Prompt 8 - Complete field widgets and remaining rendering
+  surfaces** on `complete_field_widgets_and_remaining_rendering_surfaces`, then
+  complete the authorized downstream proof and final cutover stages.

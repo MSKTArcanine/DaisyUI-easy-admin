@@ -42,17 +42,20 @@ class RowsTest extends AbstractCrudTestCase
     {
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
 
-        // row elements exist in the form (they create visual breaks using various flex classes)
         $rowElements = $crawler->filter('.field-form_row');
-        static::assertTrue($rowElements->count() > 0, 'Should have row elements');
+        static::assertCount(3, $rowElements);
+        static::assertCount(2, $crawler->filter('.form-column.ea-col-md-6'));
 
-        // verify they have flex-related classes (can be flex-fill or flex-md-fill depending on breakpoint)
-        foreach ($rowElements as $rowElement) {
-            $classes = $rowElement->getAttribute('class');
-            static::assertTrue(
-                str_contains($classes, 'flex-fill') || str_contains($classes, 'flex-md-fill') || str_contains($classes, 'd-flex'),
-                'Row elements should have flex-related classes for layout'
-            );
+        foreach (['ea-row-break', 'ea-row-break-md', 'ea-row-break'] as $index => $expectedBreak) {
+            $row = $rowElements->eq($index);
+            $classes = preg_split('/\s+/', trim($row->attr('class')));
+            static::assertContains($expectedBreak, $classes);
+            static::assertSame('div', $row->nodeName());
+            static::assertSame('', trim($row->text()));
+            static::assertStringContainsString('ea-form-row', $row->ancestors()->filter('.ea-form-row')->first()->attr('class'));
+            foreach (['flex-fill', 'flex-md-fill', 'd-none', 'd-md-flex'] as $legacyClass) {
+                static::assertNotContains($legacyClass, $classes);
+            }
         }
     }
 

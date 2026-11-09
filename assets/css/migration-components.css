@@ -106,3 +106,36 @@
         --bs-alert-color: var(--alert-dark-color);
     }
 }
+
+@layer components {
+    .ea .form-widget :is(.input, .select, .textarea) {
+        background: var(--form-control-bg);
+        border: 1px solid var(--form-input-border-color);
+        border-radius: var(--form-control-border-radius);
+        color: var(--form-input-text-color);
+        font: inherit;
+        min-block-size: var(--ea-control-height);
+        padding: var(--ea-sp-2) var(--ea-control-padding-x);
+    }
+
+    .ea .form-widget :is(.input, .select, .textarea):focus {
+        border-color: var(--form-input-focus-border-color);
+        outline: var(--ea-focus-ring-width) solid var(--form-focus-ring-color);
+    }
+
+    .ea .form-widget [aria-invalid='true'] {
+        border-color: var(--form-input-error-border-color);
+    }
+
+    .ea .form-widget :is(.input, .select, .textarea):disabled {
+        opacity: var(--form-control-disabled-opacity);
+    }
+
+    .ea .ea-choice-row > :is(.checkbox, .radio) {
+        accent-color: var(--ea-primary);
+        block-size: 1rem;
+        float: none;
+        inline-size: 1rem;
+        margin: 0;
+    }
+}
