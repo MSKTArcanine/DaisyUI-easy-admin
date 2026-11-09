@@ -6,6 +6,11 @@ the verification column is an acceptance requirement, not a passing result.
 Paths are relative to this repository unless stated otherwise. The source
 catalog below assigns every shipped Twig/JS/CSS source file to a surface.
 
+Prompt 2 adds behavioral evidence through `tests/Browser/`, combined-state HTTP
+tests, and original visual references without changing these rendering sources.
+See [coverage.md](coverage.md) and `reports/stage-2-browser.json`; one existing
+DirtyForm cancellation/unsaved-navigation failure remains visible for Prompt 7.
+
 ## Build, styles, delivery, and extension contracts
 
 | ID / stage | Location and current purpose | Replacement approach | Affected extension points | Required verification |

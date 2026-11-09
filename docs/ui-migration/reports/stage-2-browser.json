@@ -1,0 +1,44 @@
+{
+    "stage": 2,
+    "source_baseline": "bd0fb8448a41f69b3493c5bea84f793e46fe7c21",
+    "command": "EASYADMIN_BROWSER_ALL_ENGINES=1 make tests-browser",
+    "playwright": "1.65.0",
+    "stats": {
+        "startTime": "2026-11-09T19:14:59.125Z",
+        "duration": 127985.187,
+        "expected": 72,
+        "skipped": 0,
+        "unexpected": 3,
+        "flaky": 0
+    },
+    "existing_failures": [
+        {
+            "test": "baseline DirtyForm issue: canceled submission must retain unsaved navigation protection",
+            "file": "widgets.spec.js",
+            "project": "chromium",
+            "status": "unexpected",
+            "errors": [
+                "Error: expect(page).toHaveURL(expected) failed\n\nExpected pattern: /\\/admin\\/categories\\/1\\/edit/\nReceived string:  \"http://127.0.0.1:8089/admin/categories\"\nTimeout: 1500ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 1500ms\n    15 \u00d7 locator resolved to <html lang=\"en\" dir=\"ltr\" data-turbo=\"false\">\u2026</html>\n       - unexpected value \"http://127.0.0.1:8089/admin/categories\"\n\n\n  222 |     });\n  223 |     await page.getByRole('link', { name: /Categories$/ }).click();\n> 224 |     await expect(page).toHaveURL(new RegExp(`/admin/categories/${seeded.categories[0].id}/edit`), { timeout: 1500 });\n      |                        ^\n  225 |     expect(warnings).toEqual(['beforeunload']);\n  226 |     await expect(page.getByLabel('Name', { exact: true })).toHaveValue('Canceled unsaved name');\n  227 | });\n    at /home/devuser/AI/DaisyUI-easy-admin/tests/Browser/widgets.spec.js:224:24"
+            ]
+        },
+        {
+            "test": "baseline DirtyForm issue: canceled submission must retain unsaved navigation protection",
+            "file": "widgets.spec.js",
+            "project": "firefox",
+            "status": "unexpected",
+            "errors": [
+                "Error: expect(page).toHaveURL(expected) failed\n\nExpected pattern: /\\/admin\\/categories\\/1\\/edit/\nReceived string:  \"http://127.0.0.1:8089/admin/categories\"\nTimeout: 1500ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 1500ms\n    11 \u00d7 locator resolved to <html lang=\"en\" dir=\"ltr\" data-turbo=\"false\">\u2026</html>\n       - unexpected value \"http://127.0.0.1:8089/admin/categories\"\n\n\n  222 |     });\n  223 |     await page.getByRole('link', { name: /Categories$/ }).click();\n> 224 |     await expect(page).toHaveURL(new RegExp(`/admin/categories/${seeded.categories[0].id}/edit`), { timeout: 1500 });\n      |                        ^\n  225 |     expect(warnings).toEqual(['beforeunload']);\n  226 |     await expect(page.getByLabel('Name', { exact: true })).toHaveValue('Canceled unsaved name');\n  227 | });\n    at /home/devuser/AI/DaisyUI-easy-admin/tests/Browser/widgets.spec.js:224:24"
+            ]
+        },
+        {
+            "test": "baseline DirtyForm issue: canceled submission must retain unsaved navigation protection",
+            "file": "widgets.spec.js",
+            "project": "webkit",
+            "status": "unexpected",
+            "errors": [
+                "Error: expect(page).toHaveURL(expected) failed\n\nExpected pattern: /\\/admin\\/categories\\/1\\/edit/\nReceived string:  \"http://127.0.0.1:8089/admin/categories\"\nTimeout: 1500ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 1500ms\n    15 \u00d7 locator resolved to <html lang=\"en\" dir=\"ltr\" data-turbo=\"false\">\u2026</html>\n       - unexpected value \"http://127.0.0.1:8089/admin/categories\"\n\n\n  222 |     });\n  223 |     await page.getByRole('link', { name: /Categories$/ }).click();\n> 224 |     await expect(page).toHaveURL(new RegExp(`/admin/categories/${seeded.categories[0].id}/edit`), { timeout: 1500 });\n      |                        ^\n  225 |     expect(warnings).toEqual(['beforeunload']);\n  226 |     await expect(page.getByLabel('Name', { exact: true })).toHaveValue('Canceled unsaved name');\n  227 | });\n    at /home/devuser/AI/DaisyUI-easy-admin/tests/Browser/widgets.spec.js:224:24"
+            ]
+        }
+    ],
+    "suppressed_tests": 0
+}

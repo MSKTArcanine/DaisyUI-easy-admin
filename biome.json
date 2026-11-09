@@ -1,13 +1,14 @@
 {
     "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
     "files": {
-        "include": ["*.json", "*.md", "assets/css/**", "assets/js/**"],
+        "include": ["*.json", "*.md", "assets/css/**", "assets/js/**", "tests/Browser/*.js", "tests/Browser/public/**"],
         "ignore": [
             "**/composer.json",
             "**/vendor",
             "**/package.json",
             "**/node_modules",
             "**/var",
+            "tests/Browser/results/**",
             "**/.claude",
             "assets/js/autocomplete.js",
             "assets/js/field-collection.js",

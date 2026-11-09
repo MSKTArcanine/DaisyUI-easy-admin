@@ -1,0 +1,4 @@
+{% block _Category_name_widget %}
+    {% set attr = attr|merge({'data-testid': 'custom-name-widget'}) %}
+    {{ block('form_widget_simple') }}
+{% endblock %}

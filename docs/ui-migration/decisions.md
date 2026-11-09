@@ -253,3 +253,14 @@ relevant stage and prove them in Prompt 9. Legacy layout tokens intentionally
 handled by D6 remain accepted; shared names such as `btn` are not evidence that
 Bootstrap remains. Historical documentation and standalone CSS with a similar
 class name must be classified separately from actual Bootstrap runtime code.
+
+## D10. Keep observed baseline failures executable
+
+Prompt 2 established a normal failing browser regression for DirtyForm clearing
+dirty state before a canceled `ea.form.submit`. Keep it in the default suite,
+with no skip, expected-failure annotation or retries. Record the three engine
+failures separately from passing tests and fix the interaction in Prompt 7.
+Retain DirtyForm as an independent widget unless its replacement is necessary;
+prefer a narrow integration fix preserving the cancelable EasyAdmin event and
+successful-submit behavior. Visual references remain historical artifacts,
+not pixel-match requirements for the new rendering.

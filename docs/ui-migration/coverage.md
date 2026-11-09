@@ -1,9 +1,9 @@
 # Behavioral coverage and verification plan
 
-Status: Prompt 1 source audit. No new fixture, test, screenshot, or product
-behavior was implemented. The existing test sources below are evidence of
-available infrastructure, not evidence of a passing baseline. Prompt 2 must run
-and extend it before rendering changes.
+Status: Prompt 2 behavioral baseline. The source-audit matrix below records
+existing infrastructure and the coverage required during migration. Executed
+baseline results and remaining gaps are recorded after that matrix. Product
+rendering and backend code remain unchanged in this stage.
 
 ## Existing coverage and required additions
 
@@ -100,7 +100,7 @@ assets. They are documented commands, not commands all executed in Prompt 1.
 Do not invent a currently runnable `bin/console`, browser command, or fixture
 route. Build/install proof for AssetMapper starts in Prompt 3 after the harness.
 
-## Result classifications
+## Prompt 1 result classifications (historical)
 
 Verified in Prompt 1: source paths, dependency constraints/JS lock resolutions,
 manifest target presence, existing commands and application infrastructure.
@@ -115,3 +115,93 @@ Unverified: all PHP/JS behavior, browser matrix, screenshots, optional Vich path
 production asset builds, and the consuming installation. `vendor/` and
 `node_modules/` are absent. Prompt 2 acceptance remains open until a runnable
 baseline and explicit gap list are committed.
+
+## Prompt 2 coverage established
+
+`tests/Browser/` provides the necessary browser entry point because DefaultApp's
+final kernel forces mock test sessions and cannot serve a real authenticated
+browser. It reuses DefaultApp entities/framework configuration and its mixed
+form-layout controller, with its own SQLite database, cache, native sessions,
+uploads, seed CLI, and real CSRF-protected form login. There is no HTTP reset or
+state endpoint. Each test seeds deterministic data and reloads persisted state
+through `php tests/Browser/console.php state`. A single worker and fresh server
+prevent cross-test races. See [the harness instructions](../../tests/Browser/README.md).
+
+| Added test file | Verified contracts |
+| --- | --- |
+| `tests/Functional/Default/Search/CombinedListingStateTest.php` | Exact record IDs/order under combined search/filter/sort/page, actual GET search/filter forms, hidden query state, nested custom context, Apply and Reset |
+| `tests/Functional/Customization/Crud/Forms/FormThemeExtendingCrudTemplateTest.php` | Existing custom form block plus create/edit POST, CSRF and persisted values |
+| `tests/Browser/crud.spec.js` | Index/detail/new/edit, custom field/templates/form block, real external save buttons and button payloads, invalid 422 retained data/no row, combined listing state and real lazy filter Apply/Clear results, canceled/confirmed delete and batch exact POST/CSRF/IDs/outcomes, boolean PATCH header/value/persistence, hidden and directly denied actions, custom POST action, valid/invalid login |
+| `tests/Browser/widgets.spec.js` | Remote autocomplete request/results/config lifecycle and persisted association; collection events, unique/nonreused prototype indices and persisted entries; multipart input/bytes/stored file and physical deletion; actual CodeMirror/Trix edits and synchronization; tab hashes/error reveal/focus; cancelable form event and unsaved navigation |
+| `tests/Browser/appearance.spec.js` | Navigation URLs/current state and permissions, keyboard menu/focus/Escape, mobile overlay/keyboard/backdrop, light/dark/auto media/storage state, RTL placement, configured CSS/JS/layout overrides, stored layout preferences |
+
+Commands now available:
+
+```bash
+make browser-seed
+make browser-serve
+make tests-browser
+EASYADMIN_BROWSER_ALL_ENGINES=1 make tests-browser
+EASYADMIN_CAPTURE_REFERENCES=1 make tests-browser
+php tests/Browser/console.php state
+php tests/Browser/console.php lint:twig tests/Browser/templates
+```
+
+The default browser command runs Chromium; the all-engine flag adds Firefox and
+WebKit. The runner starts a fresh loopback server on port 8089. Reusing a server
+requires explicit `EASYADMIN_BROWSER_REUSE_SERVER=1`. Do not run separate browser
+processes against the same fixture storage/port. `EASYADMIN_BROWSER_STORAGE`
+can select a separate disposable storage directory.
+
+Fifteen PNG/JSON pairs in `tests/Browser/references/` record original desktop,
+mobile, light/dark, RTL, CRUD/form/error, dialog, widget/editor and login
+rendering. Metadata records the product baseline, capture commit, engine,
+version, viewport, locale, timezone, URL, direction, scheme and test. Assertions
+verify behavior independently; there are no pixel-match acceptance assertions.
+Do not overwrite original references during migration.
+
+The browser workflow `.github/workflows/browser-tests.yaml` installs the pinned
+Yarn resolution and browsers, runs the same Make command on all three engines,
+and retains result artifacts. Browser JS/CSS is included in `yarn ci`;
+generated result artifacts are excluded from formatting, not from testing.
+The CI pattern follows [Playwright's CI guidance](https://playwright.dev/docs/ci-intro),
+adapted to this repository's PHP/Yarn tools. Remote CI has not been executed.
+
+## Existing failure retained
+
+The normal default-suite regression `baseline DirtyForm issue: canceled
+submission must retain unsaved navigation protection` reproduces an existing
+interaction bug. `assets/js/form.js` installs DirtyForm before the cancelable
+EasyAdmin submit handler; DirtyForm 0.4.0 clears its dirty state before an
+extension cancels `ea.form.submit`. Subsequent navigation loses the unsaved
+warning. The test is not skipped, marked as an expected failure, retried, or
+excluded. Reproduce with:
+
+```bash
+yarn test:browser --grep 'baseline DirtyForm issue'
+```
+
+Separate passing tests cover ordinary unsaved navigation and canceled form
+submission. Fix the combined interaction in Prompt 7 while keeping the failing
+test unchanged. The baseline remains runnable and deliberately reports this
+known failure. Exact aggregate engine results are in [progress.md](progress.md).
+
+## Remaining coverage gaps
+
+- Exact minimum engine versions are not installed; current Playwright engines
+  cover behavior, not a guarantee for every Tailwind minimum-version boundary.
+- Nested collection/editor permutations, repeated initialization and inserted
+  CodeMirror/autogrow controls need focused regression cases in Prompts 7/8.
+- Optional Vich/Flysystem combinations, image-viewer dynamic/fallback behavior,
+  and CSP enforcement need additional fixture cases in their migration stages.
+- UI-kit component examples, standalone auxiliary pages and all 31 field
+  templates have broad PHP coverage, but not every combination has browser
+  interaction coverage yet. Close the inventory rows in Prompt 8.
+- Package archive installation, application Tailwind source discovery and the
+  AssetMapper production build remain Prompts 3/9/10 work.
+
+No existing PHPUnit test or assertion was removed or weakened. The root
+Composer lock stays ignored; resolved versions/source references are preserved
+in `reports/stage-2-environment.json`. Tests generate a dependency-version-only
+change in AdminRouteApp's tracked `config/reference.php`; that generated diff
+was restored rather than included in the migration.

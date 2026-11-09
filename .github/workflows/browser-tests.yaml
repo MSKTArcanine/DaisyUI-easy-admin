@@ -1,0 +1,40 @@
+name: Browser behavior
+
+on:
+    push:
+        branches: ['5.x']
+    pull_request:
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+    browser:
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+        steps:
+            - uses: actions/checkout@v7
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.4'
+                  extensions: intl, pdo_sqlite, mbstring, fileinfo
+                  coverage: none
+                  tools: composer:2.9.8
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: '20'
+            - run: corepack enable
+            - run: corepack prepare yarn@1.22.22 --activate
+            - run: composer install --no-interaction --no-progress --prefer-dist
+            - run: yarn install --frozen-lockfile
+            - run: yarn playwright install --with-deps chromium firefox webkit
+            - run: make tests-browser
+              env:
+                  EASYADMIN_BROWSER_ALL_ENGINES: '1'
+            - uses: actions/upload-artifact@v5
+              if: ${{ !cancelled() }}
+              with:
+                  name: browser-results
+                  path: tests/Browser/results/
+                  retention-days: 14

@@ -1,4 +1,5 @@
 .php-cs-fixer.cache
+.twig-cs-fixer.cache
 composer.lock
 .phpunit.result.cache
 /.phpunit.cache/
@@ -9,6 +10,11 @@ vendor/*
 /node_modules/
 npm-debug.log
 yarn-error.log
+
+/tests/Browser/test-results/
+/tests/Browser/playwright-report/
+/tests/Browser/results/
+/tests/Browser/var/
 
 /.claude/*
 !/.claude/skills/

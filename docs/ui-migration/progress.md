@@ -30,7 +30,8 @@ for example `:memo: EAD-1 - Record UI migration audit`.
 
 Choose the actual gitmoji to match each commit's intent (documentation, fix,
 tests, build); EAD numbers identify the stage, not the number of commits.
-Future branches are a checklist, not authorization to execute later prompts.
+The continuation request authorizes Prompts 2 through 10 in sequence. Finish
+and commit each stage before switching to the next title-derived branch.
 
 ## Staged acceptance checklist
 
@@ -38,7 +39,7 @@ Future branches are a checklist, not authorization to execute later prompts.
   checkout; pin upstream SHA; inspect reference AssetMapper app; enumerate all
   Twig/CSS/JS sources, components, generated assets, PHP styling outputs and
   widgets; record architecture, compatibility boundaries and verification gaps.
-- [ ] **2. Establish behavioral regression coverage.** Install/reproduce
+- [x] **2. Establish behavioral regression coverage.** Install/reproduce
   dependencies; run existing suites; deterministic fixture/browser harness,
   real requests/persistence, security, cancellation and dynamic-widget tests;
   desktop/mobile/light/dark/RTL/keyboard visual references; record existing
@@ -137,3 +138,54 @@ Unresolved issues for later stages:
 Next stage: **Prompt 2 - Establish behavioral regression coverage**, on
 `establish_behavioral_regression_coverage`, with commit intent prefix
 `:test_tube: EAD-2 - `. Do not implement the rendering migration in this stage.
+
+## Prompt 2 stage report
+
+Branch: `establish_behavioral_regression_coverage`.
+
+Changes made:
+
+- Installed the existing PHP/Yarn dependencies and recorded exact resolved PHP
+  package versions/source references in `reports/stage-2-environment.json`.
+- Added a minimal isolated browser harness in `tests/Browser/` reusing existing
+  entities, framework config and form-layout controller. It provides persistent
+  SQLite fixtures, native sessions, real authentication/CSRF, CLI seed/state,
+  configured assets and template/form/custom-field/action extensions.
+- Added four HTTP regressions and 25 browser scenarios, with request methods,
+  payloads, cancellation, permissions, persisted values/bytes, physical upload
+  deletion, lifecycle events and keyboard/focus/appearance/RTL assertions.
+- Captured 15 PNG/JSON visual-reference pairs. Added Make commands, pinned
+  Playwright 1.65.0 through Yarn, lint coverage and a three-engine CI workflow.
+- Preserved product code and original distributed asset hashes. Restored the
+  generated AdminRouteApp dependency-reference diff; `.idea/` remains untouched.
+
+Validation results:
+
+| Command/check | Result |
+| --- | --- |
+| Original `make tests` | Passed: 3903 tests, 11776 assertions |
+| `make tests` after coverage additions | Passed: 3907 tests, 11825 assertions |
+| Focused new HTTP tests | Passed: 5 tests, 51 assertions (one preexisting test included) |
+| `EASYADMIN_BROWSER_ALL_ENGINES=1 make tests-browser` | 72 passed, 3 failed: the same existing DirtyForm regression once per Chromium/Firefox/WebKit; 0 skipped/retried/suppressed |
+| `yarn ci` | Passed: browser sources included; generated result artifacts excluded from formatting |
+| `make linter-phpstan` | Passed |
+| `make linter-cs-fixer` | Passed: 0 of 1016 files need changes; existing ruleset deprecation reported |
+| `make linter-twig` and fixture Twig lint | Passed: 190 product templates and 5 fixture templates |
+| `make linter-docs` | Passed; covers RST documentation |
+| Workflow YAML/local Markdown links/JSON/whitespace | Checked locally; remote GitHub workflow not run |
+
+Existing failure: after `ea.form.submit` is canceled, DirtyForm clears dirty
+state before cancellation, so later navigation loses the unsaved-change
+warning. The combined scenario remains a normal failing test in the default
+suite; normal unsaved navigation and canceled submission separately pass.
+See `reports/stage-2-browser.json` and `tests/Browser/README.md`. Fix it in
+Prompt 7 without weakening or excluding the regression.
+
+Unresolved coverage: exact minimum engine versions, nested/dynamically inserted
+editor combinations, optional Vich/Flysystem paths, image-viewer variants and
+CSP enforcement need focused checks in the assigned later stages. Consumer
+installation and AssetMapper builds have not been implemented yet.
+
+Next: **Prompt 3 - Integrate Tailwind and daisyUI into the asset build**, on
+`integrate_tailwind_and_daisyui_into_the_asset_build`. The sequential continuation
+through Prompt 10 is authorized; the known baseline failure remains visible.

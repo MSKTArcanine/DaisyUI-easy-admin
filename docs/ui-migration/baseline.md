@@ -187,3 +187,25 @@ Symfony CLI, and a Chromium launcher exist. Composer emits PHP deprecations
 even for `--version`. `vendor/`, `vendor/bin/phpunit`, and `node_modules/` are
 absent. No dependencies were installed or lockfiles changed in this stage.
 Tool presence is not evidence of a working browser, Docker daemon, or test run.
+
+## Prompt 2 verified environment
+
+The dependency directories were installed on the behavioral-coverage branch
+without changing runtime requirements. `composer install --no-interaction
+--prefer-dist` resolved Symfony FrameworkBundle 8.1.11, Twig Bridge 8.1.10,
+Twig 3.30.0, TwigComponent 3.7.0, Doctrine ORM 3.7.6, and PHPUnit 11.5.57 on
+PHP 8.5.11. The full package list and source references are recorded in
+[stage-2-environment.json](reports/stage-2-environment.json). The root Composer
+lock remains ignored, following the package's existing policy.
+
+`yarn install --frozen-lockfile` succeeded. Playwright Test 1.65.0 was added
+using `yarn add --dev --exact @playwright/test@1.65.0`; its package resolution
+is committed in `yarn.lock`. Browsers were installed locally with
+`yarn playwright install chromium firefox webkit`. These are test dependencies,
+not delivered runtime requirements.
+
+Before changing product rendering, `make tests` passed **3903 tests and 11776
+assertions**. `yarn ci` passed (47 files), `make linter-phpstan` passed, and
+`make linter-twig` passed (190 files). Expected HTTP exception logs from security
+tests are not test failures. Composer 2.7.1 emits deprecations on PHP 8.5 during
+installation; no test deprecation policy was changed.

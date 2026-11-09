@@ -1,0 +1,15 @@
+{
+    "sourceBaseline": "bd0fb8448a41f69b3493c5bea84f793e46fe7c21",
+    "captureCommit": "0fbabd72f479a552528b38ad9d218b69ae6cafbf",
+    "browser": "chromium",
+    "browserVersion": "158.0.8127.18",
+    "viewport": {
+        "width": 1440,
+        "height": 1000
+    },
+    "url": "http://127.0.0.1:8089/admin/layout/1/edit#tab-settings",
+    "locale": "en-US",
+    "timezone": "UTC",
+    "scheme": "light",
+    "direction": "ltr"
+}

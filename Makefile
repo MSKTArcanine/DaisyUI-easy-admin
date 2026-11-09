@@ -15,6 +15,12 @@ tests: ## Run tests (optional ARGS, e.g. make tests ARGS="tests/Unit/Field/" or 
 	php vendor/bin/phpunit $(ARGS)
 tests-parallel: ## Run tests in parallel processes (optional ARGS, e.g. make tests-parallel ARGS="--processes=4")
 	php vendor/bin/paratest $(ARGS)
+tests-browser: ## Run browser behavior regressions (optional ARGS)
+	yarn test:browser $(ARGS)
+browser-serve: ## Serve the isolated rendering regression application
+	php -S 127.0.0.1:8089 tests/Browser/router.php
+browser-seed: ## Reset deterministic browser fixtures in their isolated database
+	php tests/Browser/console.php seed
 tests-db: ## Run the functional tests on a database server of compose.yaml (DB=postgres|mysql|mariadb, optional ARGS)
 	@test -n "$(TEST_DATABASE_URL_$(DB))" || { echo 'Set DB to one of: postgres, mysql, mariadb (e.g. make tests-db DB=postgres)'; exit 1; }
 	docker compose up -d --wait $(DB)
