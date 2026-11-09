@@ -5,6 +5,7 @@
 @import 'tom-select/dist/css/tom-select.css' layer(components);
 @import './easyadmin-theme/color-palette.css' layer(theme);
 @import './ui/tokens.css';
+@import './ui/prose.css';
 @import './ui/foundation.css';
 @import './ui/visibility.css' layer(base);
 @import './ui/primitives.css';
@@ -17,6 +18,10 @@
 @import './ui/forms.css';
 @import './ui/search.css';
 @import './ui/autocomplete.css';
+@import './ui/fields.css';
+@import './ui/media.css';
+@import './ui/uploads.css';
+@import './ui/auxiliary.css';
 @import './ui/overlays.css';
 
 @source '../../templates';

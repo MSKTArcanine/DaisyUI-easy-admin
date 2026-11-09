@@ -1,0 +1,41 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}{{ 'Auxiliary content'|trans }}{% endblock %}
+{% block main %}
+    <p data-testid="auxiliary-content">{{ 'Content block override'|trans }}</p>
+    <input class="input" data-testid="prose-control-outside" aria-label="{{ 'Ordinary control'|trans }}">
+    <section style="--ea-prose-font-size: 20px; --ea-prose-line-height: 2; --ea-prose-spacing: 2em; --ea-prose-font-family: serif; --ea-prose-heading-font-family: monospace; --ea-prose-code-font-family: monospace">
+        <div data-testid="automatic-prose">
+            <h2>{{ 'Document heading'|trans }}</h2>
+            <p>{{ 'First document paragraph'|trans }}</p>
+            <p>{{ 'Second document paragraph'|trans }}</p>
+            <table><thead><tr><th>{{ 'Document column'|trans }}</th></tr></thead><tbody><tr><td>{{ 'Document value'|trans }}</td></tr></tbody></table>
+        </div>
+        <div class="ea-prose" data-testid="explicit-prose">
+            <h2>{{ 'Explicit document heading'|trans }}</h2>
+            <p>{{ 'Explicit document paragraph'|trans }} <code>{{ 'code value'|trans }}</code></p>
+            <div class="ea-not-prose" data-testid="class-prose-optout">
+                <p>{{ 'Ordinary paragraph'|trans }}</p>
+                <input class="input" data-testid="prose-control-inside" aria-label="{{ 'Excluded control'|trans }}">
+            </div>
+            <div data-ea-not-prose data-testid="attribute-prose-optout"><p>{{ 'Excluded paragraph'|trans }}</p></div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block head_stylesheets %}
+    {% if app.request.attributes.get('browser_ui_preview') %}
+        <link rel="stylesheet" href="{{ asset('easyadmin/ui-preview.css') }}" nonce="{{ csp_nonce('style') }}">
+        <link rel="stylesheet" href="{{ asset('ui-fonts-preview.css', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}" nonce="{{ csp_nonce('style') }}">
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block head_javascript %}
+    {% if app.request.attributes.get('browser_ui_preview') %}
+        {{ importmap(['ui-interactions', 'ui-shell'], {nonce: csp_nonce('script')}) }}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

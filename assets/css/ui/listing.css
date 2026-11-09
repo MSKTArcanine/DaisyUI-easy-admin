@@ -127,7 +127,7 @@
         padding: var(--ea-sp-3);
     }
 
-    [data-ea-ui] .datagrid img {
+    [data-ea-ui] .datagrid .ea-lightbox-thumbnail img {
         max-block-size: 4rem;
         max-inline-size: 7rem;
     }

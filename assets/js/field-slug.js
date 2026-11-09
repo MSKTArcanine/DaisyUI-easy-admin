@@ -1,3 +1,5 @@
+import { registerWidget } from './widget-lifecycle';
+
 const slugify = require('slugify');
 slugify.extend({
     $: '',
@@ -48,6 +50,7 @@ slugify.extend({
 class Slugger {
     constructor(field) {
         this.field = field;
+        this.controller = new AbortController();
         this.setTargetElement();
         this.locked = true;
         this.field.setAttribute('readonly', 'readonly');
@@ -61,6 +64,10 @@ class Slugger {
         }
 
         this.appendLockButton();
+    }
+
+    dispose() {
+        this.controller.abort();
     }
 
     setTargetElement() {
@@ -83,16 +90,20 @@ class Slugger {
         this.lockButton =
             this.field.parentNode.querySelector('[data-ea-slug-lock-button]') ??
             this.field.parentNode.querySelector('button');
-        this.lockButton.addEventListener('click', () => {
-            if (this.locked) {
-                const confirmMessage = this.field.dataset.confirmText || null;
-                if (null === confirmMessage || true === confirm(confirmMessage)) {
-                    this.unlock();
+        this.lockButton?.addEventListener(
+            'click',
+            () => {
+                if (this.locked) {
+                    const confirmMessage = this.field.dataset.confirmText || null;
+                    if (null === confirmMessage || true === confirm(confirmMessage)) {
+                        this.unlock();
+                    }
+                } else {
+                    this.lock();
                 }
-            } else {
-                this.lock();
-            }
-        });
+            },
+            { signal: this.controller.signal }
+        );
     }
 
     unlock() {
@@ -126,23 +137,17 @@ class Slugger {
 
     listenTarget() {
         for (const target of this.targets) {
-            target.addEventListener('input', () => {
-                if ('readonly' === this.field.getAttribute('readonly')) {
-                    this.updateValue();
-                }
-            });
+            target.addEventListener(
+                'input',
+                () => {
+                    if ('readonly' === this.field.getAttribute('readonly')) {
+                        this.updateValue();
+                    }
+                },
+                { signal: this.controller.signal }
+            );
         }
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-ea-slug-field]').forEach((field) => {
-        new Slugger(field);
-    });
-});
-
-document.addEventListener('ea.collection.item-added', (event) => {
-    event.detail.newElement.querySelectorAll('[data-ea-slug-field]').forEach((field) => {
-        new Slugger(field);
-    });
-});
+registerWidget('slug', '[data-ea-slug-field]', (field) => new Slugger(field));

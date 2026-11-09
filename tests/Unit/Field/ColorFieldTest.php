@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ColorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ColorConfigurator;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Form\Extension\Core\Type\ColorType;
 
 class ColorFieldTest extends AbstractFieldTestCase
@@ -128,7 +129,7 @@ class ColorFieldTest extends AbstractFieldTestCase
 
         $html = $this->renderFieldTemplate($fieldDto, $this->entityDto, $this->adminContext);
 
-        self::assertStringContainsString('class="color-sample"', $html);
+        self::assertCount(1, (new Crawler($html))->filter('span.color-sample'));
         // the `#` is HTML-entity-encoded by |e('html_attr'); browsers decode it back in the style attribute
         self::assertStringContainsString('style="background: &#x23;ff5733', $html);
         // the color value should only appear in attributes, not as text content after the span
@@ -145,7 +146,7 @@ class ColorFieldTest extends AbstractFieldTestCase
 
         $html = $this->renderFieldTemplate($fieldDto, $this->entityDto, $this->adminContext);
 
-        self::assertStringNotContainsString('class="color-sample"', $html);
+        self::assertCount(0, (new Crawler($html))->filter('span.color-sample'));
         // the color value should appear as text content (not just in attributes)
         self::assertMatchesRegularExpression('/^\s*#ff5733\s*$/', $html);
     }
@@ -174,7 +175,7 @@ class ColorFieldTest extends AbstractFieldTestCase
 
         $html = $this->renderFieldTemplate($fieldDto, $this->entityDto, $this->adminContext);
 
-        self::assertStringContainsString('class="color-sample"', $html);
+        self::assertCount(1, (new Crawler($html))->filter('span.color-sample'));
         // the `#` is HTML-entity-encoded by |e('html_attr'); browsers decode it back in the style attribute
         self::assertStringContainsString('background: &#x23;0000ff', $html);
         // the value should appear as text content after the sample span

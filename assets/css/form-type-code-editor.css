@@ -1,7 +1,7 @@
 /* the shared layer order must be the first import, so this file also works standalone */
-@import "./layers.css";
+@import './layers.css';
 
-@import "~codemirror/lib/codemirror.css" layer(vendor.codemirror);
+@import '~codemirror/lib/codemirror.css' layer(vendor.codemirror);
 
 @layer ea.components {
     .CodeMirror {
@@ -9,35 +9,38 @@
         font-feature-settings: normal;
         font-variant-ligatures: none;
         font-size: var(--font-size-sm);
-        line-height: var(--line-height-normal);
+        line-height: var(--line-height-normal, 1.5);
         block-size: auto;
         min-block-size: 45px;
     }
 
     .CodeMirror-wrap {
-        background: var(--form-control-bg);
-        border: var(--border-width) solid var(--form-input-border-color);
-        border-radius: var(--form-control-border-radius);
-        color: var(--form-input-text-color);
+        background: var(--form-control-bg, var(--color-base-100, #fff));
+        border: var(--border-width, 1px) solid var(--form-input-border-color, var(--color-base-300, #d4d4d4));
+        border-radius: var(--form-control-border-radius, var(--radius-field, 0.25rem));
+        color: var(--form-input-text-color, var(--color-base-content, #262626));
         transition:
             border-color var(--ea-duration-fast) var(--ea-ease-out),
             background-color var(--ea-duration-fast) var(--ea-ease-out);
     }
     .CodeMirror-wrap:focus-within {
-        border-color: var(--form-input-focus-border-color);
-        box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--form-focus-ring-color);
+        border-color: var(--form-input-focus-border-color, var(--color-primary, currentColor));
+        box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--form-focus-ring-color, var(--ea-primary-ring, currentColor));
         outline: 0;
     }
-    .has-error .CodeMirror-wrap {
-        border-color: var(--form-input-error-border-color);
+    .has-error .CodeMirror-wrap,
+    .CodeMirror-wrap[data-ea-widget-invalid='true'] {
+        border-color: var(--form-input-error-border-color, var(--color-error, #b91c1c));
     }
-    .has-error .CodeMirror-wrap:focus-within {
-        border-color: var(--form-input-error-border-color);
-        box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--form-input-error-ring-color);
+    .has-error .CodeMirror-wrap:focus-within,
+    .CodeMirror-wrap[data-ea-widget-invalid='true']:focus-within {
+        border-color: var(--form-input-error-border-color, var(--color-error, #b91c1c));
+        box-shadow: 0 0 0 var(--ea-focus-ring-width)
+            var(--form-input-error-ring-color, color-mix(in srgb, var(--color-error, #b91c1c) 25%, transparent));
     }
     .CodeMirror-gutters {
-        background: var(--form-input-group-text-bg);
-        border-color: var(--form-input-border-color);
+        background: var(--form-input-group-text-bg, var(--color-base-200, #f5f5f5));
+        border-color: var(--form-input-border-color, var(--color-base-300, #d4d4d4));
     }
 
     .CodeMirror-linenumber {
@@ -48,89 +51,104 @@
         padding-block-end: var(--ea-sp-3);
     }
     .CodeMirror-cursor {
-        border: var(--border-width) solid var(--code-editor-comment-color);
+        border: var(--border-width, 1px) solid var(--code-editor-comment-color, var(--text-muted, #737373));
     }
 
     .cm-s-default .cm-header {
-        color: var(--code-editor-key-color);
+        color: var(--code-editor-key-color, var(--ea-primary-on-surface, var(--ea-primary-text, #1d4ed8)));
     }
     .cm-s-default .cm-quote {
-        color: var(--code-editor-attribute-color);
+        color: var(--code-editor-attribute-color, var(--color-base-content, #262626));
     }
     .cm-negative {
-        background: var(--code-editor-deletion-bg);
+        background: var(--code-editor-deletion-bg, color-mix(in srgb, var(--color-error, #b91c1c) 15%, transparent));
     }
     .cm-positive {
-        background: var(--code-editor-addition-bg);
+        background: var(--code-editor-addition-bg, color-mix(in srgb, var(--color-success, #15803d) 15%, transparent));
     }
     .cm-s-default .cm-keyword {
-        color: var(--code-editor-keyword-color);
+        color: var(
+            --code-editor-keyword-color,
+            color-mix(in oklab, var(--color-error, #b91c1c) 70%, var(--color-base-content, #262626))
+        );
     }
     .cm-s-default .cm-atom {
-        color: var(--code-editor-argument-color);
+        color: var(--code-editor-argument-color, var(--color-base-content, #262626));
     }
     .cm-s-default .cm-number {
-        color: var(--code-editor-number-color);
+        color: var(
+            --code-editor-number-color,
+            color-mix(in oklab, var(--color-warning, #a16207) 65%, var(--color-base-content, #262626))
+        );
     }
     .cm-s-default .cm-def {
-        color: var(--code-editor-definition-color);
+        color: var(--code-editor-definition-color, var(--ea-primary-on-surface, var(--ea-primary-text, #1d4ed8)));
     }
     .cm-s-default .cm-variable {
-        color: var(--code-editor-variable-color);
+        color: var(--code-editor-variable-color, var(--color-base-content, #262626));
     }
     .cm-s-default .cm-variable-2 {
-        color: var(--code-editor-argument-color);
+        color: var(--code-editor-argument-color, var(--color-base-content, #262626));
     }
     .cm-s-default .cm-type,
     .cm-s-default .cm-variable-3 {
-        color: var(--code-editor-attribute-color);
+        color: var(--code-editor-attribute-color, var(--color-base-content, #262626));
     }
     .cm-s-default .cm-comment {
-        color: var(--code-editor-comment-color);
+        color: var(--code-editor-comment-color, var(--text-muted, #737373));
     }
     .cm-s-default .cm-string {
-        color: var(--code-editor-string-color);
+        color: var(
+            --code-editor-string-color,
+            color-mix(in oklab, var(--color-success, #15803d) 70%, var(--color-base-content, #262626))
+        );
     }
     .cm-s-default .cm-string-2 {
-        color: var(--code-editor-definition-color);
+        color: var(--code-editor-definition-color, var(--ea-primary-on-surface, var(--ea-primary-text, #1d4ed8)));
     }
     .cm-s-default .cm-meta,
     .cm-s-default .cm-qualifier {
-        color: var(--code-editor-comment-color);
+        color: var(--code-editor-comment-color, var(--text-muted, #737373));
     }
     .cm-s-default .cm-builtin {
-        color: var(--code-editor-key-color);
+        color: var(--code-editor-key-color, var(--ea-primary-on-surface, var(--ea-primary-text, #1d4ed8)));
     }
     .cm-s-default .cm-bracket {
-        color: var(--code-editor-comment-color);
+        color: var(--code-editor-comment-color, var(--text-muted, #737373));
     }
     .cm-s-default .cm-tag {
-        color: var(--code-editor-attribute-color);
+        color: var(--code-editor-attribute-color, var(--color-base-content, #262626));
     }
     .cm-s-default .cm-attribute {
-        color: var(--code-editor-key-color);
+        color: var(--code-editor-key-color, var(--ea-primary-on-surface, var(--ea-primary-text, #1d4ed8)));
     }
     .cm-s-default .cm-hr {
-        color: var(--code-editor-comment-color);
+        color: var(--code-editor-comment-color, var(--text-muted, #737373));
     }
     .cm-s-default .cm-link {
-        color: var(--code-editor-key-color);
+        color: var(--code-editor-key-color, var(--ea-primary-on-surface, var(--ea-primary-text, #1d4ed8)));
     }
     .cm-invalidchar,
     .cm-s-default .cm-error {
-        color: var(--code-editor-keyword-color);
+        color: var(
+            --code-editor-keyword-color,
+            color-mix(in oklab, var(--color-error, #b91c1c) 70%, var(--color-base-content, #262626))
+        );
     }
     div.CodeMirror span.CodeMirror-matchingbracket {
-        color: var(--code-editor-attribute-color);
+        color: var(--code-editor-attribute-color, var(--color-base-content, #262626));
     }
     div.CodeMirror span.CodeMirror-nonmatchingbracket {
-        color: var(--code-editor-keyword-color);
+        color: var(
+            --code-editor-keyword-color,
+            color-mix(in oklab, var(--color-error, #b91c1c) 70%, var(--color-base-content, #262626))
+        );
     }
     .CodeMirror-matchingtag {
         background: color-mix(in srgb, var(--orange-400) 30%, transparent);
     }
 
     div.CodeMirror-selected {
-        background-color: var(--code-editor-selection-bg);
+        background-color: var(--code-editor-selection-bg, var(--ea-primary-soft, #dbeafe));
     }
 }

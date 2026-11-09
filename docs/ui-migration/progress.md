@@ -67,7 +67,7 @@ and commit each stage before switching to the next title-derived branch.
   hidden/rest/CSRF/multipart/errors/labels/help/attrs; ordinary forms, compound
   date/time/choices/repeated fields, tabs/columns/fieldsets/rows/addons and
   nested collections. Valid/invalid persistence and error discovery.
-- [ ] **8. Complete field widgets and remaining rendering surfaces.**
+- [x] **8. Complete field widgets and remaining rendering surfaces.**
   T07-T11/J12-J16/W01-W07: all 31 field templates, boolean PATCH, TomSelect,
   file/image/Vich and storage flags, CodeMirror/Trix/slug/textarea/collections,
   basicLightbox, labels, both login paths, welcome/content/both exceptions,
@@ -445,3 +445,55 @@ Unresolved issues and next stage:
 - Continue with **Prompt 8 - Complete field widgets and remaining rendering
   surfaces** on `complete_field_widgets_and_remaining_rendering_surfaces`, then
   complete the authorized downstream proof and final cutover stages.
+
+
+## Prompt 8 stage report
+
+Branch: `complete_field_widgets_and_remaining_rendering_surfaces`.
+
+Changes made:
+
+- Audited all 31 actual field templates and recorded each retained formatter
+  or presentation integration in the inventory. Added accessible image names,
+  logical color spacing, neutral unsafe-URL markup and scoped field/media/upload
+  skins; preserved configured avatar sizes and primary/muted Boolean roles.
+- Retained independent widgets and their distribution entries. Added safe
+  repeated/dynamic initialization and disposal, visible hidden-editor validation,
+  readonly/disabled behavior, native media keyboard/focus handling and upload
+  deletion/preview cleanup while preserving requests/events/persisted values.
+- Completed login/content/exception/welcome/UI-kit rendering and scoped prose;
+  retained independent profiler/icon sources. Fixed actual tab pointer overlap
+  while preserving public component markup and blocks.
+- Added 25 deterministic browser cases and six HTTP cases, regenerated assets
+  through normal commands and left all production PHP/dependency APIs intact.
+
+Validation (details in `reports/stage-8-widgets.json`):
+
+| Command/check | Result |
+| --- | --- |
+| `make tests` | Passed: 4156 tests, 12413 assertions |
+| `EASYADMIN_BROWSER_ALL_ENGINES=1 make tests-browser` | 345 cases: 344 passed, one Firefox DOMRect precision mismatch; no skips/flaky cases |
+| `EASYADMIN_BROWSER_ALL_ENGINES=1 yarn test:browser tests/Browser/field-display.spec.js` after precision-only refinement | Passed: 12/12; exact CSS bounds retained with 0.001px DOMRect tolerance, no product CSS change |
+| PHPStan / PHP CS Fixer | Passed: 338 analyzed PHP sources; zero of 1045 files require fixing |
+| Twig lint | Passed: 192 product and 16 fixture templates |
+| `yarn ci` | Passed: 132 files; 153 existing advisories remain visible |
+| `make build-assets` | Passed: final `public/` contains 66 files; 55 manifest targets exist |
+| `make build-ui-assets` / production CSS proof | Passed: 97 mapped assets, 249587 CSS bytes; no Bootstrap signature or global Preflight reset in isolated CSS |
+| `make linter-docs` | Passed; repository RST scope only |
+| Original visual references / production PHP diff | Unchanged references; no production PHP changes |
+
+The complete browser run and focused follow-up are distinct results. The
+Firefox failure was subpixel representation of a correct 64px CSS maximum;
+the refined test keeps the limit and all behavioral assertions. Source/widget
+findings discovered earlier in this stage were fixed and rerun rather than
+suppressed. No known stage 8 behavioral failure remains in the tested paths.
+
+Unresolved issues and next stage:
+
+- Installed VichUploader, remote Flysystem round trips, rendered profiler panel,
+  PHP8.2 and exact minimum browser versions remain explicitly unverified.
+- Normal legacy Bootstrap assets and temporary migration scaffolding remain
+  until Prompt 10; independent preview proof does not declare global cutover.
+- Continue with **Prompt 9 - Prove downstream extensibility** on
+  `prove_downstream_extensibility`, then complete final Bootstrap removal and
+  acceptance on the Prompt 10 branch.

@@ -5,7 +5,7 @@
 {% if field.customOptions.get('showSample') %}
     {# ColorConfigurator sanitizes values before storing them, but for values stored before we
        introduced this feature, we need to escape the field value to break CSS-declaration injection #}
-    <span class="color-sample" style="background: {{ field.value|e('html_attr') }}; {{ field.customOptions.get('showValue') ? 'margin-right: 5px;' }}" title="{{ field.formattedValue }}">&nbsp;</span>
+    <span class="color-sample {{ field.customOptions.get('showValue') ? 'color-sample-with-value' }}" style="background: {{ field.value|e('html_attr') }};" title="{{ field.formattedValue }}">&nbsp;</span>
 {% endif %}
 {% if field.customOptions.get('showValue') %}
     {{ field.formattedValue }}

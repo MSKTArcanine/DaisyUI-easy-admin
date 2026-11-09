@@ -1,6 +1,6 @@
 # Behavioral coverage and verification plan
 
-Status: Behavioral baseline and migration evidence through Prompt 4. The
+Status: Behavioral baseline and migration evidence through Prompt 8. The
 source-audit matrix below records
 existing infrastructure and the coverage required during migration. Executed
 baseline results and remaining gaps are recorded after that matrix. The
@@ -346,3 +346,58 @@ claimed reproduced runtime failure yet.
 Original screenshot references remain unchanged. Minimum browser versions,
 optional storage/Vich integrations and remaining independent widget lifecycle
 coverage are separate limits; complete the latter in Prompt 8.
+
+
+## Prompt 8 widget and auxiliary coverage
+
+- `toggles.spec.js` verifies one PATCH after repeated entry loading, exact
+  `newValue`/`fieldName`/CSRF/XHR contracts, persisted values, invalid-CSRF and
+  network rollback, disabled controls and zero forged synthetic requests.
+- `uploads.spec.js` verifies real multiple multipart bytes and file indices,
+  stored-file deletion, clear/re-add, forbidden delete and disabled controls,
+  forged deletion fields, unsaved-navigation cancellation, image previews and
+  object-URL revocation. Assertions inspect fixture-owned stored artifacts,
+  not only the database filename or visible card.
+- `lifecycle.spec.js` drives actual CodeMirror/Trix editing, repeated loading,
+  readonly/disabled/required states, unrelated custom validity, hidden error
+  discovery and visible focus, dynamic nested editors/slugs/textarea sizing,
+  idempotent initialization/disposal and persisted values. Actual tab pointer
+  geometry remains covered. Image cases verify modifier/missing-source URL
+  fallback, keyboard/Escape/focus/scroll restoration and nested modal ownership;
+  lazy TomSelect filters verify destruction and their real GET contract.
+- `field-display.spec.js` runs in legacy and new styles. It measures configured
+  96px avatars, thumbnail/detail/mobile bounds and exact compiled CSS limits;
+  checks translated stripped image names, colors, safe URLs and escaped plain
+  unsafe URLs; verifies readonly code values after keyboard input, native
+  viewer focus restoration and light/dark contrast roles.
+- `auxiliary.spec.js` verifies context/minimal login, real invalid-CSRF and
+  invalid-password responses, custom credential/target/remember-me/submitter
+  fields, canceled and successful submits with exact POST counts, mobile RTL
+  appearance, every shipped UI-kit component and foundation, live font/color
+  pickers and native dialogs. Context/standalone content/errors/welcome retain
+  block overrides, public-message safety, enforced CSP, responsive/reduced-
+  motion output and scoped prose behavior with opt-outs/control exclusions.
+- `tests/Functional/Default/AuxiliaryPagesTest.php` adds six HTTP cases for
+  login names/actions/CSRF/errors/escaping, context/no-context content/locale
+  overrides and independent welcome/exception responses. Existing collector,
+  non-admin request, UI-kit access and all field-family tests still run.
+
+`make tests` passes **4156 tests and 12413 assertions**. The complete browser
+run executes **345 cases** across Chromium, Firefox and WebKit: 344 passed,
+with no skipped/flaky cases, and one Firefox DOMRect precision mismatch
+(`64.00001525878906` against a 64px bound). The narrow test refinement retains
+exact computed CSS bounds and adds only 0.001px geometry tolerance. A fresh
+all-engine field-display run passes **12/12**, with zero skipped/flaky cases;
+no product CSS changed for that refinement. These are separate executions,
+not a claimed single 345/345 rerun. Full results were preserved before the
+follow-up at `/tmp/easyadmin-stage8-full-results.json`; durable summary and
+field-path evidence are in `reports/stage-8-widgets.json`.
+
+Remaining explicit limits: no installed VichUploader end-to-end application,
+remote Flysystem storage round trip, rendered WebProfiler panel, exact minimum
+browser-version run or PHP8.2 runtime matrix was executed. Optional block
+interfaces and independent profiler source were retained and audited; existing
+PHP collector/non-admin tests do not substitute for the missing panel render.
+The normal package still includes Bootstrap pending final cutover. The original
+visual-reference files remain unchanged. Standalone consuming-application
+installation and extension proof is Prompt 9.

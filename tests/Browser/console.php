@@ -43,6 +43,8 @@ if ('seed' === $_SERVER['argv'][1]) {
     $manager->persist($post);
     $widget = (new FieldTestEntity())->setTextField('Widget 1')->setCollectionField(['Entry 1'])
         ->setArrayField([['title' => 'Group 1', 'items' => ['Child 1']]])
+        ->setAvatarField('/browser/field_fixture.svg')->setImageField('browser/field_fixture.svg')->setColorField('#15803d')
+        ->setUrlField('https://example.com/path?value=%3Cvalue%3E')->setTelephoneField('javascript:alert(1)')
         ->setCodeEditorField('const value = 1;')->setTextEditorField('<div>Rich text 1</div>')->setManyToOneAssociation($categories[0]);
     $manager->persist($widget);
     $layout = (new FormTestEntity())->setName('Layout 1')->setEmail('layout@example.com')
@@ -59,7 +61,18 @@ $widgets = array_map(static function (FieldTestEntity $widget): array {
     $filename = $widget->getFileField();
     $file = null !== $filename ? Kernel::storageDir().'/uploads/'.$filename : null;
 
-    return ['id' => $widget->getId(), 'text' => $widget->getTextField(), 'entries' => $widget->getCollectionField(), 'groups' => $widget->getArrayField(),
+    $multipleValues = $widget->getMultipleChoiceField();
+    $multipleFileContents = [];
+    foreach ($multipleValues as $name) {
+        if (\is_string($name) && is_file(Kernel::storageDir().'/uploads/'.$name)) {
+            $multipleFileContents[$name] = file_get_contents(Kernel::storageDir().'/uploads/'.$name);
+        }
+    }
+
+    $imageUpload = $widget->getEmailField();
+    $imageUploadChecksum = null !== $imageUpload && is_file(Kernel::storageDir().'/uploads/'.$imageUpload) ? hash_file('sha256', Kernel::storageDir().'/uploads/'.$imageUpload) : null;
+
+    return ['id' => $widget->getId(), 'text' => $widget->getTextField(), 'entries' => $widget->getCollectionField(), 'groups' => $widget->getArrayField(), 'multipleValues' => $multipleValues, 'multipleFileContents' => $multipleFileContents, 'imageUpload' => $imageUpload, 'imageUploadChecksum' => $imageUploadChecksum,
         'categoryId' => $widget->getManyToOneAssociation()?->getId(), 'file' => $filename,
         'fileContents' => null !== $file && is_file($file) ? file_get_contents($file) : null,
         'code' => $widget->getCodeEditorField(), 'richText' => $widget->getTextEditorField()];

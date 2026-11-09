@@ -521,3 +521,45 @@ markup; full widget lifecycle and skin completion remains Prompt 8.
 Temporary plain-control aliases live only in `migration-components.css` for
 remaining legacy pages. No daisyUI stylesheet is loaded with Bootstrap. Remove
 that support at final cutover. No production PHP processing or public API changed.
+
+
+## D17. Retained widgets, dynamic ownership and remaining page rendering
+
+Retain TomSelect, CodeMirror 5, Trix, basicLightbox, slugify, FontAwesome and
+bundled fonts. Adapt their existing entries and small scoped skins rather than
+introducing a second component system. Keep the shipped editor CSS entry names
+and all widget data/event/request formats. `widget-lifecycle.js` centralizes
+initialization and removal ownership; instance guards and cleanup prevent
+repeated collection/filter initialization from duplicating handlers or editors.
+Do not recreate an existing editor merely to reinitialize a surrounding form.
+
+`widget-validation.js` keeps hidden editor values synchronized while directing
+required errors and focus to the visible widget. Preserve unrelated custom
+validity and the public Trix global integration. Native form submission and
+EasyAdmin events keep their established contracts; disabled/readonly controls
+retain their semantics. Upload bookkeeping retains original indices/deletion
+names, server permissions and stored-file behavior while previews revoke their
+object URLs. Boolean toggles keep their original PATCH contract and fail by
+restoring the previous state and disabling the failed control.
+
+Keep the existing UL/LI Twig tab structure and public blocks. A bounded scoped
+CSS adapter supplies tab layout/active/focus styles because daisyUI tab rules
+require direct children; changing LI to `display: contents` alone would not
+satisfy those selectors. Browser hit testing exposed and now verifies this
+actual interaction boundary. Narrow thumbnail rules to the image viewer so
+configured avatar dimensions are not silently capped.
+
+Context/minimal login reuse native controls and existing component interfaces,
+including configurable authentication field names and block overrides. Delay
+successful-submit disabling until cancellation is known and preserve submitter
+fields. Content pages get scoped prose defaults with component exclusions and
+existing opt-outs; standalone welcome/exception pages retain independent CSS,
+public-message escaping and CSP/reduced-motion behavior. UI-kit demos use the
+same native components and live public theme tokens. Profiler templates remain
+independent and unchanged; a real panel render is an explicit verification gap.
+
+No production PHP API/backend or dependency change is needed in Prompt 8.
+New styles remain isolated from Bootstrap previews; temporary legacy imports,
+compatibility CSS and preview entries are removed in Prompt 10. Optional
+installed Vich/remote-storage behavior remains a separate unverified integration
+rather than a reason to remove those supported render blocks.

@@ -2,11 +2,24 @@
    instead, use ea() in extends and trans_default_domain. This is needed because
    {% extends %} is evaluated by doGetParent(), which runs before any {% set %} in doDisplay(),
    so a local `ea` variable would not be set yet when a user template extends this file. #}
-{% extends ea() is not null ? ea().templatePath('layout') : '@EasyAdmin/layout.html.twig' %}
+{% extends ea() is not null ? ea().templatePath('layout') : '@EasyAdmin/page/login_minimal.html.twig' %}
 {% trans_default_domain ea() is not null ? ea().i18n.translationDomain : (translation_domain is defined ? translation_domain ?? 'messages') %}
 
 {% block body_class 'page-content' %}
 
+{% block page_title %}{{ block('content_title') }}{% endblock %}
+
 {% block content_title %}{% endblock %}
 
 {% block main %}{% endblock %}
+
+{% block wrapper_wrapper %}
+    {% if ea() is not null %}
+        {{ parent() }}
+    {% else %}
+        <main class="ea-standalone-content">
+            {% if block('content_title') is not empty %}<h1>{{ block('content_title') }}</h1>{% endif %}
+            {{ block('main') }}
+        </main>
+    {% endif %}
+{% endblock %}

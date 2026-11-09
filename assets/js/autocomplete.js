@@ -1,4 +1,6 @@
 import TomSelect from 'tom-select/dist/js/tom-select.complete.min';
+import { registerWidget } from './widget-lifecycle';
+import { connectWidgetValidation } from './widget-validation';
 
 export default class Autocomplete {
     create(element) {
@@ -27,7 +29,7 @@ export default class Autocomplete {
     #getCommonConfig(element) {
         const config = {
             render: {
-                no_results: (data, escape) =>
+                no_results: (_data, _escapeHtml) =>
                     `<div class="no-results">${element.getAttribute('data-ea-i18n-no-results-found')}</div>`,
             },
             plugins: {
@@ -84,8 +86,8 @@ export default class Autocomplete {
             maxOptions: null,
             render: {
                 ...commonConfig.render,
-                item: (item, escape) => `<div>${item.label_raw}</div>`,
-                option: (item, escape) => `<div>${item.label_raw}</div>`,
+                item: (item, _escapeHtml) => `<div>${item.label_raw}</div>`,
+                option: (item, _escapeHtml) => `<div>${item.label_raw}</div>`,
             },
         });
 
@@ -134,17 +136,17 @@ export default class Autocomplete {
             maxOptions: null,
             // on remote calls, we don't want tomselect to further filter the results by "entityAsString"
             // this override causes all results to be returned with the sorting from the server
-            score: (search) => (item) => 1,
+            score: (_search) => (_item) => 1,
             render: {
-                option: (item, escape) =>
-                    `<div>${renderOptionsAsHtml ? item.entityAsString : escape(item.entityAsString)}</div>`,
-                item: (item, escape) =>
-                    `<div>${renderOptionsAsHtml ? item.entityAsString : escape(item.entityAsString)}</div>`,
-                loading_more: (data, escape) =>
+                option: (item, escapeHtml) =>
+                    `<div>${renderOptionsAsHtml ? item.entityAsString : escapeHtml(item.entityAsString)}</div>`,
+                item: (item, escapeHtml) =>
+                    `<div>${renderOptionsAsHtml ? item.entityAsString : escapeHtml(item.entityAsString)}</div>`,
+                loading_more: (_data, _escapeHtml) =>
                     `<div class="loading-more-results">${element.getAttribute('data-ea-i18n-loading-more-results')}</div>`,
-                no_more_results: (data, escape) =>
+                no_more_results: (_data, _escapeHtml) =>
                     `<div class="no-more-results">${element.getAttribute('data-ea-i18n-no-more-results')}</div>`,
-                no_results: (data, escape) =>
+                no_results: (_data, _escapeHtml) =>
                     `<div class="no-results">${element.getAttribute('data-ea-i18n-no-results-found')}</div>`,
             },
         });
@@ -162,13 +164,22 @@ export default class Autocomplete {
 
     #initializeTomSelect(element, config) {
         element.dispatchEvent(
-            new CustomEvent('ea.autocomplete.pre-connect', { detail: { config, prefix: 'autocomplete' }, bubbles: true })
+            new CustomEvent('ea.autocomplete.pre-connect', {
+                detail: { config, prefix: 'autocomplete' },
+                bubbles: true,
+            })
         );
 
         const tomSelect = new TomSelect(element, config);
+        const validation = connectWidgetValidation(element, tomSelect.control_input, tomSelect.wrapper);
+        tomSelect.on('change', validation.update);
+        tomSelect.on('destroy', validation.dispose);
 
         element.dispatchEvent(
-            new CustomEvent('ea.autocomplete.connect', { detail: { tomSelect, config, prefix: 'autocomplete' }, bubbles: true })
+            new CustomEvent('ea.autocomplete.connect', {
+                detail: { tomSelect, config, prefix: 'autocomplete' },
+                bubbles: true,
+            })
         );
 
         return tomSelect;
@@ -224,7 +235,7 @@ export default class Autocomplete {
         const options = [];
         const optgroups = [
             { value: 'preferred', label: '', $order: 1 },
-            { value: 'regular', label: '', $order: 2 }
+            { value: 'regular', label: '', $order: 2 },
         ];
 
         let foundSeparator = false;
@@ -250,16 +261,16 @@ export default class Autocomplete {
 
             const optionData = withHtmlSupport
                 ? {
-                    value: opt.value,
-                    label_text: this.#stripTags(opt.text),
-                    label_raw: opt.text,
-                    optgroup: foundSeparator ? 'regular' : 'preferred'
-                }
+                      value: opt.value,
+                      label_text: this.#stripTags(opt.text),
+                      label_raw: opt.text,
+                      optgroup: foundSeparator ? 'regular' : 'preferred',
+                  }
                 : {
-                    value: opt.value,
-                    text: opt.text,
-                    optgroup: foundSeparator ? 'regular' : 'preferred'
-                };
+                      value: opt.value,
+                      text: opt.text,
+                      optgroup: foundSeparator ? 'regular' : 'preferred',
+                  };
 
             options.push(optionData);
 
@@ -329,3 +340,8 @@ export default class Autocomplete {
         return { options, optgroups };
     }
 }
+
+registerWidget('autocomplete', '[data-ea-widget="ea-autocomplete"]', (element) => {
+    const autocomplete = new Autocomplete().create(element) ?? element.tomselect;
+    return () => autocomplete?.destroy();
+});

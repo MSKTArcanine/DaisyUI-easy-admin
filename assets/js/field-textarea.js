@@ -1,8 +1,22 @@
+import { registerWidget } from './widget-lifecycle';
+
 class Autogrow {
     constructor(field) {
         this.field = field;
         this.mirror = null;
-        this.field.addEventListener('input', this.autogrow.bind(this));
+        this.refresh = this.autogrow.bind(this);
+        this.field.addEventListener('input', this.refresh);
+        for (const event of ['ea.tab.shown', 'ea.collapse.shown']) {
+            document.addEventListener(event, this.refresh);
+        }
+        this.width = null;
+        this.observer = new ResizeObserver(([entry]) => {
+            if (entry.contentRect.width !== this.width) {
+                this.width = entry.contentRect.width;
+                this.autogrow();
+            }
+        });
+        this.observer.observe(field);
         this.autogrow();
     }
 
@@ -26,7 +40,17 @@ class Autogrow {
 
         this.mirror.style.width = window.getComputedStyle(this.field).width;
         this.mirror.value = this.field.value;
-        this.field.style.height = `${this.mirror.scrollHeight}px`;
+        const borders = this.field.offsetHeight - this.field.clientHeight;
+        this.field.style.height = `${this.mirror.scrollHeight + borders}px`;
+    }
+
+    dispose() {
+        this.field.removeEventListener('input', this.refresh);
+        for (const event of ['ea.tab.shown', 'ea.collapse.shown']) {
+            document.removeEventListener(event, this.refresh);
+        }
+        this.observer.disconnect();
+        this.mirror?.remove();
     }
 
     createMirror() {
@@ -40,6 +64,7 @@ class Autogrow {
         this.mirror.style.pointerEvents = 'none';
         this.mirror.tabIndex = -1;
         this.mirror.setAttribute('aria-hidden', 'true');
+        this.mirror.setAttribute('data-ea-textarea-mirror', '');
 
         // copy the rows attribute to ensure minimum height is respected
         if (this.field.hasAttribute('rows')) {
@@ -76,8 +101,4 @@ class Autogrow {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-ea-textarea-field]').forEach((field) => {
-        new Autogrow(field);
-    });
-});
+registerWidget('textarea', '[data-ea-textarea-field]', (field) => new Autogrow(field));

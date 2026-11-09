@@ -44,9 +44,9 @@
 
         <section class="content">
             {% if error|default(false) %}
-                <div class="w-100 alert alert-danger">
+                <twig:ea:Alert variant="danger" class="ea-login-error" role="alert">
                     {{ error.messageKey|trans(error.messageData, 'security') }}
-                </div>
+                </twig:ea:Alert>
             {% endif %}
 
             {% block login_form_wrapper %}
@@ -58,21 +58,21 @@
                 <input type="hidden" name="{{ target_path_parameter|default('_target_path') }}" value="{{ target_path|default(null != ea ? path(ea.dashboardRouteName) : '/') }}" />
 
                 {% block login_form_credentials_wrapper %}
-                    <div class="form-group">
-                        <label class="form-control-label required" for="username">{{ _username_label }}</label>
+                    <div class="form-group ea-form-group">
+                        <label class="ea-form-label form-control-label required" for="username">{{ _username_label }}</label>
                         <div class="form-widget">
-                            <input type="text" id="username" name="{{ username_parameter|default('_username') }}" class="form-control" value="{{ last_username|default('') }}" required autofocus autocomplete="username">
+                            <input type="text" id="username" name="{{ username_parameter|default('_username') }}" class="input" value="{{ last_username|default('') }}" required autofocus autocomplete="username">
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-control-label required" for="password">{{ _password_label }}</label>
+                    <div class="form-group ea-form-group">
+                        <label class="ea-form-label form-control-label required" for="password">{{ _password_label }}</label>
                         <div class="form-widget">
-                            <input type="password" id="password" name="{{ password_parameter|default('_password') }}" class="form-control" required autocomplete="current-password">
+                            <input type="password" id="password" name="{{ password_parameter|default('_password') }}" class="input" required autocomplete="current-password">
                         </div>
 
                         {% if forgot_password_enabled|default(false) %}
-                            <div class="form-text">
+                            <div class="form-text ea-form-help">
                                 <a href="{{ forgot_password_path|default('#') }}">{{ _forgot_password_label }}</a>
                             </div>
                         {% endif %}
@@ -80,8 +80,8 @@
                 {% endblock login_form_credentials_wrapper %}
 
                 {% if remember_me_enabled|default(false) %}
-                    <div class="form-group">
-                        <input class="form-check-input" type="checkbox" id="remember_me" name="{{ remember_me_parameter|default('_remember_me') }}" {{ remember_me_checked|default(false) ? 'checked' }}>
+                    <div class="form-group ea-form-group ea-login-remember">
+                        <input class="checkbox form-check-input" type="checkbox" id="remember_me" name="{{ remember_me_parameter|default('_remember_me') }}" {{ remember_me_checked|default(false) ? 'checked' }}>
                         <label class="form-check-label" for="remember_me">
                             {{ _remember_me_label }}
                         </label>

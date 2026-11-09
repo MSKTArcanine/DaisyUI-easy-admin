@@ -1,0 +1,237 @@
+{
+    "stage": 8,
+    "branch": "complete_field_widgets_and_remaining_rendering_surfaces",
+    "parent_commit": "12abc2e0d",
+    "upstream_commit": "bd0fb8448a41f69b3493c5bea84f793e46fe7c21",
+    "php": {
+        "command": "make tests",
+        "passed": true,
+        "tests": 4156,
+        "assertions": 12413
+    },
+    "full_browser_before_precision_refinement": {
+        "startTime": "2026-11-09T23:28:22.338Z",
+        "duration": 487101.291,
+        "expected": 344,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+    },
+    "full_browser_result_archive": "/tmp/easyadmin-stage8-full-results.json",
+    "precision_mismatch": {
+        "project": "firefox",
+        "file": "tests/Browser/field-display.spec.js",
+        "expected_maximum_px": 64,
+        "actual_domrect_px": 64.00001525878906,
+        "refinement": "Assert exact computed CSS maxima and allow 0.001px DOMRect precision tolerance; no product CSS changes"
+    },
+    "final_field_display_browser": {
+        "startTime": "2026-11-09T23:43:04.020Z",
+        "duration": 24556.08,
+        "expected": 12,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+    },
+    "engines": ["chromium", "firefox", "webkit"],
+    "new_browser_cases": 25,
+    "new_auxiliary_http_cases": 6,
+    "checks": {
+        "phpstan_sources": 338,
+        "php_cs_fixer_files": 1045,
+        "php_cs_fixer_fixable": 0,
+        "twig_product": 192,
+        "twig_fixture": 16,
+        "frontend_files": 132,
+        "frontend_warnings": 153,
+        "frontend_infos": 0,
+        "rst_docs": true,
+        "normal_build_files": 66,
+        "manifest_targets": 55,
+        "assetmapper_assets": 97,
+        "compiled_css_bytes": 249587,
+        "original_references_unchanged": true,
+        "production_php_changes": false,
+        "dependency_changes": false
+    },
+    "field_templates": [
+        {
+            "path": "templates/crud/field/array.html.twig",
+            "disposition": "Retained formatter",
+            "integration": "ui/fields.css list spacing + accessible inline collection rows; trait7 owns prototypes"
+        },
+        {
+            "path": "templates/crud/field/association.html.twig",
+            "disposition": "Retained formatter",
+            "integration": "Existing Badge/related links; ui/autocomplete.css neutral retained TomSelect"
+        },
+        {
+            "path": "templates/crud/field/avatar.html.twig",
+            "disposition": "Presentation adapted",
+            "integration": "Accessible alt; ui/fields.css radius; configured dimensions preserved by narrower listing image selector"
+        },
+        {
+            "path": "templates/crud/field/boolean.html.twig",
+            "disposition": "Retained renderer",
+            "integration": "Existing Switch interface and unchanged PATCH contract; primary true and muted false Badge roles restored in ui/fields.css"
+        },
+        {
+            "path": "templates/crud/field/choice.html.twig",
+            "disposition": "Retained formatter",
+            "integration": "Existing Badge semantic adapter and all choice labels/values"
+        },
+        {
+            "path": "templates/crud/field/code_editor.html.twig",
+            "disposition": "Retained stage6 native viewer",
+            "integration": "Existing form-type-code-editor.css neutral roles/legacy fallback; CodeMirror metadata/escaping retained"
+        },
+        {
+            "path": "templates/crud/field/collection.html.twig",
+            "disposition": "Retained formatter",
+            "integration": "Existing numeric Badge/raw formatted output; trait7 and field collection styling retained"
+        },
+        {
+            "path": "templates/crud/field/color.html.twig",
+            "disposition": "Presentation adapted",
+            "integration": "Escaped background unchanged; logical sample gap class + bounded color-input styling in ui/fields.css"
+        },
+        {
+            "path": "templates/crud/field/country.html.twig",
+            "disposition": "Retained formatter",
+            "integration": "Flag props/name formatting retained; ui/fields.css flag/name and TomSelect alignment"
+        },
+        {
+            "path": "templates/crud/field/currency.html.twig",
+            "disposition": "Retained formatter",
+            "integration": "Badge custom currency role preserved; uppercase presentation in ui/fields.css"
+        },
+        {
+            "path": "templates/crud/field/date.html.twig",
+            "disposition": "Retained neutral formatter",
+            "integration": "Original value formatting/escaping retained; shared shell typography"
+        },
+        {
+            "path": "templates/crud/field/datetime.html.twig",
+            "disposition": "Retained neutral formatter",
+            "integration": "Original value formatting/escaping retained; shared shell typography"
+        },
+        {
+            "path": "templates/crud/field/email.html.twig",
+            "disposition": "Retained formatter",
+            "integration": "mailto encoding and formatted label unchanged"
+        },
+        {
+            "path": "templates/crud/field/file.html.twig",
+            "disposition": "Retained renderer",
+            "integration": "Asset URL/download/risky-inline/filename semantics unchanged; existing Icon sizing"
+        },
+        {
+            "path": "templates/crud/field/generic.html.twig",
+            "disposition": "Retained neutral formatter",
+            "integration": "Original value formatting/escaping retained; shared shell typography"
+        },
+        {
+            "path": "templates/crud/field/hidden.html.twig",
+            "disposition": "Retained neutral formatter",
+            "integration": "Original value formatting/escaping retained; shared shell typography"
+        },
+        {
+            "path": "templates/crud/field/id.html.twig",
+            "disposition": "Retained neutral formatter",
+            "integration": "Original value formatting/escaping retained; shared shell typography"
+        },
+        {
+            "path": "templates/crud/field/image.html.twig",
+            "disposition": "Presentation adapted",
+            "integration": "Static responsive utilities + accessible alt; ui/media.css independent basicLightbox integration"
+        },
+        {
+            "path": "templates/crud/field/integer.html.twig",
+            "disposition": "Retained neutral formatter",
+            "integration": "Original value formatting/escaping retained; shared shell typography"
+        },
+        {
+            "path": "templates/crud/field/language.html.twig",
+            "disposition": "Retained formatter",
+            "integration": "Badge custom language role preserved; uppercase presentation in ui/fields.css"
+        },
+        {
+            "path": "templates/crud/field/locale.html.twig",
+            "disposition": "Retained neutral formatter",
+            "integration": "Original value formatting/escaping retained; shared shell typography"
+        },
+        {
+            "path": "templates/crud/field/money.html.twig",
+            "disposition": "Retained neutral formatter",
+            "integration": "Original value formatting/escaping retained; shared shell typography"
+        },
+        {
+            "path": "templates/crud/field/number.html.twig",
+            "disposition": "Retained neutral formatter",
+            "integration": "Original value formatting/escaping retained; shared shell typography"
+        },
+        {
+            "path": "templates/crud/field/percent.html.twig",
+            "disposition": "Retained neutral formatter",
+            "integration": "Original value formatting/escaping retained; shared shell typography"
+        },
+        {
+            "path": "templates/crud/field/telephone.html.twig",
+            "disposition": "Retained formatter",
+            "integration": "tel encoding and formatted label unchanged"
+        },
+        {
+            "path": "templates/crud/field/text.html.twig",
+            "disposition": "Retained formatter",
+            "integration": "Original trusted/raw/title/newline behavior unchanged"
+        },
+        {
+            "path": "templates/crud/field/text_editor.html.twig",
+            "disposition": "Retained stage6 native viewer",
+            "integration": "Existing form-type-text-editor.css neutral roles/legacy fallback; Trix rich output unchanged"
+        },
+        {
+            "path": "templates/crud/field/textarea.html.twig",
+            "disposition": "Retained formatter",
+            "integration": "Original trusted/raw/title/newline behavior unchanged"
+        },
+        {
+            "path": "templates/crud/field/time.html.twig",
+            "disposition": "Retained neutral formatter",
+            "integration": "Original value formatting/escaping retained; shared shell typography"
+        },
+        {
+            "path": "templates/crud/field/timezone.html.twig",
+            "disposition": "Retained neutral formatter",
+            "integration": "Original value formatting/escaping retained; shared shell typography"
+        },
+        {
+            "path": "templates/crud/field/url.html.twig",
+            "disposition": "Presentation adapted",
+            "integration": "Unsafe value remains plain escaped text with ea-unsafe-url marker; safe href/target/rel unchanged"
+        }
+    ],
+    "actual_findings_fixed": [
+        "Repeated widget handlers and undisposed dynamic/filter editor ownership",
+        "Hidden required editor discovery and visible focus/error association",
+        "Readonly/disabled widget behavior and unrelated custom validity preservation",
+        "Upload FileList indices, clear/re-add, stored deletion and disabled controls",
+        "Media keyboard/fallback/owner and scroll/focus cleanup",
+        "Existing UL/LI tab markup pointer overlap with daisyUI direct-child selectors",
+        "Generic thumbnail selector capping configured avatar size",
+        "Login canceled-submit recovery and submitter retention",
+        "Scoped content prose and auxiliary error appearance"
+    ],
+    "test_setup_corrections": [
+        "Dynamic fixture uses shipped field-code-editor.css and field-text-editor.css entry names",
+        "Subpixel DOMRect precision tolerance with exact computed CSS bounds"
+    ],
+    "unverified": [
+        "Installed VichUploader end-to-end integration",
+        "Remote Flysystem storage round trip",
+        "Rendered WebProfiler panel",
+        "PHP8.2 runtime matrix",
+        "Exact minimum supported browser versions"
+    ],
+    "next_stage": 9
+}

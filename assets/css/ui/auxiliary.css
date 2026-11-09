@@ -1,0 +1,101 @@
+@layer components {
+    [data-ea-ui].page-login {
+        background: var(--color-base-200);
+        display: grid;
+        min-block-size: 100dvh;
+        padding: var(--ea-sp-8);
+        place-items: center;
+    }
+
+    [data-ea-ui].page-login #flash-messages {
+        inset-block-start: 0;
+        inset-inline: 0;
+        position: absolute;
+    }
+
+    [data-ea-ui] .login-wrapper {
+        inline-size: min(100%, 26rem);
+    }
+
+    [data-ea-ui] .login-wrapper .main-header {
+        display: block;
+        margin-block-end: var(--ea-sp-8);
+        position: static;
+    }
+
+    [data-ea-ui] .login-wrapper .logo {
+        color: var(--color-base-content);
+        display: block;
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-semibold);
+        text-align: center;
+    }
+
+    [data-ea-ui] .login-wrapper .content {
+        background: var(--color-base-100);
+        border: 1px solid var(--color-base-300);
+        border-radius: var(--radius-box);
+        display: block;
+        inline-size: 100%;
+        padding: clamp(1rem, 5vw, 2rem);
+    }
+
+    [data-ea-ui] .login-wrapper .ea-form-label.required::after {
+        content: none;
+    }
+
+    [data-ea-ui] .login-wrapper .input {
+        inline-size: 100%;
+    }
+
+    [data-ea-ui] .login-wrapper .ea-login-remember {
+        align-items: center;
+        display: flex;
+        gap: var(--ea-sp-4);
+    }
+
+    [data-ea-ui] .login-wrapper .ea-login-error {
+        margin-block-end: var(--ea-sp-8);
+    }
+
+    [data-ea-ui] .ea-standalone-content {
+        margin-inline: auto;
+        max-inline-size: 72rem;
+        padding: var(--ea-sp-12);
+    }
+
+    [data-ea-ui].error .error-message {
+        max-inline-size: 32rem;
+        min-block-size: 20rem;
+        padding: var(--ea-sp-12);
+    }
+
+    [data-ea-ui].error .error-message h1 {
+        align-items: center;
+        color: var(--color-error);
+        display: flex;
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-semibold);
+        gap: var(--ea-sp-3);
+        margin-block-end: 1em;
+    }
+
+    [data-ea-ui] .ea-ui-kit-breadcrumb .breadcrumb {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--ea-sp-3);
+        list-style: none;
+        padding: 0;
+    }
+
+    [data-ea-ui] .ea-ui-kit-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+        color: var(--text-muted);
+        content: '/';
+        margin-inline-end: var(--ea-sp-3);
+    }
+
+    [data-ea-ui] .ea-ui-kit .table-responsive {
+        overflow-x: auto;
+    }
+}

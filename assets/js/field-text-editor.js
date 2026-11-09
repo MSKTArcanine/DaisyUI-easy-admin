@@ -1,186 +1,185 @@
 require('../css/form-type-text-editor.css');
 
 import Trix from 'trix/dist/trix.esm';
+import { registerWidget } from './widget-lifecycle';
+import { connectWidgetValidation } from './widget-validation';
 
-// Provide Trix variable globally to allow custom backend pages to use it
-window.Trix = Trix;
+const KEY = Symbol.for('easyadmin.trix');
+document[KEY] ??= { prepared: new WeakSet(), bound: false, trix: Trix };
+const state = document[KEY];
+// Trix assigns its global on every import; keep the instance used by existing custom elements
+window.Trix = state.trix;
 
-// DOMContentLoaded is too late because Trix editors are already initialized by then (and the custom
-// config must be applied before that); this event is fired once per editor, including the ones
-// added later (e.g. in collections), so the fields are processed again each time
-let textEditorField = null;
-document.addEventListener('trix-before-initialize', () => {
-    textEditorField ??= new TextEditorField();
-    textEditorField.processFields();
-});
+function editorFor(control) {
+    return [...control.ownerDocument.querySelectorAll('trix-editor[input]')].find(
+        (editor) => editor.getAttribute('input') === control.id
+    );
+}
 
-class TextEditorField {
-    constructor() {
-        this.#enableFormChangesDetection();
-        this.#handleFormSubmission();
-        document.addEventListener('trix-change', () => {
-            this.#markInvalidFormFields();
-        });
+function mergeConfig(source, target) {
+    for (const [key, value] of Object.entries(source)) {
+        if (['__proto__', 'prototype', 'constructor'].includes(key)) {
+            continue;
+        }
+        if (value !== null && typeof value === 'object') {
+            target[key] ??= Array.isArray(value) ? [] : {};
+            mergeConfig(value, target[key]);
+        } else {
+            target[key] = value;
+        }
     }
+}
 
-    processFields() {
-        this.#processRequiredAttribute();
-        // without the 'required' attribute, the custom validity makes form.js mark the
-        // empty required fields (and their tabs) as invalid
-        this.#markInvalidFormFields();
+function prepare(control) {
+    if (state.prepared.has(control)) {
+        return;
     }
+    state.prepared.add(control);
+    const config = JSON.parse(control.getAttribute('data-trix-editor-config') ?? 'null');
+    if (config) {
+        mergeConfig(config, window.Trix.config);
+    }
+    if (!control.hasAttribute('data-ea-trix-is-required')) {
+        control.dataset.eaTrixIsRequired = String(control.required);
+    }
+    control.required = false;
+}
 
-    #processRequiredAttribute() {
-        // the content of Trix is stored in a hidden <textarea>; when it's required and empty, browsers fail
-        // to display the validation error ("An invalid form control with name='foo' is not focusable"),
-        // so the 'required' attribute is replaced by a custom attribute checked later
-        document.querySelectorAll('textarea.ea-text-editor-content').forEach((trixContentElement) => {
-            const trixEditorConfig = JSON.parse(trixContentElement.getAttribute('data-trix-editor-config'));
-            if (null !== trixEditorConfig) {
-                Trix.config = this.#mergeObjects(trixEditorConfig, Trix.config);
+if (!state.bound) {
+    state.bound = true;
+    document.addEventListener('trix-before-initialize', (event) => {
+        const control = event.target.inputElement;
+        if (control?.matches('textarea.ea-text-editor-content')) {
+            prepare(control);
+        }
+    });
+}
+
+registerWidget('text-editor', 'textarea.ea-text-editor-content', (control) => {
+    prepare(control);
+    const editor = editorFor(control);
+    if (!editor) {
+        return null;
+    }
+    const required = control.dataset.eaTrixIsRequired === 'true';
+    editor.id ||= `${control.id}-editor`;
+    editor.setAttribute('role', 'textbox');
+    editor.setAttribute('aria-multiline', 'true');
+    editor.setAttribute('aria-required', String(required));
+    editor.setAttribute('aria-disabled', String(control.disabled));
+    const applyReadonly = () => {
+        if (control.readOnly) {
+            editor.setAttribute('contenteditable', 'false');
+            editor.setAttribute('aria-readonly', 'true');
+            if (!editor.hasAttribute('tabindex')) {
+                editor.tabIndex = 0;
             }
-
-            // the fields processed before no longer have the 'required' attribute
-            if (!trixContentElement.hasAttribute('data-ea-trix-is-required')) {
-                const isTrixFieldRequired =
-                    'required' === trixContentElement.getAttribute('required') ? 'true' : 'false';
-                trixContentElement.setAttribute('data-ea-trix-is-required', isTrixFieldRequired);
-                trixContentElement.removeAttribute('required');
-            }
-
-            if (trixContentElement.dataset.numberOfRows !== '') {
-                const escapedId = CSS.escape(trixContentElement.id);
-                const editor = document.querySelector(`trix-editor[input="${escapedId}"].trix-content`);
-
-                if (editor !== null) {
-                    // a <style> element instead of an inline style, so strict CSPs (that disallow
-                    // `style-src-attr 'unsafe-inline'`) don't strip it; 21px is the average line height
-                    const styleElementId = `ea-trix-editor-size-${trixContentElement.id}`;
-                    const styleElement = document.getElementById(styleElementId) ?? document.createElement('style');
-                    styleElement.id = styleElementId;
-                    const nonce = document.querySelector('meta[name="csp-nonce"]')?.getAttribute('content');
-                    if (nonce) {
-                        styleElement.setAttribute('nonce', nonce);
-                    }
-
-                    styleElement.textContent = `trix-editor[input="${escapedId}"] { min-block-size: ${21 * trixContentElement.dataset.numberOfRows}px; }`;
-                    if (!styleElement.isConnected) {
-                        document.head.appendChild(styleElement);
-                    }
-                }
-            }
-        });
-    }
-
-    // Trix updates the value of its <textarea> without firing an 'input' event, so DirtyForm
-    // (created by form.js) wouldn't detect the changes otherwise
-    #enableFormChangesDetection() {
-        document.addEventListener('trix-change', (event) => {
-            event.target.inputElement?.dispatchEvent(new Event('input'));
-        });
-    }
-
-    #handleFormSubmission() {
-        document.addEventListener('ea.form.submit', (formEvent) => {
-            const entityForm = formEvent.detail.form;
-            entityForm.querySelectorAll('textarea.ea-text-editor-content').forEach((trixContentElement) => {
-                const isTrixFieldRequired = 'true' === trixContentElement.getAttribute('data-ea-trix-is-required');
-                const escapedId = CSS.escape(trixContentElement.id);
-                const trixEditorElement = entityForm.querySelector(`trix-editor[input="${escapedId}"]`);
-                // an empty Trix editor field is not really empty; it contains a "\n" character (%0A = HTML encoded)
-                const isTrixEditorEmpty = '%0A' === escape(trixEditorElement.editor.getDocument().toString());
-
-                if (isTrixFieldRequired && isTrixEditorEmpty) {
-                    const formGroup = trixContentElement.closest('div.form-group');
-                    formGroup.classList.add('has-error');
-                    formGroup.addEventListener('click', function onFormGroupClick() {
-                        formGroup.classList.remove('has-error');
-                        formGroup.removeEventListener('click', onFormGroupClick);
-                    });
-
-                    const errorMessage = this.#getLocalizedErrorMessage();
-                    const errorElement = document.createElement('div');
-                    errorElement.classList.add('invalid-feedback', 'd-block');
-                    errorElement.innerHTML = `<span class="form-error-message">${errorMessage}</span>`;
-                    trixContentElement.closest('.form-widget').append(errorElement);
-
-                    formEvent.preventDefault();
-                }
-            });
-        });
-    }
-
-    #markInvalidFormFields() {
-        ['.ea-new-form', '.ea-edit-form'].forEach((formSelector) => {
-            const form = document.querySelector(formSelector);
-            if (null !== form) {
-                form.querySelectorAll('input,select,textarea').forEach((input) => {
-                    if (
-                        input.hasAttribute('data-ea-trix-is-required') &&
-                        input.getAttribute('data-ea-trix-is-required') === 'true' &&
-                        input.value === ''
-                    ) {
-                        input.setCustomValidity('invalid');
-                    } else {
-                        input.setCustomValidity('');
-                    }
-                });
-            }
-        });
-    }
-
-    #getLocalizedErrorMessage() {
-        // copied from https://github.com/chromium/chromium/search?p=1&q=2507943997699731163
-        const requiredFieldMessage = {
-            ar: 'يُرجى ملء هذا الحقل.',
-            bg: 'Моля, попълнете това поле',
-            ca: 'Empleneu aquest camp',
-            cs: 'Vyplňte prosím toto pole',
-            da: 'Udfyld dette felt',
-            de: 'Füllen Sie dieses Feld aus',
-            el: 'Συμπληρώστε αυτό το πεδίο',
-            en: 'Please fill in this field',
-            es: 'Completa este campo',
-            eu: 'Bete eremu hau',
-            fa: 'لطفاً این قسمت را تکمیل کنید.',
-            fi: 'Täytä tämä kenttä',
-            fr: 'Veuillez renseigner ce champ',
-            gl: 'Completa este campo',
-            hr: 'Ispunite ovo polje',
-            hu: 'Kérjük, töltse ki ezt a mezőt',
-            it: 'Compila questo campo',
-            lt: 'Užpildykite šį lauką',
-            nl: 'Vul dit veld in',
-            no: 'Vennligst fyll ut dette feltet',
-            pl: 'Wypełnij to pole',
-            pt: 'Preencha este campo',
-            pt_BR: 'Preencha este campo',
-            ro: 'Completează acest câmp',
-            ru: 'Заполните это поле',
-            sl: 'Izpolnite to polje',
-            sr_RS: 'Попуните ово поље',
-            sv: 'Fyll i det här fältet',
-            tr: 'Lütfen bu alanı doldurun',
-            uk: 'Заповніть це поле',
-            zh_CN: '请填写此字段',
-        };
-
-        return requiredFieldMessage[document.querySelector('html').getAttribute('lang')] || 'Please fill in this field';
-    }
-
-    // copied from https://gist.github.com/ahtcx/0cd94e62691f539160b32ecda18af3d6?permalink_comment_id=3889214#gistcomment-3889214
-    #mergeObjects(fromObject, intoObject) {
-        for (const [key, val] of Object.entries(fromObject)) {
-            if (val !== null && typeof val === 'object') {
-                if (intoObject[key] === undefined) {
-                    intoObject[key] = new val.__proto__.constructor();
-                }
-                this.#mergeObjects(val, intoObject[key]);
-            } else {
-                intoObject[key] = val;
+            if (editor.toolbarElement) {
+                editor.toolbarElement.inert = true;
             }
         }
-
-        return intoObject;
+    };
+    const preventReadonlyEdit = (event) => {
+        if (control.readOnly) {
+            event.preventDefault();
+        }
+    };
+    editor.addEventListener('trix-initialize', applyReadonly);
+    editor.addEventListener('beforeinput', preventReadonlyEdit);
+    editor.addEventListener('trix-file-accept', preventReadonlyEdit);
+    applyReadonly();
+    const label = [...document.querySelectorAll('label[for]')].find((label) => label.htmlFor === control.id);
+    if (label && !control.hasAttribute('aria-label') && !control.hasAttribute('aria-labelledby')) {
+        label.id ||= `${control.id}-label`;
+        editor.setAttribute('aria-labelledby', label.id);
     }
+    const validation = connectWidgetValidation(control, editor, editor.closest('.ea-text-editor-wrapper') ?? editor);
+    let ownedMessage = null;
+    const updateValidity = () => {
+        const text = editor.editor?.getDocument().toString() ?? control.value;
+        const empty = text.trim() === '';
+        if (required && empty && !control.disabled) {
+            if (!control.validity.customError || control.validationMessage === ownedMessage) {
+                ownedMessage = localizedRequiredMessage();
+                control.setCustomValidity(ownedMessage);
+            }
+        } else {
+            if (ownedMessage !== null && control.validationMessage === ownedMessage) {
+                control.setCustomValidity('');
+            }
+            ownedMessage = null;
+        }
+        validation.update();
+    };
+    const change = () => {
+        updateValidity();
+        // Trix updates its backing textarea without dispatching a native input event
+        control.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    editor.addEventListener('trix-change', change);
+    editor.addEventListener('trix-initialize', updateValidity);
+    updateValidity();
+    let sizeStyle = null;
+    if (control.dataset.numberOfRows) {
+        const rows = Number(control.dataset.numberOfRows);
+        if (Number.isFinite(rows) && rows > 0) {
+            sizeStyle = document.createElement('style');
+            sizeStyle.id = `ea-trix-editor-size-${control.id}`;
+            const nonce = document.querySelector('meta[name="csp-nonce"]')?.content;
+            if (nonce) {
+                sizeStyle.nonce = nonce;
+            }
+            sizeStyle.textContent = `#${CSS.escape(editor.id)} { min-block-size: ${21 * rows}px; }`;
+            document.head.append(sizeStyle);
+        }
+    }
+    return {
+        dispose() {
+            editor.removeEventListener('trix-initialize', applyReadonly);
+            editor.removeEventListener('beforeinput', preventReadonlyEdit);
+            editor.removeEventListener('trix-file-accept', preventReadonlyEdit);
+            editor.removeEventListener('trix-change', change);
+            editor.removeEventListener('trix-initialize', updateValidity);
+            validation.dispose();
+            sizeStyle?.remove();
+        },
+    };
+});
+
+function localizedRequiredMessage() {
+    const requiredFieldMessage = {
+        ar: 'يُرجى ملء هذا الحقل.',
+        bg: 'Моля, попълнете това поле',
+        ca: 'Empleneu aquest camp',
+        cs: 'Vyplňte prosím toto pole',
+        da: 'Udfyld dette felt',
+        de: 'Füllen Sie dieses Feld aus',
+        el: 'Συμπληρώστε αυτό το πεδίο',
+        en: 'Please fill in this field',
+        es: 'Completa este campo',
+        eu: 'Bete eremu hau',
+        fa: 'لطفاً این قسمت را تکمیل کنید.',
+        fi: 'Täytä tämä kenttä',
+        fr: 'Veuillez renseigner ce champ',
+        gl: 'Completa este campo',
+        hr: 'Ispunite ovo polje',
+        hu: 'Kérjük, töltse ki ezt a mezőt',
+        it: 'Compila questo campo',
+        lt: 'Užpildykite šį lauką',
+        nl: 'Vul dit veld in',
+        no: 'Vennligst fyll ut dette feltet',
+        pl: 'Wypełnij to pole',
+        pt: 'Preencha este campo',
+        pt_BR: 'Preencha este campo',
+        ro: 'Completează acest câmp',
+        ru: 'Заполните это поле',
+        sl: 'Izpolnite to polje',
+        sr_RS: 'Попуните ово поље',
+        sv: 'Fyll i det här fältet',
+        tr: 'Lütfen bu alanı doldurun',
+        uk: 'Заповніть це поле',
+        zh_CN: '请填写此字段',
+    };
+
+    return requiredFieldMessage[document.documentElement.lang] || 'Please fill in this field';
 }

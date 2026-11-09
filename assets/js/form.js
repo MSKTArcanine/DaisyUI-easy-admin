@@ -135,8 +135,12 @@ function showErrors(state, invalid) {
     );
     state.reporting = true;
     try {
-        invalid[0].focus();
-        invalid[0].reportValidity();
+        const targetId = invalid[0].getAttribute('data-ea-validation-target');
+        const target = targetId ? state.form.ownerDocument.getElementById(targetId) : invalid[0];
+        (target ?? invalid[0]).focus();
+        if (!targetId) {
+            invalid[0].reportValidity();
+        }
     } finally {
         state.reporting = false;
     }
@@ -266,7 +270,7 @@ function bind(document, registry) {
                 return;
             }
             state.dirty.checkValue(event);
-            if (['checkbox', 'radio'].includes(event.target.type)) {
+            if (['checkbox', 'radio', 'file'].includes(event.target.type)) {
                 state.dirty.isDirty = true;
             }
             if (event.target.validity?.valid && state.clientInvalid.has(event.target)) {

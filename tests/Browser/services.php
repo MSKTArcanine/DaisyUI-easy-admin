@@ -2,6 +2,7 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Browser\Form\DynamicEntryType;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Browser\Form\NestedEntryType;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Browser\Twig\NonceExtension;
 use Symfony\Bridge\Twig\Extension\ImportMapExtension;
@@ -15,6 +16,7 @@ return static function (ContainerConfigurator $container): void {
             ->args([service('asset_mapper.importmap.renderer')])->tag('twig.runtime');
 
     $container->services()->defaults()->autowire()->autoconfigure()
+        ->set(DynamicEntryType::class)
         ->set(NestedEntryType::class);
 
     $container->services()->defaults()->autowire()->autoconfigure()

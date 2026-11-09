@@ -296,3 +296,22 @@ reproduced corrupt child names: expected
 also overwrote the nested placeholder metadata; the child replacement then
 rewrote the parent's numeric index. Keep the final expected names and persisted
 values assertions. The preexisting DirtyForm regression remains unchanged.
+
+
+## Prompt 8 widget and auxiliary baseline
+
+This stage starts from `12abc2e0d` on
+`complete_field_widgets_and_remaining_rendering_surfaces`. It retains all
+independent widget libraries and the normal `field-code-editor.css` and
+`field-text-editor.css` distribution names. No production PHP implementation,
+public configuration signature, or dependency resolution changes in this stage.
+The original upstream SHA and visual references remain unchanged.
+
+The existing deterministic browser application adds routes for dynamic widgets,
+multiple uploads, toggles, field displays and auxiliary pages. Its seed command
+resets fixture-owned uploaded files as well as database values. Real multipart
+bytes, stored/deleted artifacts, endpoint methods/payloads and persisted values
+remain the source of behavioral evidence. The native preview and remaining
+legacy document use separate stylesheets; normal global Bootstrap removal is
+still Prompt 10. `reports/stage-8-widgets.json` records the full run and the
+subsequent precision-only field-display verification separately.

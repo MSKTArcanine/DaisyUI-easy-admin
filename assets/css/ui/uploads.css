@@ -1,0 +1,149 @@
+@layer components {
+    [data-ea-ui] .ea-fileupload,
+    [data-ea-ui] .ea-fileupload-cards {
+        display: grid;
+        gap: var(--ea-sp-4);
+    }
+
+    [data-ea-ui] .ea-fileupload-toolbar {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--ea-sp-4);
+    }
+
+    [data-ea-ui] .ea-fileupload-clear-all-btn {
+        margin-inline-start: auto;
+    }
+
+    [data-ea-ui] .ea-fileupload-cards:empty {
+        display: none;
+    }
+
+    [data-ea-ui] .ea-fileupload-card {
+        align-items: center;
+        border: 1px solid var(--color-base-300, var(--border-secondary-color));
+        border-radius: var(--border-radius);
+        display: flex;
+        gap: var(--ea-sp-5);
+        min-inline-size: 0;
+        padding: var(--ea-sp-4) var(--ea-sp-6);
+    }
+
+    [data-ea-ui] .has-error .ea-fileupload-card {
+        border-color: var(--color-error, var(--form-input-error-border-color));
+    }
+
+    [data-ea-ui] .ea-fileupload-card-preview {
+        align-items: center;
+        block-size: var(--ea-sp-18);
+        display: flex;
+        flex-shrink: 0;
+        inline-size: var(--ea-sp-18);
+        justify-content: center;
+    }
+
+    [data-ea-ui] .ea-fileupload-card-thumbnail {
+        block-size: 100%;
+        border-radius: var(--border-radius-sm);
+        inline-size: 100%;
+        object-fit: cover;
+    }
+
+    [data-ea-ui] .ea-fileupload-card-info {
+        display: grid;
+        flex: 1;
+        min-inline-size: 0;
+    }
+
+    [data-ea-ui] .ea-fileupload-card-name {
+        font-weight: var(--font-weight-semibold);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    [data-ea-ui] .ea-fileupload-card-size {
+        color: var(--text-muted);
+        font-size: var(--font-size-xs);
+    }
+
+    [data-ea-ui] .ea-fileupload-card-actions {
+        align-items: center;
+        display: flex;
+        flex-shrink: 0;
+        gap: var(--ea-sp-2);
+    }
+
+    [data-ea-ui] .ea-fileupload-action-btn {
+        align-items: center;
+        background: transparent;
+        border: 0;
+        border-radius: var(--border-radius-sm);
+        color: var(--text-muted);
+        cursor: pointer;
+        display: inline-flex;
+        justify-content: center;
+        padding: var(--ea-sp-3);
+    }
+
+    [data-ea-ui] .ea-fileupload-action-btn:is(:hover, :focus-visible) {
+        background: var(--color-base-200, var(--secondary-bg));
+        color: var(--color-base-content, var(--text-color));
+    }
+
+    [data-ea-ui] .ea-vich-image img {
+        border: 1px solid var(--color-base-300, var(--border-secondary-color));
+        border-radius: var(--border-radius);
+        margin-block-end: var(--ea-sp-6);
+        max-block-size: 300px;
+        max-inline-size: 100%;
+    }
+
+    [data-ea-ui] .ea-vich-file-name {
+        display: block;
+        margin-block: var(--ea-sp-2) var(--ea-sp-4);
+    }
+
+    [data-ea-ui] :is(.ea-vich-image-actions, .ea-vich-file-actions) {
+        display: flow-root;
+    }
+
+    [data-ea-ui] :is(.ea-vich-image-actions, .ea-vich-file-actions) > div {
+        float: left;
+        margin-inline-end: var(--ea-sp-4);
+    }
+
+    [data-ea-ui] :is(.ea-vich-image-actions, .ea-vich-file-actions):dir(rtl) > div {
+        float: right;
+    }
+
+    [data-ea-ui] .input-file-container {
+        overflow: hidden;
+        position: relative;
+    }
+
+    [data-ea-ui] .input-file-container [type='file'] {
+        cursor: inherit;
+        font-size: 999px;
+        inset: 0;
+        min-block-size: 100%;
+        min-inline-size: 100%;
+        opacity: 0;
+        position: absolute;
+    }
+}
+
+@layer utilities {
+    [data-ea-ui] .ea-fileupload-card .ea-fileupload-card-icon {
+        block-size: var(--ea-sp-16);
+        inline-size: var(--ea-sp-16);
+    }
+
+    [data-ea-ui] .ea-fileupload-card-icon svg {
+        block-size: 100%;
+        inline-size: 100%;
+        max-block-size: none;
+        max-inline-size: none;
+    }
+}

@@ -394,6 +394,7 @@
 {% block ea_fileupload_widget %}
     <div class="ea-fileupload"
         data-ea-fileupload-field
+        data-delete-label="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}"
         {% if allow_view %}data-allow-view{% endif %}
         {% if allow_download %}data-allow-download{% endif %}
         {% if allow_delete %}data-allow-delete{% endif %}
@@ -407,7 +408,7 @@
 
         <div class="ea-fileupload-toolbar">
             {% set showAddButton = multiple or currentFiles is empty %}
-            <button type="button" class="{{ ea_ui_classes('btn btn-secondary btn-sm ea-fileupload-add-btn', 'button') }}" data-ea-fileupload-add{% if not showAddButton %} hidden{% endif %}>
+            <button type="button" class="{{ ea_ui_classes('btn btn-secondary btn-sm ea-fileupload-add-btn', 'button') }}" data-ea-fileupload-add{{ disabled ? ' disabled' }}{% if not showAddButton %} hidden{% endif %}>
                 <twig:ea:Icon name="internal:plus" class="btn-icon" />
                 <span class="btn-label">
                     {{ multiple
@@ -418,7 +419,7 @@
             </button>
 
             {% if multiple and allow_delete %}
-                <button type="button" class="{{ ea_ui_classes('btn btn-sm ea-fileupload-clear-all-btn', 'button') }}" data-ea-fileupload-clear-all{% if currentFiles is empty %} hidden{% endif %}>
+                <button type="button" class="{{ ea_ui_classes('btn btn-ghost btn-sm ea-fileupload-clear-all-btn', 'button') }}" data-ea-fileupload-clear-all{{ disabled ? ' disabled' }}{% if currentFiles is empty %} hidden{% endif %}>
                     {{ 'file_upload.clear_all'|trans({}, 'EasyAdminBundle') }}
                 </button>
             {% endif %}
@@ -465,7 +466,7 @@
                             </a>
                         {% endif %}
                         {% if allow_delete %}
-                            <button type="button" class="ea-fileupload-action-btn ea-fileupload-action-delete" data-ea-fileupload-delete-card>
+                            <button type="button" class="ea-fileupload-action-btn ea-fileupload-action-delete" data-ea-fileupload-delete-card aria-label="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}" title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}"{{ disabled ? ' disabled' }}>
                                 <twig:ea:Icon name="internal:xmark" />
                             </button>
                         {% endif %}

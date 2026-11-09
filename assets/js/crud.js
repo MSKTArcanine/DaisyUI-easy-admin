@@ -5,6 +5,7 @@ import { initOverlays } from './overlays';
 import { initTabs } from './tabs';
 import { closeDialog, initEasyAdminUI } from './ui/interactions';
 import { initShell } from './ui/shell';
+import { disposeWidgets, initWidgets } from './widget-lifecycle';
 
 const buttonColorClasses = [
     'btn-neutral',
@@ -61,6 +62,7 @@ class CrudApp {
         initOverlays(root);
         this.#createContentHelp();
         this.#createActionHandlers();
+        initWidgets(root);
     }
 
     #initialize(element, key) {
@@ -226,6 +228,7 @@ class CrudApp {
             spinner.className = 'loading loading-spinner loading-lg';
             spinner.setAttribute('aria-hidden', 'true');
             loading.append(spinner);
+            disposeWidgets(body);
             body.replaceChildren(loading);
             setLoading(true);
             try {
@@ -257,6 +260,7 @@ class CrudApp {
             }
         });
         const removeFilter = (field) => {
+            disposeWidgets(field);
             for (const input of field.closest('form').querySelectorAll('input[name]')) {
                 if (input.name.startsWith(`filters[${field.dataset.filterProperty}]`)) {
                     input.remove();

@@ -1,0 +1,82 @@
+@layer components {
+    [data-ea-ui] .ea-lightbox-thumbnail img {
+        block-size: auto;
+        border-radius: var(--border-radius);
+        cursor: zoom-in;
+        max-inline-size: 100%;
+    }
+
+    [data-ea-ui].ea-detail .field-image .ea-lightbox-thumbnail {
+        display: inline-block;
+        max-inline-size: 400px;
+    }
+
+    [data-ea-ui] .ea-lightbox {
+        display: none;
+    }
+
+    [data-ea-ui] .basicLightbox {
+        align-items: center;
+        background: rgb(0 0 0 / 80%);
+        block-size: 100dvh;
+        display: flex;
+        inline-size: 100%;
+        inset: 0;
+        justify-content: center;
+        opacity: 0;
+        position: fixed;
+        transition: opacity var(--ea-duration-slow, 250ms) var(--ea-ease-in-out, ease-in-out);
+        z-index: 10000;
+    }
+
+    [data-ea-ui] .basicLightbox--visible {
+        opacity: 1;
+    }
+
+    [data-ea-ui] .basicLightbox__placeholder {
+        block-size: 100%;
+        inline-size: 100%;
+        pointer-events: none;
+        position: relative;
+        transform: scale(0.95);
+        transition: transform var(--ea-duration-slow, 250ms) var(--ea-ease-in-out, ease-in-out);
+    }
+
+    [data-ea-ui] .basicLightbox__placeholder > :is(img, video, iframe):first-child:last-child {
+        block-size: auto;
+        display: block;
+        inline-size: auto;
+        inset: 0;
+        margin: auto;
+        max-block-size: 95%;
+        max-inline-size: 95%;
+        position: absolute;
+    }
+
+    [data-ea-ui] .basicLightbox__placeholder > :is(video, iframe) {
+        pointer-events: auto;
+    }
+
+    [data-ea-ui] .basicLightbox__placeholder img {
+        background: var(--color-base-100, var(--white, #fff));
+        cursor: zoom-out;
+        padding: var(--ea-sp-6);
+    }
+
+    [data-ea-ui].ea-detail .field-image img {
+        max-block-size: 300px;
+    }
+
+    [data-ea-ui] .basicLightbox--visible .basicLightbox__placeholder {
+        transform: scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    @layer components {
+        [data-ea-ui] .basicLightbox,
+        [data-ea-ui] .basicLightbox__placeholder {
+            transition: none;
+        }
+    }
+}

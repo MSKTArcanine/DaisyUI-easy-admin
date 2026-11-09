@@ -20,3 +20,6 @@
 @import './ui/forms.css';
 @import './ui/overlays.css';
 @import './ui/visibility.css' layer(ea-overrides);
+@import './ui/fields.css';
+@import './ui/media.css';
+@import './ui/uploads.css';

@@ -547,3 +547,67 @@ not declare those pages or the normal delivered bundle Bootstrap-free.
 Independent widget skins, all remaining field/media renderers, login/UI-kit and
 auxiliary pages remain assigned to Prompt 8. The neutral form inheritance is
 complete; this stage does not claim the final package runtime is Bootstrap-free.
+
+
+## Prompt 8 implementation boundary
+
+| Inventory rows | Implemented or retained paths | Replacement and verification |
+| --- | --- | --- |
+| T07/J12 | `assets/js/field-boolean.js`, `assets/css/ui/fields.css`, `templates/crud/field/boolean.html.twig` | Idempotent native toggle initialization and unchanged PATCH/CSRF/XHR/query contract; real persistence, denied/network rollback, disabled controls and repeat-load checks. Existing Switch interface and primary-true/muted-false Badge roles retained. |
+| J14/W01 | `assets/js/autocomplete.js`, `assets/js/widget-lifecycle.js`, `assets/css/ui/autocomplete.css` | Keep TomSelect, remote formats and customization events; scope dynamic initialization and dispose replaced instances; visible validation marker and real lazy-filter GET/replacement checks. |
+| J15/W07 | `assets/js/field-file-upload.js`, `templates/crud/form_theme.html.twig`, `assets/css/ui/uploads.css` | Preserve file names, indices, deletion fields, permissions and optional Vich block interfaces; neutral skin, disabled/delete controls, native hidden states and object-URL cleanup. Multiple-file real bytes, storage deletion, clear/re-add, forged disabled deletions and previews verified. Optional installed Vich and remote storage remain explicit limits. |
+| J16/W02-W05 | `assets/js/{field-code-editor,field-text-editor,field-slug,field-textarea,field-image}.js`, `assets/js/widget-{lifecycle,validation}.js`, `assets/css/form-type-{code,text}-editor.css`, `assets/css/ui/media.css` | Keep CodeMirror, Trix/global integration, slugify and basicLightbox; reusable dynamic ownership/disposal, hidden-editor validation/focus and neutral roles. Actual editing, readonly/disabled/custom validity, dynamic slug/textarea state, media keyboard/modifier/fallback and persisted values verified. |
+| T06/J10 | `assets/css/ui/primitives.css` | Integrate the existing public UL/LI tab markup with daisyUI's direct-child rules without changing blocks or component structure; pointer hit areas and dynamic tab switching verified. |
+| T08-T10/C04 | `templates/page/{login,login_minimal,content}.html.twig`, `templates/{exception_standalone,welcome}.html.twig`, `templates/ui_kit/`, `assets/js/login.js`, `assets/css/ui/{auxiliary,prose}.css` | Neutral context/minimal login and scoped prose/auxiliary styles; native UI-kit demos/theme controls; standalone exception/welcome remain independent. Real authentication/CSRF/custom submit fields, CSP, all shipped component/foundation routes, live token/font changes, rich-content exclusions and responsive RTL/error checks. |
+| T11/W06 | `templates/inspector/{data_collector.html.twig,icon.svg.twig,icon-v3.svg.twig}`, existing Icon/Flag/font assets | Retained independent profiler markup and icon/font interfaces; source audit plus existing collector/non-admin/PHP tests. A rendered WebProfiler panel is not claimed verified. |
+| Behavioral proof | `tests/Browser/{toggles,uploads,lifecycle,field-display,auxiliary}.spec.js`, corresponding Browser controller/form/template fixtures, `tests/Functional/Default/AuxiliaryPagesTest.php` | 25 new browser cases across three engines plus six auxiliary HTTP cases; exact requests, values, stored artifacts, focus and physical styles supplement existing field-family coverage. |
+
+### Complete field-template disposition (31 files)
+
+Every row retains the configured field template path, formatter inputs and
+escaping/URL behavior unless the presentation change is explicitly named.
+Shared empty/null/inaccessible/undefined labels remain the existing Badge
+components and adapter; no data formatter was replaced.
+
+| Template | Disposition | Rendering integration |
+| --- | --- | --- |
+| `templates/crud/field/array.html.twig` | Retained formatter | ui/fields.css list spacing + accessible inline collection rows; trait7 owns prototypes |
+| `templates/crud/field/association.html.twig` | Retained formatter | Existing Badge/related links; ui/autocomplete.css neutral retained TomSelect |
+| `templates/crud/field/avatar.html.twig` | Presentation adapted | Accessible alt; ui/fields.css radius; configured dimensions preserved by narrower listing image selector |
+| `templates/crud/field/boolean.html.twig` | Retained renderer | Existing Switch interface and unchanged PATCH contract; primary true and muted false Badge roles restored in ui/fields.css |
+| `templates/crud/field/choice.html.twig` | Retained formatter | Existing Badge semantic adapter and all choice labels/values |
+| `templates/crud/field/code_editor.html.twig` | Retained stage6 native viewer | Existing form-type-code-editor.css neutral roles/legacy fallback; CodeMirror metadata/escaping retained |
+| `templates/crud/field/collection.html.twig` | Retained formatter | Existing numeric Badge/raw formatted output; trait7 and field collection styling retained |
+| `templates/crud/field/color.html.twig` | Presentation adapted | Escaped background unchanged; logical sample gap class + bounded color-input styling in ui/fields.css |
+| `templates/crud/field/country.html.twig` | Retained formatter | Flag props/name formatting retained; ui/fields.css flag/name and TomSelect alignment |
+| `templates/crud/field/currency.html.twig` | Retained formatter | Badge custom currency role preserved; uppercase presentation in ui/fields.css |
+| `templates/crud/field/date.html.twig` | Retained neutral formatter | Original value formatting/escaping retained; shared shell typography |
+| `templates/crud/field/datetime.html.twig` | Retained neutral formatter | Original value formatting/escaping retained; shared shell typography |
+| `templates/crud/field/email.html.twig` | Retained formatter | mailto encoding and formatted label unchanged |
+| `templates/crud/field/file.html.twig` | Retained renderer | Asset URL/download/risky-inline/filename semantics unchanged; existing Icon sizing |
+| `templates/crud/field/generic.html.twig` | Retained neutral formatter | Original value formatting/escaping retained; shared shell typography |
+| `templates/crud/field/hidden.html.twig` | Retained neutral formatter | Original value formatting/escaping retained; shared shell typography |
+| `templates/crud/field/id.html.twig` | Retained neutral formatter | Original value formatting/escaping retained; shared shell typography |
+| `templates/crud/field/image.html.twig` | Presentation adapted | Static responsive utilities + accessible alt; ui/media.css independent basicLightbox integration |
+| `templates/crud/field/integer.html.twig` | Retained neutral formatter | Original value formatting/escaping retained; shared shell typography |
+| `templates/crud/field/language.html.twig` | Retained formatter | Badge custom language role preserved; uppercase presentation in ui/fields.css |
+| `templates/crud/field/locale.html.twig` | Retained neutral formatter | Original value formatting/escaping retained; shared shell typography |
+| `templates/crud/field/money.html.twig` | Retained neutral formatter | Original value formatting/escaping retained; shared shell typography |
+| `templates/crud/field/number.html.twig` | Retained neutral formatter | Original value formatting/escaping retained; shared shell typography |
+| `templates/crud/field/percent.html.twig` | Retained neutral formatter | Original value formatting/escaping retained; shared shell typography |
+| `templates/crud/field/telephone.html.twig` | Retained formatter | tel encoding and formatted label unchanged |
+| `templates/crud/field/text.html.twig` | Retained formatter | Original trusted/raw/title/newline behavior unchanged |
+| `templates/crud/field/text_editor.html.twig` | Retained stage6 native viewer | Existing form-type-text-editor.css neutral roles/legacy fallback; Trix rich output unchanged |
+| `templates/crud/field/textarea.html.twig` | Retained formatter | Original trusted/raw/title/newline behavior unchanged |
+| `templates/crud/field/time.html.twig` | Retained neutral formatter | Original value formatting/escaping retained; shared shell typography |
+| `templates/crud/field/timezone.html.twig` | Retained neutral formatter | Original value formatting/escaping retained; shared shell typography |
+| `templates/crud/field/url.html.twig` | Presentation adapted | Unsafe value remains plain escaped text with ea-unsafe-url marker; safe href/target/rel unchanged |
+
+The matrix is source evidence, not a claim that every optional storage or
+third-party bundle combination ran. Existing `tests/Functional/Fields/`
+formatter coverage and the full PHP suite remain intact; the new browser
+field-display cases specifically measure configured avatar dimensions, image
+bounds, accessible names, color samples, safe/unsafe URLs and readonly viewers
+in both schemes and staged styles. Regenerated normal assets preserve all 55
+manifest targets. Legacy Bootstrap styles/runtime and temporary preview/support
+entries remain scheduled for Prompt 10.

@@ -16,7 +16,6 @@
             "!**/tests/Browser/results",
             "!**/tests/Browser/public/assets-built",
             "!**/.claude",
-            "!**/assets/js/autocomplete.js",
             "!**/public/entrypoints.json",
             "!**/public/manifest.json"
         ]
@@ -68,6 +67,8 @@
                 "assets/css/ui-preview.css",
                 "assets/css/ui-fonts-preview.css",
                 "assets/css/ui/**",
+                "assets/css/form-type-code-editor.css",
+                "assets/css/form-type-text-editor.css",
                 "assets/css/migration-*.css"
             ],
             "css": {

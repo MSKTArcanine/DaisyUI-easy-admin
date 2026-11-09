@@ -10,7 +10,11 @@
 
     <title>Welcome to EasyAdmin 5</title>
 
+    {% guard function csp_nonce %}
+    <style nonce="{{ csp_nonce('style') }}">
+    {% else %}
     <style>
+    {% endguard %}
         :root {
             --body-bg: #f8fafc;
             --text-color: #475569;
@@ -23,7 +27,7 @@
             line-height: 1.5;
             margin: 0;
         }
-        .d-none { display: none; }
+        .welcome-desktop-only { display: none; }
         strong { font-weight: 600; }
         article { background: var(--content-bg); padding: 32px 12px 0; }
         article h1 { font-size: 28px; margin: 0 0 4px; padding: 0 12px; }
@@ -64,7 +68,7 @@
 
         @media (min-width: 768px) {
             body { background: var(--body-bg); }
-            .d-md-inline-block { display: inline-block; }
+            .welcome-desktop-only { display: inline-block; }
             article { border-radius: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); margin: 45px auto; max-width: 700px; padding: 48px 88px; }
             article h1 { font-size: 36px; padding: 0; }
             article h2 { font-size: 24px; padding: 0; }
@@ -142,7 +146,7 @@
             </div>
             <div class="link-text">
                 <a href="https://symfonycasts.com/screencast/easyadminbundle" target="_blank">Watch EasyAdmin Course on SymfonyCasts</a>
-                <p class="description">More than 30 videos <span class="d-none d-md-inline-block">to learn how to build a powerful admin area</span></p>
+                <p class="description">More than 30 videos <span class="welcome-desktop-only">to learn how to build a powerful admin area</span></p>
             </div>
         </div>
 
@@ -154,7 +158,7 @@
             </div>
             <div class="link-text">
                 <a href="https://github.com/sponsors/javiereguiluz" target="_blank">Sponsor EasyAdmin</a>
-                <p class="description">Fund the development of new features. <span class="d-none d-md-inline-block">One-time or regular donations</span></p>
+                <p class="description">Fund the development of new features. <span class="welcome-desktop-only">One-time or regular donations</span></p>
             </div>
         </div>
 

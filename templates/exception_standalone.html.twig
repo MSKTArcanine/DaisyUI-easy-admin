@@ -5,7 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ 'page_title.exception'|trans({'%count%': 1}, 'EasyAdminBundle') }}</title>
+    {% guard function csp_nonce %}
+    <style nonce="{{ csp_nonce('style') }}">
+    {% else %}
     <style>
+    {% endguard %}
         body { font-family: system-ui, -apple-system, sans-serif; background: #fff; color: #1e293b; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
         .error-container { text-align: center; max-width: 600px; padding: 2rem; }
         h1 { font-size: 3rem; color: #64748b; margin: 0 0 1rem; }

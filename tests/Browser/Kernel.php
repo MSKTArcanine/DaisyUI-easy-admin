@@ -83,7 +83,17 @@ final class Kernel extends BaseKernel
         $container->loadFromExtension('security', [
             'password_hashers' => ['Symfony\Component\Security\Core\User\InMemoryUser' => 'plaintext'],
             'providers' => ['browser' => ['memory' => ['users' => ['admin' => ['password' => 'browser-password', 'roles' => ['ROLE_ADMIN']]]]]],
-            'firewalls' => ['main' => [
+            'firewalls' => ['auxiliary_login' => [
+                'pattern' => '^/auxiliary-login$',
+                'context' => 'main',
+                'lazy' => true,
+                'provider' => 'browser',
+                'form_login' => [
+                    'login_path' => 'browser_auxiliary_login', 'check_path' => 'browser_auxiliary_login',
+                    'username_parameter' => 'identity', 'password_parameter' => 'secret', 'target_path_parameter' => 'destination',
+                    'enable_csrf' => true, 'csrf_token_id' => 'authenticate', 'default_target_path' => 'browser_admin',
+                ],
+            ], 'main' => [
                 'lazy' => true,
                 'provider' => 'browser',
                 'form_login' => ['login_path' => 'browser_login', 'check_path' => 'browser_login', 'enable_csrf' => true, 'default_target_path' => 'browser_admin'],

@@ -2,4 +2,4 @@
     field: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\FieldDto',
     entity: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\EntityDto',
 } %}
-<img class="image-avatar" height="{{ field.customOptions.get('height') }}" width="{{ field.customOptions.get('height') }}" src="{{ field.formattedValue }}">
+<img class="image-avatar" height="{{ field.customOptions.get('height') }}" width="{{ field.customOptions.get('height') }}" src="{{ field.formattedValue }}" alt="{{ field.label ? field.label|trans|striptags : '' }}">

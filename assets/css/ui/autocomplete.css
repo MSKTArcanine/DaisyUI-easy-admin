@@ -31,6 +31,11 @@
         outline: var(--ea-focus-ring-width) solid var(--ea-primary-ring);
     }
 
+    [data-ea-ui] .ts-wrapper:is(.invalid, [data-ea-widget-invalid='true']) .ts-control {
+        border-color: var(--color-error, var(--form-input-error-border-color));
+        outline-color: color-mix(in srgb, var(--color-error, #b91c1c) 35%, transparent);
+    }
+
     [data-ea-ui] .ts-control input {
         color: inherit;
         font: inherit;

@@ -1,16 +1,5 @@
 import { toggleVisibilityClasses } from './helpers';
-
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-ea-fileupload-field]').forEach((container) => {
-        new FileUploadField(container);
-    });
-});
-
-document.addEventListener('ea.collection.item-added', (event) => {
-    event.detail.newElement.querySelectorAll('[data-ea-fileupload-field]').forEach((container) => {
-        new FileUploadField(container);
-    });
-});
+import { registerWidget } from './widget-lifecycle';
 
 class FileUploadField {
     #container;
@@ -21,6 +10,7 @@ class FileUploadField {
     #deleteCheckbox;
     #deletedFilesInput;
     #isMultiple;
+    #events = new AbortController();
     /** @type {File[]} Accumulated selected files in multiple mode */
     #selectedFiles = [];
 
@@ -35,25 +25,48 @@ class FileUploadField {
         this.#isMultiple = container.hasAttribute('data-multiple');
 
         this.#bindEvents();
+        this.#updateToolbarVisibility();
+    }
+
+    dispose() {
+        this.#events.abort();
+        this.#revokeAllObjectUrls();
     }
 
     #bindEvents() {
-        this.#addButton?.addEventListener('click', () => this.#fileInput.click());
+        const options = { signal: this.#events.signal };
+        this.#addButton?.addEventListener(
+            'click',
+            () => {
+                if (!this.#fileInput.disabled) this.#fileInput.click();
+            },
+            options
+        );
 
-        this.#fileInput.addEventListener('change', () => this.#onFilesSelected());
+        this.#fileInput.addEventListener('change', () => this.#onFilesSelected(), options);
 
-        this.#clearAllButton?.addEventListener('click', () => this.#clearAll());
+        this.#clearAllButton?.addEventListener(
+            'click',
+            () => {
+                if (!this.#fileInput.disabled) this.#clearAll();
+            },
+            options
+        );
 
-        this.#cardsContainer?.addEventListener('click', (e) => {
-            const deleteBtn = e.target.closest('[data-ea-fileupload-delete-card]');
-            if (deleteBtn) {
-                this.#deleteCard(deleteBtn.closest('[data-ea-fileupload-card]'));
-            }
-        });
+        this.#cardsContainer?.addEventListener(
+            'click',
+            (e) => {
+                const deleteBtn = e.target.closest('[data-ea-fileupload-delete-card]');
+                if (deleteBtn && !this.#fileInput.disabled && this.#container.hasAttribute('data-allow-delete')) {
+                    this.#deleteCard(deleteBtn.closest('[data-ea-fileupload-card]'));
+                }
+            },
+            options
+        );
     }
 
     #onFilesSelected() {
-        if (0 === this.#fileInput.files.length) {
+        if (this.#fileInput.disabled || 0 === this.#fileInput.files.length) {
             return;
         }
 
@@ -71,12 +84,13 @@ class FileUploadField {
 
         const startIndex = this.#selectedFiles.length - newFiles.length;
         for (let i = 0; i < newFiles.length; i++) {
-            const objectUrl = URL.createObjectURL(newFiles[i]);
+            const objectUrl = newFiles[i].type.startsWith('image/') ? URL.createObjectURL(newFiles[i]) : null;
             const card = this.#createCardElement(newFiles[i], objectUrl, startIndex + i);
             this.#cardsContainer.appendChild(card);
         }
 
         this.#updateToolbarVisibility();
+        this.#notifyChange();
     }
 
     #deleteCard(cardElement) {
@@ -93,7 +107,6 @@ class FileUploadField {
             if (!Number.isNaN(fileIndex) && fileIndex >= 0 && fileIndex < this.#selectedFiles.length) {
                 this.#selectedFiles.splice(fileIndex, 1);
                 this.#syncFileInput();
-                this.#reindexNewCards();
             }
         }
 
@@ -103,7 +116,9 @@ class FileUploadField {
         }
 
         cardElement.remove();
+        this.#reindexNewCards();
         this.#updateToolbarVisibility();
+        this.#notifyChange();
     }
 
     #clearAll() {
@@ -121,6 +136,11 @@ class FileUploadField {
         this.#revokeAllObjectUrls();
         this.#removeAllCards();
         this.#updateToolbarVisibility();
+        this.#notifyChange();
+    }
+
+    #notifyChange() {
+        this.#fileInput.dispatchEvent(new Event('input', { bubbles: true }));
     }
 
     // a FileList can't be modified, so a new one is created with DataTransfer
@@ -183,6 +203,9 @@ class FileUploadField {
         if (this.#clearAllButton) {
             toggleVisibilityClasses(this.#clearAllButton, !hasCards);
         }
+        for (const button of this.#container.querySelectorAll('button')) {
+            if (this.#fileInput.disabled) button.disabled = true;
+        }
     }
 
     #createCardElement(file, objectUrl, fileIndex) {
@@ -232,6 +255,11 @@ class FileUploadField {
             deleteBtn.type = 'button';
             deleteBtn.className = 'ea-fileupload-action-btn ea-fileupload-action-delete';
             deleteBtn.setAttribute('data-ea-fileupload-delete-card', '');
+            if (this.#container.dataset.deleteLabel) {
+                deleteBtn.setAttribute('aria-label', this.#container.dataset.deleteLabel);
+                deleteBtn.setAttribute('title', this.#container.dataset.deleteLabel);
+            }
+            deleteBtn.disabled = this.#fileInput.disabled;
             const deleteIcon = this.#parseIconHtml(this.#container.getAttribute('data-icon-delete'));
             if (deleteIcon) {
                 deleteBtn.appendChild(deleteIcon);
@@ -278,3 +306,8 @@ class FileUploadField {
         return `${formatted} ${units[factor]}`;
     }
 }
+
+registerWidget('file-upload', '[data-ea-fileupload-field]', (container) => {
+    const widget = new FileUploadField(container);
+    return () => widget.dispose();
+});
