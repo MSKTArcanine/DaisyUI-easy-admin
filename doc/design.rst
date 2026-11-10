@@ -306,28 +306,30 @@ Then, redefine the variables that you want to change:
 .. code-block:: css
 
     /* assets/styles/admin.css */
-    :root, .ea-dark-scheme {
+    [data-ea-ui] {
         --font-size-base: 15px;
         --body-max-width: 1600px;
     }
 
 .. caution::
 
-    If you only use ``:root``, your change doesn't apply in dark mode, because
-    the dark color scheme defines its own value of the variables. Use
-    ``:root, .ea-dark-scheme`` to change both color schemes.
+    Define interface variables on ``[data-ea-ui]``, where the light and dark
+    themes resolve their values. A value on ``:root`` can be shadowed by a
+    theme value on that element. Use ``[data-ea-ui].ea-dark-scheme`` for
+    dark-only overrides.
 
 Colors usually need a different value in each color scheme. Use the
 `light-dark()`_ CSS function to set both:
 
 .. code-block:: css
 
-    :root, .ea-dark-scheme {
+    [data-ea-ui] {
         --body-bg: light-dark(#fffdf7, #1c1917);
     }
 
-This function only accepts colors. For other values, use a ``:root`` rule and
-a separate ``.ea-dark-scheme`` rule.
+This function only accepts colors. For other values that differ by scheme,
+use a ``[data-ea-ui]`` rule and a separate
+``[data-ea-ui].ea-dark-scheme`` rule.
 
 These are the variables that you'll need most often:
 
@@ -556,7 +558,7 @@ schemes:
 
 .. code-block:: css
 
-    :root, .ea-dark-scheme {
+    [data-ea-ui] {
         --sidebar-bg: #0f172a;
         --sidebar-border-color: #334155;
         --sidebar-logo-color: #fff;
@@ -1363,8 +1365,9 @@ otherwise. Your browser may also be using an old version of the file.
 Native ``hidden`` and a few overlay state rules use ``!important`` to keep
 closed content inaccessible. See :ref:`CSS Cascade Layers <design-css-layers>`.
 
-**My CSS variable only works in the light color scheme.** You used the
-``:root`` selector. Use ``:root, .ea-dark-scheme``.
+**My CSS variable doesn't reach the interface.** Define it on
+``[data-ea-ui]`` instead of ``:root``. For a dark-only value, use
+``[data-ea-ui].ea-dark-scheme``.
 
 **The UI Kit returns a 404 error.** It's only available in debug mode.
 
@@ -1389,8 +1392,8 @@ by ``assets/css/layers.css`` and the Tailwind source ``assets/css/ui.css``:
 
 * ``theme``: design tokens, semantic roles and font faces;
 * ``vendor``: independent FontAwesome, CodeMirror and Trix styles;
-* ``base``: scoped element defaults and the ``base.prose-defaults`` and
-  ``base.prose`` document typography sublayers;
+* ``base``: scoped element defaults and the ordered ``base.reset``,
+  ``base.prose-defaults`` and ``base.prose`` typography sublayers;
 * ``components``: EasyAdmin layout, form and widget integrations;
 * ``utilities``: Tailwind utilities and daisyUI's internal component layers.
 
