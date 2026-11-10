@@ -629,3 +629,32 @@ entries remain scheduled for Prompt 10.
 | Configured CSS/JS | `examples/consumer/src/Controller/DashboardController.php`, `assets/scripts/configured.js`, `assets/app.js`, `importmap.php` | Existing configured files plus AssetMapper entry, local requests and actual JS effects |
 | Additional Tailwind utility | `examples/consumer/tailwind/consumer.css`, `assets/styles/consumer-utilities.css`, `scripts/publish-css.php`, `yarn.lock` | Explicit app source discovery; arbitrary `tracking-[0.137em]` absent from bundle CSS and effective from compiled app CSS |
 | Independent behavior suite | `tests/Consumer/{helpers,playwright.config,extensions.spec}.js` | Actual installed vendor package outside repository; generated requests, CSRF, server validation and database state across three engines |
+
+
+## Prompt 10 closure of the 48 inventory IDs
+
+The original matrices describe the pinned source, including paths deliberately
+removed below. They are historical evidence, not a list of remaining imports.
+All 190 original Twig files plus the form-theme README remain at their existing
+paths; original named blocks remain available, including inherited neutral form
+blocks through the two legacy-path aliases. No field renderer or optional widget
+interface was removed.
+
+| IDs | Final disposition and exact paths | Verification evidence |
+| --- | --- | --- |
+| B01-B04 | Bootstrap removed by Yarn; local `tools/UiBuild/` compiler/mapper followed by `webpack.config.js`, unchanged manifest fixer and `src/Asset/AssetPackage.php`; no preview entries | Frozen dependency graph, resolved Webpack modules, `tests/build/audit-runtime.js`, all manifest targets, independent no-Node archive installation and actual asset/network responses |
+| C01-C04 | `assets/css/ui.css`, `ui/{tokens,foundation,prose,shell,sidebar,listing,detail,forms,fields,media,uploads,auxiliary,overlays}.css`; original `app.css` plus editor outputs; only fonts/color-palette and license retained under old theme directory | Production selector/layer/token/Preflight proof; neutral-host, Theme API, RTL/dark/mobile, computed prose regression, geometry and separate visual references |
+| J01-J04 | Native `app.js`, `crud.js`, `ui/{interactions,shell,scroll-lock}.js`, `page-{layout,color-scheme}.js`; no Bootstrap globals/events/attribute bridges | Whole-page and repeated initialization, menus/keyboard/focus/mobile scrolling, remembered/configured appearance/layout and runtime-global audit |
+| J05-J09 | `crud.js`, `overlays.js`, existing action/filter/viewer templates and native dialogs; retained Popper + DOMPurify | Real combined listing/filter state, actual selection/delete/batch outcomes, all confirmation execution paths, cancel/double-submit/focus and malicious-URL/HTML checks |
+| J10-J11/J13 | Native tabs/collapse, `form.js`, `field-collection.js`, complete neutral form theme/layout trait | Error discovery, unchanged form events/submitter, unsaved cancellation, real nested prototypes/permissions/IDs/indices/persisted values and nonce script behavior |
+| J12/J14-J16 | `field-boolean.js`, `autocomplete.js`, all retained field entries, `widget-{lifecycle,validation}.js` | Actual protected PATCH/rollback, remote/autocomplete/filter ownership, editor/slug/media state, repeated initialization and real uploaded bytes/deletion/storage state |
+| T01-T07 | Existing shell, CRUD, components, all 31 field and four label renderers; neutral main theme and both legacy path aliases | Upstream functional tests, 221 presentation cases, component overrides/attributes/escaping, real CRUD/form workflows and full field matrix from Prompt 8 |
+| T08-T11 | Context/minimal login, content, welcome/exception, all UI-kit surfaces; independent inspector templates retained | Real authentication/CSRF/parameters, context/no-context/RTL/CSP, every shipped UI-kit route, token/font controls; profiler source/collector tests, rendered panel limit remains explicit |
+| P01-P06 | Unchanged PHP builders/DTOs/factories; `src/Twig/PresentationExtension.php` registered explicitly in `config/services.php` | Numeric/responsive/offset/wrap widths at original breakpoints, classes/attrs/styles/Theme/asset APIs, production PHP diff audit, custom consumer field/action/form/templates |
+| W01-W06 | All independent libraries, fonts/icons and local licenses retained; TomSelect neutral skin replaces Bootstrap theme | Actual dynamic widgets, editor values/validation, media, fonts, upload and search/slug/unsaved behavior; resolved module/license/network audits |
+| W07 | Existing Vich block interfaces and backend file/storage types retained with neutral rendering | Local real File/Image paths and upstream storage/type tests pass; installed Vich and remote Flysystem browser integrations explicitly unverified |
+
+Actual Bootstrap runtime code/dependency/themes are removed. Historical audit
+references, FontAwesome's `.fa-bootstrap` brand icon, neutral legacy template
+filenames and intentional PHP adapter input tokens are classified separately.
+A search for `btn` or the word Bootstrap is not the removal proof.

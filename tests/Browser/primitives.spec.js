@@ -1,13 +1,22 @@
 const { expect, test } = require('@playwright/test');
+const { expectSelectedMarker } = require('./helpers');
 
 test.beforeEach(async ({ page }) => {
-    await page.goto('/ui-primitives');
+    await page.goto('/rendering-primitives');
     await expect(page.locator('#choices')).toHaveAttribute('role', 'menu');
 });
 
 test('dialog preserves slots and attributes, traps focus, cancels and restores focus', async ({ page }) => {
     expect(await page.evaluate(() => typeof window.bootstrap)).toBe('undefined');
-    await expect(page.locator('link[rel="stylesheet"]')).toHaveCount(1);
+    await expect(page.locator('link[rel="stylesheet"]')).toHaveCount(2);
+    await expect(page.locator('link[rel="stylesheet"]').first()).toHaveAttribute(
+        'href',
+        /\/bundles\/easyadmin\/app\.[a-f0-9]+\.css$/
+    );
+    await expect(page.locator('link[rel="stylesheet"]').last()).toHaveAttribute(
+        'href',
+        /easyadmin-fixture\/fixture-[a-zA-Z0-9_-]+\.css$/
+    );
     const trigger = page.locator('#open-dialog');
     await expect(trigger).toHaveAttribute('data-extra', 'A "quoted" <value>');
     await expect(trigger.locator('.caller-label')).toHaveText('Open dialog');
@@ -32,7 +41,7 @@ test('dialog preserves slots and attributes, traps focus, cancels and restores f
 test('dialog cancel sends no POST and confirmation preserves real form method and payload', async ({ page }) => {
     const submissions = [];
     page.on('request', (request) => {
-        if (request.url().endsWith('/ui-primitives/submit')) {
+        if (request.url().endsWith('/rendering-primitives/submit')) {
             submissions.push(request);
         }
     });
@@ -43,7 +52,7 @@ test('dialog cancel sends no POST and confirmation preserves real form method an
     await page.locator('#open-dialog').click();
     await expect(page.getByLabel('Dialog value')).toHaveValue('Canceled value');
     await page.getByLabel('Dialog value').fill('Confirmed value');
-    const responsePromise = page.waitForResponse((response) => response.url().endsWith('/ui-primitives/submit'));
+    const responsePromise = page.waitForResponse((response) => response.url().endsWith('/rendering-primitives/submit'));
     await page.getByRole('button', { name: 'Confirm dialog', exact: true }).click();
     const response = await responsePromise;
     expect(response.status()).toBe(200);
@@ -59,7 +68,7 @@ test('dialog cancel sends no POST and confirmation preserves real form method an
 test('invalid and canceled form submissions keep the dialog and its errors discoverable', async ({ page }) => {
     const submissions = [];
     page.on('request', (request) => {
-        if (request.url().endsWith('/ui-primitives/submit')) {
+        if (request.url().endsWith('/rendering-primitives/submit')) {
             submissions.push(request);
         }
     });
@@ -126,6 +135,36 @@ test('menu forms keep native input keys and close after focus leaves; auto-close
 }) => {
     const trigger = page.locator('#open-menu');
     await trigger.click();
+    await expectSelectedMarker(page.locator('#checked-choice'), true);
+    await expectSelectedMarker(page.locator('#unchecked-choice'), false);
+    await expectSelectedMarker(page.locator('#first-radio-choice'), true);
+    await expectSelectedMarker(page.locator('#second-radio-choice'), false);
+    await page.evaluate(() => {
+        for (const item of document.querySelectorAll('[data-ea-menu-group] [data-ea-menu-item]')) {
+            item.addEventListener('click', (event) => {
+                event.preventDefault();
+                const group = item.closest('[data-ea-menu-group]');
+                const selected = item.getAttribute('aria-checked') !== 'true';
+                if (group.dataset.eaMenuGroup === 'radio') {
+                    for (const sibling of group.querySelectorAll('[data-ea-menu-item]')) {
+                        sibling.setAttribute('aria-checked', String(sibling === item));
+                        sibling.classList.toggle('active', sibling === item);
+                    }
+                } else {
+                    item.setAttribute('aria-checked', String(selected));
+                    item.classList.toggle('active', selected);
+                }
+            });
+        }
+    });
+    await page.locator('#checked-choice').click();
+    await expectSelectedMarker(page.locator('#checked-choice'), false);
+    await page.locator('#unchecked-choice').click();
+    await expectSelectedMarker(page.locator('#unchecked-choice'), true);
+    await page.locator('#second-radio-choice').click();
+    await expectSelectedMarker(page.locator('#first-radio-choice'), false);
+    await expectSelectedMarker(page.locator('#second-radio-choice'), true);
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true');
     await page.getByLabel('Menu input').focus();
     await page.keyboard.press('Escape');
     await expect(trigger).toBeFocused();
@@ -196,7 +235,7 @@ test('dismissing a menu cancels a pending submenu hover', async ({ page }) => {
 });
 
 test('tabs retain history, linked action hashes, keyboard direction and child Twig overrides', async ({ page }) => {
-    await page.goto('/ui-primitives/override?direction=rtl');
+    await page.goto('/rendering-primitives/override?direction=rtl');
     await expect(page.getByTestId('fixture-header')).toHaveText('Child template override');
     const first = page.getByRole('tab', { name: 'First panel', exact: true });
     const second = page.getByRole('tab', { name: /^Second panel/ });
@@ -206,7 +245,10 @@ test('tabs retain history, linked action hashes, keyboard direction and child Tw
     await expect(page.locator('#pane-first')).toBeHidden();
     await expect(page.locator('#pane-second')).toBeVisible();
     await expect(page).toHaveURL(/#pane-second$/);
-    await expect(page.locator('#tab-edit-link')).toHaveAttribute('href', '/ui-primitives?destination=edit#pane-second');
+    await expect(page.locator('#tab-edit-link')).toHaveAttribute(
+        'href',
+        '/rendering-primitives?destination=edit#pane-second'
+    );
     await page.goBack();
     await expect(first).toHaveAttribute('aria-selected', 'true');
     await page.goForward();
@@ -216,7 +258,7 @@ test('tabs retain history, linked action hashes, keyboard direction and child Tw
 });
 
 test('initial tabs preserve the server-selected panel and disabled menu items never execute', async ({ page }) => {
-    await page.goto('/ui-primitives?active=second');
+    await page.goto('/rendering-primitives?active=second');
     await expect(page.getByRole('tab', { name: /^Second panel/ })).toHaveAttribute('aria-selected', 'true');
     await expect(page.locator('#pane-second')).toBeVisible();
     await expect(page.locator('#pane-first')).toBeHidden();
@@ -241,7 +283,6 @@ test('repeated and dynamic initialization keeps one handler and supports CSS sel
     const errors = [];
     page.on('pageerror', (error) => errors.push(error.message));
     await page.evaluate(async () => {
-        const { initEasyAdminUI } = await import('ui-interactions');
         const wrapper = document.createElement('div');
         wrapper.innerHTML =
             '<button type="button" id="dynamic-trigger" data-ea-toggle="modal" data-ea-target="[data-dynamic-dialog]">Open dynamic</button><dialog id="dynamic:dialog" data-ea-dialog data-dynamic-dialog><div data-ea-dialog-panel><h2>Dynamic dialog</h2><button type="button" data-ea-dismiss="modal">Close dynamic</button></div></dialog>';
@@ -251,8 +292,8 @@ test('repeated and dynamic initialization keeps one handler and supports CSS sel
         document.dispatchEvent(
             new CustomEvent('ea.collection.item-added', { detail: { newElement: wrapper, collection: document.body } })
         );
-        initEasyAdminUI(wrapper);
-        initEasyAdminUI(wrapper);
+        window.EasyAdminApp.init(wrapper);
+        window.EasyAdminApp.init(wrapper);
     });
     const trigger = page.locator('#dynamic-trigger');
     await trigger.click();

@@ -17,7 +17,7 @@ class AuxiliaryController extends AbstractController
     {
         $request->setLocale($request->query->get('locale', 'en'));
 
-        return $this->render('browser/login_preview.html.twig', [
+        return $this->render('browser/login_extension.html.twig', [
             'page_title' => 'Auxiliary login',
             'last_username' => $authentication->getLastUsername(),
             'error' => $authentication->getLastAuthenticationError(),

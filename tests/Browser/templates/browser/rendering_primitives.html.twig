@@ -4,15 +4,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="data:,">
-    <link rel="stylesheet" href="{{ asset('easyadmin/ui-preview.css') }}">
+    <link rel="stylesheet" href="{{ asset('app.css', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}">
+    <link rel="stylesheet" href="{{ asset('easyadmin-fixture/fixture.css') }}">
     <title>{{ 'Shared rendering primitives'|trans }}</title>
-    {{ importmap('ui-interactions') }}
+    <script src="{{ asset('app.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}" defer></script>
 </head>
 <body data-ea-ui data-theme="easyadmin-light">
 <main class="p-6">
     <h1>{{ 'Shared rendering primitives'|trans }}</h1>
     {% block fixture_header %}<p data-testid="fixture-header">{{ 'Parent template content'|trans }}</p>{% endblock %}
-    <form id="primitive-form" method="post" action="{{ path('browser_ui_primitives_submit') }}">
+    <form id="primitive-form" method="post" action="{{ path('browser_rendering_primitives_submit') }}">
         <input type="hidden" name="token" value="{{ csrf_token('primitive-form') }}">
         <twig:ea:Modal:Trigger target="#primitive-dialog" id="open-dialog" class="caller-trigger" data-extra="{{ quoted_attribute }}" label:class="caller-label">{{ 'Open dialog'|trans }}</twig:ea:Modal:Trigger>
     </form>
@@ -33,15 +34,20 @@
         <twig:ea:ActionMenu:Button id="open-menu" data-extra="{{ quoted_attribute }}">{{ 'Open choices'|trans }}</twig:ea:ActionMenu:Button>
         <twig:ea:ActionMenu:Overlay>
             <twig:ea:ActionMenu:ActionList hasSubmenus id="choices">
-                <twig:ea:ActionMenu:ActionList:Item label="{{ 'First choice'|trans }}" url="/ui-primitives?selection=first" id="first-choice" class="caller-item" data-extra="{{ quoted_attribute }}" label:class="caller-item-label" />
-                <twig:ea:ActionMenu:ActionList:Item label="{{ 'Disabled choice'|trans }}" url="/ui-primitives?selection=disabled" aria-disabled="true" />
+                <twig:ea:ActionMenu:ActionList:Item label="{{ 'First choice'|trans }}" url="/rendering-primitives?selection=first" id="first-choice" class="caller-item" data-extra="{{ quoted_attribute }}" label:class="caller-item-label" />
+                <twig:ea:ActionMenu:ActionList:Item label="{{ 'Disabled choice'|trans }}" url="/rendering-primitives?selection=disabled" aria-disabled="true" />
                 <twig:ea:ActionMenu:ActionList:ItemGroup group="{{ group }}" />
                 <twig:ea:ActionMenu:ActionList:CheckboxList label="{{ 'Options'|trans }}">
-                    <twig:ea:ActionMenu:ActionList:Item label="{{ 'Checked choice'|trans }}" url="#" selected="true" />
+                    <twig:ea:ActionMenu:ActionList:Item label="{{ 'Checked choice'|trans }}" url="#" :selected="true" id="checked-choice" />
+                    <twig:ea:ActionMenu:ActionList:Item label="{{ 'Unchecked choice'|trans }}" url="#" :selected="false" id="unchecked-choice" />
                 </twig:ea:ActionMenu:ActionList:CheckboxList>
+                <twig:ea:ActionMenu:ActionList:RadioList label="{{ 'Exclusive options'|trans }}">
+                    <twig:ea:ActionMenu:ActionList:Item label="{{ 'First radio choice'|trans }}" url="#" :selected="true" id="first-radio-choice" />
+                    <twig:ea:ActionMenu:ActionList:Item label="{{ 'Second radio choice'|trans }}" url="#" :selected="false" id="second-radio-choice" />
+                </twig:ea:ActionMenu:ActionList:RadioList>
                 <twig:ea:ActionMenu:ActionList:Item label="{{ unsafe_label }}" url="#" id="escaped-choice" />
                 <twig:ea:ActionMenu:ActionList:Content>
-                    <form method="get" action="/ui-primitives">
+                    <form method="get" action="/rendering-primitives">
                         <label for="menu-input">{{ 'Menu input'|trans }}</label>
                         <input id="menu-input" name="menu_input" class="input">
                     </form>
@@ -58,7 +64,7 @@
         <section id="pane-first" class="tab-pane active">{{ 'First panel content'|trans }}</section>
         <section id="pane-second" class="tab-pane">{{ 'Second panel content'|trans }}</section>
     </div>
-    <a href="/ui-primitives?destination=edit" data-action-name="edit" id="tab-edit-link">{{ 'Edit link'|trans }}</a>
+    <a href="/rendering-primitives?destination=edit" data-action-name="edit" id="tab-edit-link">{{ 'Edit link'|trans }}</a>
 
     <twig:ea:Alert withDismissButton id="dismissible-alert">{{ 'Dismissible fixture alert'|trans }}</twig:ea:Alert>
     <button type="button" id="outside-control" class="fixed bottom-4 right-4">{{ 'Outside control'|trans }}</button>

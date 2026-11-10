@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="data:,">
     <title>{{ 'Neutral style probe'|trans }}</title>
-    <link rel="stylesheet" href="{{ asset('easyadmin/ui-preview.css') }}" data-testid="preview-stylesheet">
+    <link rel="stylesheet" href="{{ asset('app.css', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}" data-testid="rendering-stylesheet">
 </head>
 <body>
     <h1 data-testid="neutral-heading">{{ 'Neutral style probe'|trans }}</h1>

@@ -1225,7 +1225,7 @@
             "dist": {
                 "type": "zip",
                 "url": "var/packages/easyadmin-bundle-5.9.1-dev.zip",
-                "shasum": "303fc5717268c5ae6036e96999a507a9cad72950"
+                "shasum": "0cf608406b765e2a503b3204e37acca8887ff3fd"
             },
             "require": {
                 "doctrine/dbal": "^3.10|^4.4",
@@ -1288,7 +1288,7 @@
                     "dev-master": "5.0.x-dev"
                 },
                 "consumer-proof": {
-                    "reference": "77076f5ebc15083da649f363ea9b207f12809061"
+                    "reference": "be15cf210ecf45f55ad0312829124039e7c54b23"
                 }
             },
             "autoload": {

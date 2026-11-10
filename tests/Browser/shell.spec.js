@@ -4,7 +4,6 @@ const { fixture, login } = require('./helpers');
 test.beforeEach(async ({ page }) => {
     fixture('seed');
     await login(page);
-    await page.goto('/admin?ui=tailwind');
     await page.goto('/admin');
     await expect(page.locator('body')).toHaveAttribute('data-ea-ui');
 });
@@ -13,10 +12,9 @@ test('dashboard shell preserves extension assets, navigation and accessible menu
     page,
 }) => {
     expect(await page.evaluate(() => typeof window.bootstrap)).toBe('undefined');
-    await expect(page.getByTestId('shell-stylesheet')).toHaveCount(1);
-    expect(
-        await page.locator('link[rel="stylesheet"]').evaluateAll((links) => links.map((link) => link.href))
-    ).not.toEqual(expect.arrayContaining([expect.stringMatching(/\/app(?:\.[a-f0-9]+)?\.css/)]));
+    expect(await page.locator('link[rel="stylesheet"]').evaluateAll((links) => links.map((link) => link.href))).toEqual(
+        expect.arrayContaining([expect.stringMatching(/\/bundles\/easyadmin\/app\.[a-f0-9]+\.css$/)])
+    );
     await expect(page.getByTestId('layout-override')).toHaveText('Browser override');
     await expect(page.getByTestId('layout-override')).toHaveCSS('font-size', '12px');
     await expect.poll(() => page.evaluate(() => window.browserFixtureAssetLoaded)).toBe(true);
@@ -135,7 +133,6 @@ test('a native dialog owns focus while navigation is open and shared scroll lock
 }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.evaluate(async () => {
-        const { initEasyAdminUI } = await import('ui-interactions');
         document.documentElement.style.overflow = 'auto';
         document.body.style.overflow = 'clip';
         const trigger = document.createElement('a');
@@ -151,7 +148,7 @@ test('a native dialog owns focus while navigation is open and shared scroll lock
         dialog.innerHTML =
             '<div data-ea-dialog-panel><h2>Sidebar dialog</h2><label for="sidebar-dialog-value">Sidebar dialog value</label><input id="sidebar-dialog-value"><button type="button" data-ea-dismiss="modal">Close sidebar dialog</button></div>';
         document.body.append(dialog);
-        initEasyAdminUI();
+        window.EasyAdminApp.init();
     });
     const toggle = page.locator('#navigation-toggler');
     const trigger = page.locator('#sidebar-dialog-trigger');
@@ -179,9 +176,8 @@ test('a native dialog owns focus while navigation is open and shared scroll lock
 
 test('repeated shell initialization preserves one disclosure and one layout or navigation action', async ({ page }) => {
     await page.evaluate(async () => {
-        const { initShell } = await import('ui-shell');
-        initShell();
-        initShell();
+        window.EasyAdminApp.init();
+        window.EasyAdminApp.init();
         window.sidebarShows = 0;
         document.addEventListener('ea.sidebar.shown', () => window.sidebarShows++);
     });

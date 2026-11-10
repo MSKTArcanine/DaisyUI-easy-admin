@@ -5,7 +5,7 @@ let seeded;
 test.beforeEach(async ({ page }) => {
     seeded = fixture('seed');
     await login(page);
-    await page.goto('/admin/listings?ui=tailwind');
+    await page.goto('/admin/listings');
     await page.goto('/admin/listings');
     await expect.poll(() => page.evaluate(() => typeof window.EasyAdminApp?.init)).toBe('function');
     expect(await page.evaluate(() => typeof window.bootstrap)).toBe('undefined');
@@ -231,10 +231,10 @@ test('confirmation URL validation rejects executable schemes and retains allowed
     await page.goto('/admin/listings');
     await page.getByRole('button', { name: 'Grouped exports', exact: true }).click();
     const visit = page.getByRole('menuitem', { name: 'Confirmed group visit', exact: true });
-    await visit.evaluate((element) => element.setAttribute('href', 'http://127.0.0.1:8090/ui-preview'));
+    await visit.evaluate((element) => element.setAttribute('href', 'http://127.0.0.1:8090/rendering-contract'));
     await visit.click();
     await page.getByRole('button', { name: 'Confirm visit', exact: true }).click();
-    await expect(page).toHaveURL('http://127.0.0.1:8090/ui-preview');
+    await expect(page).toHaveURL('http://127.0.0.1:8090/rendering-contract');
     await expect(page.getByRole('heading', { name: 'Rendering build fixture', exact: true })).toBeVisible();
 });
 
@@ -395,8 +395,8 @@ test('dialog and collection removal dispose popovers and cancel delayed hidden t
         trigger.type = 'button';
         trigger.id = 'removed-collection-popup';
         trigger.textContent = 'Collection popup';
-        trigger.setAttribute('data-bs-toggle', 'popover');
-        trigger.setAttribute('data-bs-content', 'Removed content');
+        trigger.setAttribute('data-ea-toggle', 'popover');
+        trigger.setAttribute('data-ea-content', 'Removed content');
         document.querySelector('.content-body').append(trigger);
         document.dispatchEvent(
             new CustomEvent('ea.collection.item-added', {

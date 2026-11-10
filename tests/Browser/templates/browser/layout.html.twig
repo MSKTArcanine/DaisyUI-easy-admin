@@ -1,22 +1,6 @@
 {% extends '@EasyAdmin/layout.html.twig' %}
 {% block head_stylesheets %}
-    {% if app.request.attributes.get('browser_ui_preview') %}
-        <link rel="stylesheet" href="{{ asset('easyadmin/ui-preview.css') }}" nonce="{{ csp_nonce('style') }}" data-testid="shell-stylesheet">
-        <link rel="stylesheet" href="{{ asset('ui-fonts-preview.css', ea.assets.defaultAssetPackageName) }}" nonce="{{ csp_nonce('style') }}" data-testid="shell-fonts">
-    {% else %}
-        {{ parent() }}
-    {% endif %}
-{% endblock %}
-{% block head_javascript %}
-    {% if app.request.attributes.get('browser_ui_preview') %}
-        {% if ea.crud is not null %}
-            <script src="{{ asset('ui-crud-preview.js', ea.assets.defaultAssetPackageName) }}" nonce="{{ csp_nonce('script') }}"></script>
-        {% else %}
-            {{ importmap(['ui-interactions', 'ui-shell'], {nonce: csp_nonce('script')}) }}
-        {% endif %}
-        {{ block('importmap') }}
-    {% else %}
-        {{ parent() }}
-    {% endif %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('easyadmin-fixture/fixture.css') }}" nonce="{{ csp_nonce('style') }}">
 {% endblock %}
 {% block header_logo %}{{ parent() }}<span data-testid="layout-override">{{ 'Browser override'|trans }}</span>{% endblock %}

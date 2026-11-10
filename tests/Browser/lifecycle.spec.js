@@ -37,7 +37,7 @@ async function editCode(page, value, index = 0) {
 test('optional CodeMirror edits survive repeated initialization and retain unsaved protection before persisting', async ({
     page,
 }) => {
-    await page.goto(`/admin/widgets/${seeded.widgets[0].id}/edit?ui=tailwind`);
+    await page.goto(`/admin/widgets/${seeded.widgets[0].id}/edit`);
     await page.getByRole('tab', { name: 'Editors', exact: true }).click();
     await reloadEntry(page, 'field-code-editor');
     await reloadEntry(page, 'field-code-editor');
@@ -63,7 +63,7 @@ test('optional CodeMirror edits survive repeated initialization and retain unsav
 test('Trix changes preserve unrelated custom validity and its global integration after repeated loading', async ({
     page,
 }) => {
-    await page.goto(`/admin/widgets/${seeded.widgets[0].id}/edit?ui=tailwind`);
+    await page.goto(`/admin/widgets/${seeded.widgets[0].id}/edit`);
     await page.evaluate(() => {
         window.initialTrix = window.Trix;
         document
@@ -98,7 +98,7 @@ test('Trix changes preserve unrelated custom validity and its global integration
 test('required hidden editors reveal their tab, focus visible inputs and render one associated error each', async ({
     page,
 }) => {
-    await page.goto(`/admin/widgets/${seeded.widgets[0].id}/edit?ui=tailwind&required=1`);
+    await page.goto(`/admin/widgets/${seeded.widgets[0].id}/edit?required=1`);
     await page.getByRole('tab', { name: 'Editors', exact: true }).click();
     await editCode(page, '');
     await page.locator('trix-editor').fill('');
@@ -136,7 +136,7 @@ test('required hidden editors reveal their tab, focus visible inputs and render 
 });
 
 test('disabled CodeMirror and readonly Trix remain immutable while ordinary edits submit', async ({ page }) => {
-    await page.goto(`/admin/widgets/${seeded.widgets[0].id}/edit?ui=tailwind&readonly=1`);
+    await page.goto(`/admin/widgets/${seeded.widgets[0].id}/edit?readonly=1`);
     await page.getByRole('tab', { name: 'Editors', exact: true }).click();
     await expect(page.locator('[data-ea-code-editor-field]')).toBeDisabled();
     await editCode(page, 'Forbidden code');
@@ -172,7 +172,7 @@ test('dynamic widgets initialize once, preserve slug lock state, resize hidden n
             assetFailures.push({ url: response.url(), status: response.status(), type });
         }
     });
-    await page.goto(`/admin/dynamic-widgets/${seeded.widgets[0].id}/edit?ui=tailwind`);
+    await page.goto(`/admin/dynamic-widgets/${seeded.widgets[0].id}/edit`);
     await page.getByRole('tab', { name: 'Dynamic', exact: true }).click();
     const collection = page.locator('[data-ea-collection-field]');
     await collection.getByRole('button', { name: 'Add a new item', exact: true }).click();
@@ -252,7 +252,7 @@ test('dynamic widgets initialize once, preserve slug lock state, resize hidden n
 test('image links retain modifier and missing-content fallbacks while the viewer restores keyboard focus', async ({
     page,
 }) => {
-    await page.goto('/admin/field-display?ui=tailwind');
+    await page.goto('/admin/field-display');
     await reloadEntry(page, 'field-image');
     await reloadEntry(page, 'field-image');
     const thumbnail = page.locator('.ea-lightbox-thumbnail').first();
@@ -309,7 +309,7 @@ test('image links retain modifier and missing-content fallbacks while the viewer
 test('lazy autocomplete filters destroy replaced instances once and retain their real GET contract', async ({
     page,
 }) => {
-    await page.goto('/admin/widgets?ui=tailwind');
+    await page.goto('/admin/widgets');
     await page.evaluate(() => {
         window.filterConnects = 0;
         window.filterDestroyCalls = 0;

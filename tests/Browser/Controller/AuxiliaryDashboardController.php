@@ -13,7 +13,7 @@ class AuxiliaryDashboardController extends DashboardController
 {
     public function index(): Response
     {
-        return $this->render('browser/login_preview.html.twig', [
+        return $this->render('browser/login_extension.html.twig', [
             'page_title' => 'Context login', 'action' => '/auxiliary-login',
             'csrf_token_intention' => 'authenticate', 'target_path' => '/admin',
         ]);

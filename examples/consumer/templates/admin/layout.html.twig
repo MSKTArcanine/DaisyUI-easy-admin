@@ -1,13 +1,3 @@
 {% extends '@EasyAdmin/layout.html.twig' %}
 
 {% block header_logo %}{{ parent() }}<span data-testid="consumer-layout-block">{{ 'Consumer layout extension'|trans }}</span>{% endblock %}
-
-{% block head_stylesheets %}
-    <link rel="stylesheet" href="{{ asset('ui-preview.css', ea.assets.defaultAssetPackageName) }}">
-    <link rel="stylesheet" href="{{ asset('ui-fonts-preview.css', ea.assets.defaultAssetPackageName) }}">
-{% endblock %}
-
-{% block head_javascript %}
-    <script src="{{ asset('ui-crud-preview.js', ea.assets.defaultAssetPackageName) }}"></script>
-    {{ block('importmap') }}
-{% endblock %}

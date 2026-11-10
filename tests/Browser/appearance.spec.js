@@ -1,8 +1,9 @@
 const { execFileSync } = require('node:child_process');
+const { createHash } = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const { expect, test } = require('@playwright/test');
-const { fixture, login } = require('./helpers');
+const { fixture, login, expectSelectedMarker } = require('./helpers');
 
 test.beforeEach(async ({ page }) => {
     fixture('seed');
@@ -38,6 +39,9 @@ test('appearance menu supports keyboard entry, selection and Escape focus restor
     await page.keyboard.press('ArrowDown');
     await expect(settings).toHaveAttribute('aria-expanded', 'true');
     await expect(page.locator('[data-ea-color-scheme="light"]:visible')).toBeFocused();
+    for (const scheme of ['light', 'dark', 'auto']) {
+        await expectSelectedMarker(page.locator(`[data-ea-color-scheme="${scheme}"]:visible`), scheme === 'auto');
+    }
     await page.keyboard.press('ArrowDown');
     await expect(page.locator('[data-ea-color-scheme="dark"]:visible')).toBeFocused();
     await page.keyboard.press('Enter');
@@ -45,30 +49,33 @@ test('appearance menu supports keyboard entry, selection and Escape focus restor
     await expect.poll(() => page.evaluate(() => localStorage.getItem('ea/colorScheme'))).toBe('dark');
 
     await openSettings(page);
+    for (const scheme of ['light', 'dark', 'auto']) {
+        await expectSelectedMarker(page.locator(`[data-ea-color-scheme="${scheme}"]:visible`), scheme === 'dark');
+    }
     await page.keyboard.press('Escape');
     await expect(settings).toHaveAttribute('aria-expanded', 'false');
     await expect(settings).toBeFocused();
     expect(errors).toEqual([]);
 });
 
-test('legacy menu compatibility preserves editable target handlers, native defaults and ordinary dropdown keys', async ({
+test('native menus preserve editable target handlers, native defaults and dynamically initialized keyboard choices', async ({
     page,
 }) => {
     const errors = [];
     page.on('pageerror', (error) => errors.push(error.message));
-    expect(await page.evaluate(() => typeof window.bootstrap?.Dropdown)).toBe('function');
+    expect(await page.evaluate(() => typeof window.bootstrap)).toBe('undefined');
     const settings = page.locator('.dropdown-settings-button:visible');
     await settings.click();
     await settings.evaluate((toggle) => {
         const menu = document.getElementById(toggle.getAttribute('aria-controls'));
         const content = document.createElement('li');
         content.innerHTML =
-            '<label for="legacy-menu-select">Menu select</label><select id="legacy-menu-select" size="2"><option value="first" selected>First value</option><option value="second">Second value</option></select><div id="legacy-menu-editor" contenteditable="true" role="textbox" aria-label="Menu editor" tabindex="0">Editable value</div>';
+            '<label for="native-menu-select">Menu select</label><select id="native-menu-select" size="2"><option value="first" selected>First value</option><option value="second">Second value</option></select><div id="native-menu-editor" contenteditable="true" role="textbox" aria-label="Menu editor" tabindex="0">Editable value</div>';
         menu.append(content);
-        window.legacyEditableKeys = [];
+        window.nativeEditableKeys = [];
         for (const control of content.querySelectorAll('select,[contenteditable]')) {
             control.addEventListener('keydown', (event) =>
-                window.legacyEditableKeys.push({
+                window.nativeEditableKeys.push({
                     id: control.id,
                     key: event.key,
                     prevented: event.defaultPrevented,
@@ -88,11 +95,11 @@ test('legacy menu compatibility preserves editable target handlers, native defau
     await page.keyboard.press('ArrowDown');
     await page.keyboard.press('ArrowUp');
     await expect(editor).toBeFocused();
-    expect(await page.evaluate(() => window.legacyEditableKeys)).toEqual([
-        { id: 'legacy-menu-select', key: 'ArrowDown', prevented: false },
-        { id: 'legacy-menu-select', key: 'ArrowUp', prevented: false },
-        { id: 'legacy-menu-editor', key: 'ArrowDown', prevented: false },
-        { id: 'legacy-menu-editor', key: 'ArrowUp', prevented: false },
+    expect(await page.evaluate(() => window.nativeEditableKeys)).toEqual([
+        { id: 'native-menu-select', key: 'ArrowDown', prevented: false },
+        { id: 'native-menu-select', key: 'ArrowUp', prevented: false },
+        { id: 'native-menu-editor', key: 'ArrowDown', prevented: false },
+        { id: 'native-menu-editor', key: 'ArrowUp', prevented: false },
     ]);
     await page.keyboard.press('Escape');
     await expect(settings).toBeFocused();
@@ -102,18 +109,19 @@ test('legacy menu compatibility preserves editable target handlers, native defau
         const dropdown = document.createElement('div');
         dropdown.className = 'dropdown';
         dropdown.innerHTML =
-            '<button id="raw-legacy-toggle" type="button" data-bs-toggle="dropdown">Legacy choices</button><ul class="dropdown-menu"><li><a id="raw-legacy-first" class="dropdown-item" href="#">Legacy first</a></li><li><a id="raw-legacy-second" class="dropdown-item" href="#">Legacy second</a></li></ul>';
+            '<button id="dynamic-menu-toggle" type="button" data-ea-toggle="dropdown" data-ea-target="#dynamic-menu-choices">Dynamic choices</button><ul id="dynamic-menu-choices" class="dropdown-menu menu" data-ea-menu hidden><li><a id="dynamic-menu-first" class="dropdown-item" data-ea-menu-item href="#">Dynamic first</a></li><li><a id="dynamic-menu-second" class="dropdown-item" data-ea-menu-item href="#">Dynamic second</a></li></ul>';
         document.body.append(dropdown);
+        window.EasyAdminApp.init(dropdown);
     });
-    const legacy = page.locator('#raw-legacy-toggle');
-    await legacy.focus();
+    const dynamic = page.locator('#dynamic-menu-toggle');
+    await dynamic.focus();
     await page.keyboard.press('ArrowDown');
-    await expect(page.locator('#raw-legacy-first')).toBeFocused();
+    await expect(page.locator('#dynamic-menu-first')).toBeFocused();
     await page.keyboard.press('ArrowDown');
-    await expect(page.locator('#raw-legacy-second')).toBeFocused();
+    await expect(page.locator('#dynamic-menu-second')).toBeFocused();
     await page.keyboard.press('Escape');
-    await expect(legacy).toBeFocused();
-    await expect(legacy).toHaveAttribute('aria-expanded', 'false');
+    await expect(dynamic).toBeFocused();
+    await expect(dynamic).toHaveAttribute('aria-expanded', 'false');
     expect(errors).toEqual([]);
 });
 
@@ -236,15 +244,22 @@ async function chooseScheme(page, scheme) {
 }
 
 async function captureReference(page, testInfo, name) {
-    if (process.env.EASYADMIN_CAPTURE_REFERENCES !== '1' || testInfo.project.name !== 'chromium') {
+    if (process.env.EASYADMIN_CAPTURE_REFERENCES === '1') {
+        throw new Error('Original references are immutable; use EASYADMIN_CAPTURE_FINAL_REFERENCES=1.');
+    }
+    if (process.env.EASYADMIN_CAPTURE_FINAL_REFERENCES !== '1' || testInfo.project.name !== 'chromium') {
         return;
     }
 
-    const directory = path.join(__dirname, 'references');
+    const directory = path.join(__dirname, 'references-final');
     fs.mkdirSync(directory, { recursive: true });
     await page.screenshot({ path: path.join(directory, `${name}.png`), fullPage: true, animations: 'disabled' });
     const metadata = {
         sourceBaseline: 'bd0fb8448a41f69b3493c5bea84f793e46fe7c21',
+        capturePhase: 'final',
+        assetManifestSha256: createHash('sha256')
+            .update(fs.readFileSync(path.resolve(__dirname, '../../public/manifest.json')))
+            .digest('hex'),
         captureCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
         browser: testInfo.project.name,
         browserVersion: page.context().browser().version(),
@@ -256,5 +271,5 @@ async function captureReference(page, testInfo, name) {
         direction: await page.locator('html').getAttribute('dir'),
         test: testInfo.title,
     };
-    fs.writeFileSync(path.join(directory, `${name}.json`), `${JSON.stringify(metadata, null, 2)}\n`);
+    fs.writeFileSync(path.join(directory, `${name}.json`), `${JSON.stringify(metadata, null, 4)}\n`);
 }

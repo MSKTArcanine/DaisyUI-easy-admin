@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="data:,">
     <title>{{ 'Presentation layout fixture'|trans }}</title>
-    <link rel="stylesheet" href="{{ asset('easyadmin/ui-preview.css') }}" data-testid="layout-stylesheet">
+    <link rel="stylesheet" href="{{ asset('app.css', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}" data-testid="layout-stylesheet">
+    <link rel="stylesheet" href="{{ asset('easyadmin-fixture/fixture.css') }}">
     <style>
         .application-button-override { background-color: rgb(1, 2, 3); }
         .custom-layout-marker { outline: 2px solid rgb(1, 2, 3); }
     </style>
+    <script src="{{ asset('app.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}" defer></script>
 </head>
 <body data-ea-ui data-theme="easyadmin-light">
 <main class="p-6">

@@ -13,7 +13,7 @@ test('minimal login preserves custom authentication parameters, CSRF failures, s
 }) => {
     const requests = [];
     page.on('request', (request) => requests.push(request));
-    const response = await page.goto('/auxiliary-login?ui=tailwind&csp=1');
+    const response = await page.goto('/auxiliary-login?csp=1');
     expect(response.headers()['content-security-policy']).toContain("script-src 'self' 'nonce-");
     await expect(page.getByTestId('login-logo-override')).toHaveText('Login block override');
     await expect(page.getByTestId('login-footer-override')).toHaveText('Login footer override');
@@ -59,14 +59,16 @@ test('minimal login preserves custom authentication parameters, CSRF failures, s
     expect(body.get('remember_identity')).toBe('on');
     expect(body.get('login_intent')).toBe('authenticate');
     expect(body.get('_csrf_token')).toBeTruthy();
-    expect(requests.some((request) => /\/(?:app\.[^/]+\.(?:css|js)|bootstrap[^/]*)$/.test(request.url()))).toBe(false);
+    expect(requests.some((request) => /\/bundles\/easyadmin\/app\.[^/]+\.css$/.test(request.url()))).toBe(true);
+    expect(requests.some((request) => /\/bundles\/easyadmin\/app\.[^/]+\.js$/.test(request.url()))).toBe(true);
+    expect(requests.some((request) => /bootstrap[^/]*\.(?:css|js)$/.test(request.url()))).toBe(false);
     expect(await page.evaluate(() => typeof window.bootstrap)).toBe('undefined');
 });
 
 test('minimal and context login retain responsive controls, locale direction and appearance', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.emulateMedia({ colorScheme: 'dark' });
-    await page.goto('/auxiliary-login?ui=tailwind&locale=ar');
+    await page.goto('/auxiliary-login?locale=ar');
     await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
     await expect(page.locator('body')).toHaveAttribute('data-theme', 'easyadmin-dark');
@@ -76,7 +78,7 @@ test('minimal and context login retain responsive controls, locale direction and
     expect(bounds.x + bounds.width).toBeLessThanOrEqual(390);
     expect(await field.evaluate((input) => getComputedStyle(input).borderStyle)).toBe('solid');
     await login(page);
-    await page.goto('/auxiliary-admin?ui=tailwind');
+    await page.goto('/auxiliary-admin');
     await expect(page.locator('#header-logo a')).toHaveAttribute('href', '/auxiliary-admin');
     await expect(page.locator('[name="_target_path"]')).toHaveValue('/admin');
     await expect(page.getByTestId('login-logo-override')).toBeVisible();
@@ -89,7 +91,7 @@ test('every shipped UI-kit component and foundation works with native assets and
     await login(page);
     const errors = [];
     page.on('pageerror', (error) => errors.push(error.message));
-    await page.goto('/admin/_ea_ui_kit?ui=tailwind&csp=1');
+    await page.goto('/admin/_ea_ui_kit?csp=1');
     const componentNames = fs
         .readdirSync(path.join(__dirname, '../../templates/ui_kit/components'), { withFileTypes: true })
         .filter((entry) => entry.isDirectory())
@@ -149,15 +151,26 @@ test('every shipped UI-kit component and foundation works with native assets and
 test('content and exception pages preserve overridden blocks and standalone welcome respects CSP and reduced motion', async ({
     page,
 }) => {
-    await page.goto('/auxiliary/content/ar?ui=tailwind&csp=1');
+    await page.goto('/auxiliary/content/ar?csp=1');
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
     await expect(page.locator('h1')).toHaveText('Auxiliary content');
     await expect(page.getByTestId('auxiliary-content')).toHaveText('Content block override');
     await login(page);
-    await page.goto('/auxiliary-admin/content?ui=tailwind');
+    await page.goto('/auxiliary-admin/content');
     await expect(page.getByTestId('auxiliary-content')).toHaveText('Content block override');
     await expect(page.locator('#main-menu')).toBeVisible();
     const automatic = page.getByTestId('automatic-prose');
+    await page
+        .locator('body')
+        .evaluate((body) => body.style.setProperty('--ea-primary-on-surface', 'rgb(147, 51, 234)'));
+    await expect(automatic.getByRole('link', { name: 'Document destination', exact: true })).toHaveCSS(
+        'color',
+        'rgb(147, 51, 234)'
+    );
+    await expect(automatic.getByRole('link', { name: 'Document destination', exact: true })).toHaveCSS(
+        'text-decoration-line',
+        'underline'
+    );
     await expect(automatic.locator('p').first()).toHaveCSS('font-size', '20px');
     await expect(automatic.locator('p').first()).toHaveCSS('line-height', '40px');
     await expect(automatic.locator('p').last()).toHaveCSS('margin-block-start', '40px');
@@ -175,6 +188,7 @@ test('content and exception pages preserve overridden blocks and standalone welc
     expect(
         await explicit.locator('code').evaluate((code) => Number.parseFloat(getComputedStyle(code).fontSize))
     ).toBeCloseTo(17.14, 1);
+    await expect(explicit.locator('code')).toHaveCSS('font-family', 'serif');
     const ordinarySize = await page
         .getByTestId('prose-control-outside')
         .evaluate((input) => getComputedStyle(input).fontSize);

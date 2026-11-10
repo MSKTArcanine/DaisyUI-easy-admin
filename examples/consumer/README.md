@@ -60,6 +60,8 @@ sources include application templates and presentation mappings. The generated
 `assets/styles/consumer-utilities.css` is the only Tailwind application output
 served to browsers. Adding classes to Twig requires rebuilding that output.
 
-The temporary stylesheet/script head blocks select the isolated stage 9 assets.
-At final cutover they are removed so ordinary bundle `app.css` and `app.js`
-entrypoints are used. The application-specific header block remains.
+The application inherits the ordinary bundle `app.css` and `app.js` entrypoints.
+The layout override changes only the header block; the login template inherits
+the bundle login interface. `assets:install` copies the precompiled package
+assets, and AssetMapper serves the application stylesheet, utility output, and
+JavaScript without rebuilding the bundle.

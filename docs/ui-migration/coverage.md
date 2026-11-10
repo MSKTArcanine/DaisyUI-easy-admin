@@ -434,3 +434,59 @@ The independent build contract suite also passed 15/15 cases across Chromium,
 Firefox and WebKit after moving fixture-only Tailwind discovery out of shipped
 CSS. Existing upstream PHP behavior is unchanged in this stage; the complete
 PHP suite remains the passing Prompt 8 result and runs again at final cutover.
+
+
+## Prompt 10 final coverage and verification boundary
+
+The full upstream command `make checks-before-pr` passes: 4168 PHP tests and
+12562 assertions, zero of 1069 PHP files require formatting, PHPStan analyzes
+338 sources without errors, 192 product Twig templates lint cleanly, and RST
+documentation passes. After the independent CSS/documentation review fix,
+production assets, frontend lint, the RST check and targeted browser regressions
+were rerun. PHP/backend sources did not change in that fix.
+
+The ordinary form theme and both neutral legacy-path aliases now run the same
+rendered Switch attribute, invalid-state, boolean submission and identity checks.
+`tests/Unit/Asset/AssetPackageTest.php` verifies real manifest/font URL resolution
+at the root and under `/school` (2 tests, 144 assertions). All original manifest
+keys and existing JS/CSS entry names remain.
+
+The browser harness uses actual delivered `app.css`/`app.js`, with an independent
+2127-byte application utility stylesheet for fixture-only classes. No source
+UI importmap, duplicate daisyUI build, preview asset entry, legacy/new mode
+cookie or migration CSS/JS bridge remains. Six duplicate mode workflows are
+consolidated without losing assertions; a new delivered-runtime audit adds
+three engine cases. The final suite has 330 cases across three engines.
+
+`tests/Browser/delivery.spec.js` checks real successful responses and content
+across dashboard/index/detail/new/edit/widgets/UI-kit/theme/login, CSS/JS/font
+network responses, globals and rendered behavior attributes. Static runtime
+proof also covers package/lock/install state, imports, all generated bundles,
+manifest targets, required licenses and actual Webpack resolved modules. A
+shared `btn` class or FontAwesome Bootstrap brand icon isn't treated as framework
+code. Retained PHP configuration strings and neutral historical paths are
+classified explicitly.
+
+The final consuming application passes 15/15 cases across Chromium, Firefox
+and WebKit against the installed archive, including all eight extension examples,
+actual typed create/edit POSTs, submitter/CSRF, validation rejection with retained
+values, persisted data and custom GET action results. No vendor edits or symlinks
+are used. Exact archive parity, strict Composer validation and production asset
+installation without Node/Yarn are verified.
+
+Independent review corrected prose reset layer precedence and theme-scope
+examples. The targeted 12/12 browser run checks document link color/underline,
+custom code font, asset contracts, native dialogs/layout and overlay disposal.
+The interrupted preliminary final run remains separate evidence: stale fixture
+asset counts and raw Bootstrap attributes were corrected to the final native
+contract, preserving all behavioral assertions. Final complete results are in
+the machine-readable report; preliminary/interrupted runs aren't acceptance.
+
+Remaining limits are explicit: actual PHP 8.2 and exact minimum browser versions,
+a separate Symfony 7 runtime, PostgreSQL/MySQL/MariaDB execution, installed Vich
+and remote Flysystem browser round trips, and a rendered WebProfiler panel were
+not run here. Existing source/unit coverage for optional integrations is retained.
+The four new accessible-name keys (`settings.label`, `layout.toggle_navigation`,
+`datagrid.select_all`, `datagrid.select_row`) use the repository-permitted English
+placeholders outside English; all pre-existing translations remain unchanged.
+Remote CI wasn't invoked. No known failure remains in accepted local checks.

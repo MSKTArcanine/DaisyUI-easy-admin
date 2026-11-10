@@ -17,7 +17,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 async function editUploads(page, query = '') {
-    await page.goto(`/admin/uploads/${seeded.widgets[0].id}/edit?ui=tailwind${query}`);
+    await page.goto(`/admin/uploads/${seeded.widgets[0].id}/edit${query.replace(/^&/, '?')}`);
     return page.locator('[data-ea-fileupload-field]');
 }
 

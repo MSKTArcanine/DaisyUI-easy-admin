@@ -1,0 +1,18 @@
+{
+    "sourceBaseline": "bd0fb8448a41f69b3493c5bea84f793e46fe7c21",
+    "capturePhase": "final",
+    "assetManifestSha256": "0337c2de19140391dce9737af6203ded8d7ae7d761c10990858926f1cfcddc63",
+    "captureCommit": "be15cf210ecf45f55ad0312829124039e7c54b23",
+    "browser": "chromium",
+    "browserVersion": "158.0.8127.18",
+    "viewport": {
+        "width": 1440,
+        "height": 1000
+    },
+    "url": "http://127.0.0.1:8089/admin/categories?direction=rtl",
+    "locale": "en-US",
+    "timezone": "UTC",
+    "scheme": "dark",
+    "direction": "rtl",
+    "test": "RTL keeps navigation and appearance controls usable"
+}

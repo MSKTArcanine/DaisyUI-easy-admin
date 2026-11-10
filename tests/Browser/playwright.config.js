@@ -41,7 +41,7 @@ module.exports = defineConfig({
             command: 'php -S 127.0.0.1:8090 tests/Browser/router.php',
             cwd: require('node:path').resolve(__dirname, '../..'),
             env: { EASYADMIN_BROWSER_ENV: 'prod' },
-            url: 'http://127.0.0.1:8090/ui-preview',
+            url: 'http://127.0.0.1:8090/rendering-contract',
             reuseExistingServer: process.env.EASYADMIN_BROWSER_REUSE_SERVER === '1',
             timeout: 30000,
         },

@@ -1,0 +1,4 @@
+{% extends '@EasyAdmin/page/login.html.twig' %}
+
+{% block header_logo %}{{ parent() }}<span data-testid="login-logo-override">{{ 'Login block override'|trans }}</span>{% endblock %}
+{% block login_form_footer %}<p data-testid="login-footer-override">{{ 'Login footer override'|trans }}</p>{% endblock %}

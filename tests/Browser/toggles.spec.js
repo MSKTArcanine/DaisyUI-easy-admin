@@ -9,7 +9,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('reloading a boolean entry keeps one PATCH with original CSRF, field and XHR contracts', async ({ page }) => {
-    await page.goto('/admin/toggles?ui=tailwind');
+    await page.goto('/admin/toggles');
     await page.evaluate(
         () =>
             new Promise((resolve, reject) => {
@@ -41,7 +41,7 @@ test('reloading a boolean entry keeps one PATCH with original CSRF, field and XH
 test('a real invalid-CSRF toggle rolls back, disables its control and leaves persisted state unchanged', async ({
     page,
 }) => {
-    await page.goto('/admin/toggles?ui=tailwind');
+    await page.goto('/admin/toggles');
     const toggle = page.locator(`tr[data-id="${seeded.categories[0].id}"] input[data-toggle-url]`);
     await toggle.evaluate((input) => {
         const url = new URL(input.dataset.toggleUrl);
@@ -57,7 +57,7 @@ test('a real invalid-CSRF toggle rolls back, disables its control and leaves per
 });
 
 test('a network failure restores the prior toggle state without changing the database', async ({ page }) => {
-    await page.goto('/admin/toggles?ui=tailwind');
+    await page.goto('/admin/toggles');
     await page.route('**/toggles/**', (route) =>
         route.request().method() === 'PATCH' ? route.abort('failed') : route.continue()
     );
@@ -69,7 +69,7 @@ test('a network failure restores the prior toggle state without changing the dat
 });
 
 test('configured disabled toggles ignore synthetic change events and send no request', async ({ page }) => {
-    await page.goto('/admin/toggles?ui=tailwind&disabled=1');
+    await page.goto('/admin/toggles?disabled=1');
     const toggle = page.locator(`tr[data-id="${seeded.categories[0].id}"] input[data-toggle-url]`);
     const requests = [];
     page.on('request', (request) => {

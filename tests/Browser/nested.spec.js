@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
 test('nested collections preserve identical placeholders, unique indices and real persisted child values', async ({
     page,
 }) => {
-    await page.goto(`/admin/nested/${seeded.widgets[0].id}/edit?ui=tailwind`);
+    await page.goto(`/admin/nested/${seeded.widgets[0].id}/edit`);
     const groups = page.getByTestId('nested-groups');
     await groups.getByRole('button', { name: 'Add a new item', exact: true }).last().click();
     const title = page.locator('[name="FieldTestEntity[arrayField][1][title]"]');
@@ -51,7 +51,7 @@ test('nested collections preserve identical placeholders, unique indices and rea
 test('repeated collection initialization executes one prototype script and one lifecycle event per addition', async ({
     page,
 }) => {
-    await page.goto(`/admin/nested/${seeded.widgets[0].id}/edit?ui=tailwind&csp=1`);
+    await page.goto(`/admin/nested/${seeded.widgets[0].id}/edit?csp=1`);
     const groups = page.getByTestId('nested-groups');
     const nonce = await page
         .locator('script[nonce]')
@@ -109,7 +109,7 @@ test('repeated collection initialization executes one prototype script and one l
 test('client and server errors reveal every collapsed collection ancestor and preserve persisted values', async ({
     page,
 }) => {
-    await page.goto(`/admin/nested/${seeded.widgets[0].id}/edit?ui=tailwind`);
+    await page.goto(`/admin/nested/${seeded.widgets[0].id}/edit`);
     const groups = page.getByTestId('nested-groups');
     await groups.getByRole('button', { name: 'Group 1', exact: true }).click();
     const children = page.getByTestId('nested-children');
@@ -143,7 +143,7 @@ test('client and server errors reveal every collapsed collection ancestor and pr
 });
 
 test('parent collection permissions do not disable independently configured nested additions', async ({ page }) => {
-    await page.goto(`/admin/nested/${seeded.widgets[0].id}/edit?ui=tailwind&locked=1`);
+    await page.goto(`/admin/nested/${seeded.widgets[0].id}/edit?locked=1`);
     const groups = page.getByTestId('nested-groups');
     await expect(groups).toHaveAttribute('data-allow-add', 'false');
     await expect(groups).toHaveAttribute('data-allow-delete', 'false');

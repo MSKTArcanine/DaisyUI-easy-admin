@@ -1,0 +1,246 @@
+{
+    "stage": 10,
+    "status": "accepted",
+    "branch": "remove_bootstrap_and_perform_final_acceptance",
+    "upstream_commit": "bd0fb8448a41f69b3493c5bea84f793e46fe7c21",
+    "product_commit": "be15cf210ecf45f55ad0312829124039e7c54b23",
+    "dependencies": {
+        "tailwindcss": "4.3.3",
+        "@tailwindcss/cli": "4.3.3",
+        "daisyui": "5.7.50",
+        "symfonycasts/tailwind-bundle": "1.0.0",
+        "bootstrap_removed": "5.3.8",
+        "popper_retained": "Used directly by native overlays"
+    },
+    "php": {
+        "command": "make checks-before-pr",
+        "tests": 4168,
+        "assertions": 12562,
+        "passed": true,
+        "source_runtime": "PHP8.5.11/Symfony8.1.11/ORM3.7.6",
+        "log": "/tmp/easyadmin-stage10-upstream-final.log",
+        "post_review_php_changes": false
+    },
+    "browser": {
+        "startTime": "2026-11-10T00:51:23.819Z",
+        "duration": 447039.647,
+        "expected": 330,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+    },
+    "consumer_browser": {
+        "startTime": "2026-11-10T00:52:02.989Z",
+        "duration": 19373.909,
+        "expected": 15,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+    },
+    "focused_prose": {
+        "startTime": "2026-11-10T00:33:13.062Z",
+        "duration": 18171.678,
+        "expected": 12,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+    },
+    "focused_markers": {
+        "startTime": "2026-11-10T00:50:00.756Z",
+        "duration": 11040.142,
+        "expected": 6,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+    },
+    "preliminary_interrupted_not_acceptance": {
+        "startTime": "2026-11-10T00:26:21.669Z",
+        "duration": 147569.208,
+        "expected": 100,
+        "skipped": 227,
+        "unexpected": 3,
+        "flaky": 0
+    },
+    "pre_marker_complete_not_final_artifact": {
+        "startTime": "2026-11-10T00:34:33.390Z",
+        "duration": 446022.149,
+        "expected": 330,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+    },
+    "build": {
+        "bootstrapResolvedModules": 0,
+        "entrypoints": [
+            "app",
+            "form",
+            "page-layout",
+            "page-color-scheme",
+            "field-boolean",
+            "field-code-editor",
+            "field-collection",
+            "field-file-upload",
+            "field-image",
+            "field-slug",
+            "field-textarea",
+            "field-text-editor",
+            "login"
+        ],
+        "cssEntries": ["app.css", "field-code-editor.css", "field-text-editor.css"],
+        "manifestTargets": 53,
+        "tailwindBytes": 248582,
+        "tailwindSha256": "7d7eafdf446a0e855bcad8d2b79a9d8f8adc9c088fb637e9071fe943a46eabd9",
+        "appCssBytes": 381208,
+        "appCssSha256": "545693aaf39adc316151d600a412d1f5ab618235379e2be55c83c68c9a0ec951",
+        "appJsBytes": 190743,
+        "appJsSha256": "ae5852c6e5e1d5b7b7de0cb44ce954b0dc39ad8360c3b8c259b7975c70b9f067",
+        "webpackWarnings": 0,
+        "webpackErrors": 0,
+        "resolvedModuleIdentifiers": 221,
+        "layerOrder": {
+            "app.css": "theme, vendor, base, components, utilities",
+            "field-code-editor.css": "theme, vendor, base, components, utilities",
+            "field-text-editor.css": "theme, vendor, base, components, utilities"
+        },
+        "proseResetLayers": [
+            {
+                "selector": "[data-ea-ui] a",
+                "layer": "base.reset"
+            },
+            {
+                "selector": "[data-ea-ui] :is(code,pre,kbd,samp)",
+                "layer": "base.reset"
+            }
+        ],
+        "selectableMarkerRules": [
+            {
+                "selector": "[data-ea-ui] .dropdown-item-check",
+                "visibility": "hidden",
+                "layer": "utilities"
+            },
+            {
+                "selector": "[data-ea-ui] [data-ea-menu-item][aria-checked=true]>.dropdown-item-trailing>.dropdown-item-check",
+                "visibility": "visible",
+                "layer": "utilities"
+            }
+        ]
+    },
+    "runtime_audit": {
+        "passed": true,
+        "originalEntries": 13,
+        "manifestTargets": 53,
+        "compiledFiles": 16,
+        "resolvedModules": 221,
+        "bootstrap": false
+    },
+    "asset_delivery": {
+        "original_entries": 13,
+        "original_css_entries": 3,
+        "original_manifest_keys_retained": 51,
+        "manifest_targets": 53,
+        "distributed_files": 63,
+        "manifest_sha256": "0337c2de19140391dce9737af6203ded8d7ae7d761c10990858926f1cfcddc63",
+        "assetmapper_cache_export_equal": true,
+        "root_and_subdirectory_url_tests": 2,
+        "root_and_subdirectory_url_assertions": 144
+    },
+    "consumer": {
+        "archive": {
+            "reference": "be15cf210ecf45f55ad0312829124039e7c54b23",
+            "version": "5.9.1-dev",
+            "sha256": "95a5859c8f3a8aba6b164145688b6cad8d0918aafacaea203009692e8980e79d"
+        },
+        "install": {
+            "php": "8.3.33",
+            "symfony": "6.4.50",
+            "package": "5.9.1-dev",
+            "reference": "be15cf210ecf45f55ad0312829124039e7c54b23",
+            "installPath": "/tmp/easyadmin-consumer-final-be15cf21/vendor/easycorp/easyadmin-bundle",
+            "symlink": false,
+            "tailwindBundleInstalled": false,
+            "frontendToolsOnPath": {
+                "node": false,
+                "yarn": false
+            },
+            "commands": [
+                [
+                    "/usr/bin/php8.3",
+                    "/usr/bin/composer",
+                    "install",
+                    "--no-dev",
+                    "--prefer-dist",
+                    "--no-interaction",
+                    "--no-scripts"
+                ],
+                ["/usr/bin/php8.3", "bin/console", "cache:clear", "--no-warmup"],
+                ["/usr/bin/php8.3", "bin/console", "assets:install", "public"],
+                ["/usr/bin/php8.3", "bin/console", "asset-map:compile"],
+                ["/usr/bin/php8.3", "bin/console", "app:fixtures", "seed"]
+            ]
+        },
+        "archive_source_parity_files": 641,
+        "composer_validate_strict": true,
+        "no_vendor_edits": true,
+        "all_eight_extensions_verified": true,
+        "application_utilities_bytes": 447
+    },
+    "review": {
+        "original_twig_paths_retained": 190,
+        "original_template_readme_retained": true,
+        "original_named_blocks_retained": true,
+        "php_production_files": ["src/Twig/PresentationExtension.php", "config/services.php"],
+        "presentation_extension_lines": 340,
+        "service_registration_added_lines": 4,
+        "backend_api_changes": false,
+        "findings_fixed": [
+            "Prose reset priority and configurable font/link styling",
+            "Theme override scope in executable documentation",
+            "Missing selectable-menu marker state styling",
+            "Neutral aliases omitted from an intermediate package checkpoint"
+        ],
+        "test_fixture_corrections": [
+            "Actual delivered stylesheet/script counts",
+            "Native data-ea dynamic overlay hooks after removal of temporary client bridge",
+            "Boolean selected prop syntax for anonymous menu component"
+        ]
+    },
+    "visual_references": {
+        "original_pairs": 15,
+        "original_unchanged": true,
+        "final_pairs": 15,
+        "capture_commit": "be15cf210ecf45f55ad0312829124039e7c54b23",
+        "manifest_sha256": "0337c2de19140391dce9737af6203ded8d7ae7d761c10990858926f1cfcddc63",
+        "manually_reviewed": [
+            "index-desktop-light",
+            "new-invalid-desktop-light",
+            "index-desktop-dark-rtl",
+            "dashboard-mobile-navigation"
+        ]
+    },
+    "checks": {
+        "php_cs_files": 1069,
+        "phpstan_sources": 338,
+        "product_twig": 192,
+        "browser_twig": 15,
+        "consumer_twig": 6,
+        "frontend_warning_count": 1,
+        "frontend_source_files": 130,
+        "post_review_rst": true,
+        "workflow_yaml_parsed": true,
+        "remote_ci_invoked": false
+    },
+    "unverified": [
+        "Actual PHP8.2 runtime and exact browser minima",
+        "Separate Symfony7 runtime and PostgreSQL/MySQL/MariaDB execution",
+        "Installed VichUploader and remote Flysystem browser integration",
+        "Rendered WebProfiler panel",
+        "Remote CI run"
+    ],
+    "translation_placeholders": [
+        "settings.label",
+        "layout.toggle_navigation",
+        "datagrid.select_all",
+        "datagrid.select_row"
+    ],
+    "next_stage": null
+}

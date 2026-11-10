@@ -1,5 +1,5 @@
 const root = document.querySelector('[data-ea-ui]');
-const toggle = document.querySelector('[data-testid="preview-theme-toggle"]');
+const toggle = document.querySelector('[data-testid="rendering-theme-toggle"]');
 
 toggle.addEventListener('click', () => {
     const dark = root.dataset.theme !== 'easyadmin-dark';
@@ -9,4 +9,4 @@ toggle.addEventListener('click', () => {
     toggle.setAttribute('aria-pressed', String(dark));
 });
 
-window.previewFixtureReady = true;
+window.renderingFixtureReady = true;

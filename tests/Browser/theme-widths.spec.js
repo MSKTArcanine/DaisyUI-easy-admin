@@ -5,7 +5,7 @@ test('layout preferences change physical widths and keep the compact logo inside
     fixture('seed');
     await login(page);
     await page.setViewportSize({ width: 2300, height: 1000 });
-    await page.goto('/theme-admin?ui=tailwind');
+    await page.goto('/theme-admin');
     const wrapper = page.locator('.main-content > .content-wrapper');
     const sidebar = page.locator('[data-ea-sidebar]');
     const contentToggle = page.locator('.ea-layout-toggle-content');

@@ -1,11 +1,20 @@
 const { expect, test } = require('@playwright/test');
 
 test('every legacy span offset and row breakpoint has its actual width without Bootstrap', async ({ page }) => {
-    await page.goto('/ui-layout');
+    await page.goto('/rendering-layout');
     await expect(page.getByRole('heading', { name: 'Presentation layout fixture', exact: true })).toBeVisible();
     expect(await page.evaluate(() => typeof window.bootstrap)).toBe('undefined');
-    await expect(page.locator('link[rel="stylesheet"]')).toHaveCount(1);
-    await expect(page.locator('script[src]')).toHaveCount(0);
+    await expect(page.locator('link[rel="stylesheet"]')).toHaveCount(2);
+    await expect(page.locator('link[rel="stylesheet"]').first()).toHaveAttribute(
+        'href',
+        /\/bundles\/easyadmin\/app\.[a-f0-9]+\.css$/
+    );
+    await expect(page.locator('link[rel="stylesheet"]').last()).toHaveAttribute(
+        'href',
+        /easyadmin-fixture\/fixture-[a-zA-Z0-9_-]+\.css$/
+    );
+    await expect(page.locator('script[src]')).toHaveCount(1);
+    await expect(page.locator('script[src]')).toHaveAttribute('src', /\/bundles\/easyadmin\/app\.[a-f0-9]+\.js$/);
 
     for (const width of [575, 576, 767, 768, 991, 992, 1199, 1200, 1399, 1400]) {
         await page.setViewportSize({ width, height: 1000 });
@@ -53,7 +62,7 @@ test('every legacy span offset and row breakpoint has its actual width without B
 
 test('default widths break rows while explicit widths pack and wrap with offsets', async ({ page }) => {
     await page.setViewportSize({ width: 1000, height: 1000 });
-    await page.goto('/ui-layout');
+    await page.goto('/rendering-layout');
     const defaults = page.locator('[data-default-field]');
     const explicit = page.locator('[data-explicit-field]');
     const defaultBoxes = await boxes(defaults);
@@ -98,7 +107,7 @@ test('default widths break rows while explicit widths pack and wrap with offsets
 });
 
 test('numeric equal and auto widths remain meaningful inside vertical form columns', async ({ page }) => {
-    await page.goto('/ui-layout');
+    await page.goto('/rendering-layout');
     for (const width of [767, 768, 1400]) {
         await page.setViewportSize({ width, height: 1000 });
         const sizes = await page.getByTestId('vertical-column').evaluate((column) => {
@@ -125,7 +134,7 @@ test('numeric equal and auto widths remain meaningful inside vertical form colum
 test('caller semantic variants win without conflicting colors and application CSS still overrides', async ({
     page,
 }) => {
-    await page.goto('/ui-layout');
+    await page.goto('/rendering-layout');
     for (const [reference, caller] of [
         ['reference-primary', 'caller-primary'],
         ['reference-danger', 'caller-danger'],

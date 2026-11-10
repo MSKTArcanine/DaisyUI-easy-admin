@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('public Theme configuration styles actual controls and fonts in both appearances', async ({ page }) => {
-    await page.goto('/theme-admin?ui=tailwind&default=light');
+    await page.goto('/theme-admin?default=light');
     await expect(page.getByTestId('theme-dashboard-content')).toHaveText(
         'Public Theme configuration remains effective'
     );
@@ -53,10 +53,10 @@ test('public Theme configuration styles actual controls and fonts in both appear
     expect(fonts.some((family) => family.includes('JetBrains Mono Variable'))).toBe(true);
 });
 
-test('child layout blocks, application assets and CSP nonces survive the shell preview', async ({ page }) => {
+test('child layout blocks, application assets and CSP nonces survive delivered shell assets', async ({ page }) => {
     const errors = [];
     page.on('pageerror', (error) => errors.push(error.message));
-    const response = await page.goto('/theme-admin?ui=tailwind&csp=1');
+    const response = await page.goto('/theme-admin?csp=1');
     expect(response.status()).toBe(200);
     expect(response.headers()['content-security-policy']).toMatch(/script-src 'self' 'nonce-[^']+'/);
     await expect(page.getByTestId('theme-logo-override')).toHaveText('Theme logo extension');
@@ -80,13 +80,13 @@ test('child layout blocks, application assets and CSP nonces survive the shell p
         nonces: [...document.querySelectorAll('style,script,link[rel="stylesheet"]')].map((element) => element.nonce),
         head: document.head.innerHTML,
     }));
-    expect(assets.styles.some((url) => /\/app\.[^/]+\.css/.test(url))).toBe(false);
-    expect(assets.scripts.some((url) => /\/app\.[^/]+\.js/.test(url))).toBe(false);
+    expect(assets.styles.some((url) => /\/bundles\/easyadmin\/app\.[^/]+\.css/.test(url))).toBe(true);
+    expect(assets.scripts.some((url) => /\/bundles\/easyadmin\/app\.[^/]+\.js/.test(url))).toBe(true);
     expect(await page.evaluate(() => typeof window.bootstrap)).toBe('undefined');
     expect(assets.nonces.length).toBeGreaterThan(2);
     expect(assets.nonces.every((nonce) => typeof nonce === 'string' && nonce.length > 0)).toBe(true);
     expect(response.headers()['content-security-policy']).toContain(`'nonce-${assets.nonces[0]}'`);
-    const bundleCss = assets.head.indexOf('ui-preview');
+    const bundleCss = assets.head.indexOf('/bundles/easyadmin/app.');
     const themeOverrides = assets.head.indexOf('--ea-primary: #15803d;');
     const applicationCss = assets.head.indexOf('/browser/theme_fixture.css');
     expect(bundleCss).toBeGreaterThanOrEqual(0);
@@ -102,7 +102,7 @@ for (const configured of ['compact', 'normal']) {
             localStorage.setItem('ea/sidebar/width', isCompact ? 'normal' : 'compact');
             localStorage.setItem('ea/content/width', isCompact ? 'normal' : 'full');
         }, compact);
-        await page.goto(`/theme-admin?ui=tailwind&configured=${configured}`);
+        await page.goto(`/theme-admin?configured=${configured}`);
         const body = page.locator('body');
         await expect(body).toHaveAttribute('data-ea-sidebar-width-configured', 'true');
         await expect(body).toHaveAttribute('data-ea-content-width-configured', 'true');
@@ -121,7 +121,7 @@ test('remembered widths apply only when no dashboard width is explicitly configu
         localStorage.setItem('ea/sidebar/width', 'compact');
         localStorage.setItem('ea/content/width', 'full');
     });
-    await page.goto('/theme-admin?ui=tailwind');
+    await page.goto('/theme-admin');
     await expect(page.locator('body')).toHaveAttribute('data-ea-sidebar-width-configured', 'false');
     await expect(page.locator('body')).toHaveAttribute('data-ea-content-width-configured', 'false');
     await expect(page.locator('body')).toHaveClass(/ea-sidebar-width-compact/);
@@ -135,7 +135,7 @@ test('disabled dark appearance overrides stored preference, configured default a
 }) => {
     await page.evaluate(() => localStorage.setItem('ea/colorScheme', 'dark'));
     await page.emulateMedia({ colorScheme: 'dark' });
-    await page.goto('/theme-admin?ui=tailwind&dark=disabled&default=dark');
+    await page.goto('/theme-admin?dark=disabled&default=dark');
     await expect(page.locator('body')).toHaveAttribute('data-ea-dark-scheme-is-enabled', 'false');
     await expect(page.locator('body')).toHaveAttribute('data-theme', 'easyadmin-light');
     await expect(page.locator('body')).toHaveCSS('color-scheme', 'light');

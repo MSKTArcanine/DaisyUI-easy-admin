@@ -1,4 +1,5 @@
 const { execFileSync } = require('node:child_process');
+const { createHash } = require('node:crypto');
 const path = require('node:path');
 const fs = require('node:fs');
 const { expect } = require('@playwright/test');
@@ -33,13 +34,24 @@ async function save(page, action = 'saveAndReturn') {
     await button.click();
 }
 
+async function expectSelectedMarker(item, selected) {
+    await expect(item).toHaveAttribute('aria-checked', String(selected));
+    const marker = item.locator('.dropdown-item-check');
+    await expect(marker).toHaveCount(1);
+    await expect(marker).toHaveCSS('visibility', selected ? 'visible' : 'hidden');
+    expect(await marker.evaluate((element) => element.getBoundingClientRect().width)).toBeGreaterThan(0);
+}
+
 async function captureReference(page, name) {
+    if (process.env.EASYADMIN_CAPTURE_REFERENCES === '1') {
+        throw new Error('Original references are immutable; use EASYADMIN_CAPTURE_FINAL_REFERENCES=1.');
+    }
     if (
-        process.env.EASYADMIN_CAPTURE_REFERENCES !== '1' ||
+        process.env.EASYADMIN_CAPTURE_FINAL_REFERENCES !== '1' ||
         page.context().browser().browserType().name() !== 'chromium'
     )
         return;
-    const directory = path.join(__dirname, 'references');
+    const directory = path.join(__dirname, 'references-final');
     fs.mkdirSync(directory, { recursive: true });
     await page.screenshot({ path: path.join(directory, `${name}.png`), fullPage: true, animations: 'disabled' });
     fs.writeFileSync(
@@ -47,6 +59,10 @@ async function captureReference(page, name) {
         `${JSON.stringify(
             {
                 sourceBaseline: 'bd0fb8448a41f69b3493c5bea84f793e46fe7c21',
+                capturePhase: 'final',
+                assetManifestSha256: createHash('sha256')
+                    .update(fs.readFileSync(path.resolve(__dirname, '../../public/manifest.json')))
+                    .digest('hex'),
                 captureCommit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
                 browser: 'chromium',
                 browserVersion: page.context().browser().version(),
@@ -58,9 +74,9 @@ async function captureReference(page, name) {
                 direction: await page.locator('html').getAttribute('dir'),
             },
             null,
-            2
+            4
         )}\n`
     );
 }
 
-module.exports = { fixture, login, save, captureReference };
+module.exports = { fixture, login, save, captureReference, expectSelectedMarker };

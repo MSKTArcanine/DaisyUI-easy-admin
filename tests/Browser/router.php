@@ -47,13 +47,8 @@ foreach ($staticRoots as $prefix => $directory) {
 
 $kernel = new Kernel();
 $request = Request::createFromGlobals();
-$previewMode = $request->query->get('ui', $request->cookies->get('ea-ui-preview', 'legacy'));
 $cspEnabled = '1' === $request->query->get('csp', $request->cookies->get('ea-ui-csp', '0'));
-$request->attributes->set('browser_ui_preview', 'tailwind' === $previewMode);
 $response = $kernel->handle($request);
-if ($request->query->has('ui') && \in_array($previewMode, ['tailwind', 'legacy'], true)) {
-    $response->headers->setCookie(Cookie::create('ea-ui-preview', $previewMode)->withHttpOnly(true)->withSameSite(Cookie::SAMESITE_LAX));
-}
 if ($request->query->has('csp')) {
     $response->headers->setCookie(Cookie::create('ea-ui-csp', $cspEnabled ? '1' : '0')->withHttpOnly(true)->withSameSite(Cookie::SAMESITE_LAX));
 }

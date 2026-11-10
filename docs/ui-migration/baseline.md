@@ -348,3 +348,39 @@ configuration and adds an isolated extension scan directory. No host installatio
 was modified. The example explicitly requires `ext-pdo_sqlite`/`ext-zip`, so
 ordinary users receive an installation error before creating data if missing.
 The temporary host wrapper is verification tooling, not an application dependency.
+
+
+## Prompt 10 final product baseline
+
+Final product commit: `be15cf210ecf45f55ad0312829124039e7c54b23` on
+`remove_bootstrap_and_perform_final_acceptance`; upstream remains
+`bd0fb8448a41f69b3493c5bea84f793e46fe7c21`. The package name, namespace,
+PHP/Symfony/Doctrine constraints, named asset package, all original manifest
+keys and 13 original entrypoints are preserved. All 190 original Twig files
+and their README retain their paths; neutral aliases replace the two old
+Bootstrap form-theme implementations.
+
+The consuming application archive pins this product SHA and has SHA256
+`95a5859c8f3a8aba6b164145688b6cad8d0918aafacaea203009692e8980e79d`.
+Its 641 archived production files were compared byte-for-byte with that tree.
+Normal Composer installation, copied assets and AssetMapper compilation work
+from a fresh directory outside the checkout with no Node/Yarn on PATH and no
+installed development TailwindBundle. Runtime: PHP 8.3.33, HttpKernel 6.4.50,
+FrameworkBundle 6.4.49, ORM 2.20.14; root runtime remains PHP 8.5.11/Symfony 8.1.11.
+
+Final asset evidence:
+
+| Artifact | Bytes / SHA256 |
+| --- | --- |
+| AssetMapper/Tailwind UI CSS | 248582 / `7d7eafdf446a0e855bcad8d2b79a9d8f8adc9c088fb637e9071fe943a46eabd9` |
+| Distributed `app.css` | 381208 / `545693aaf39adc316151d600a412d1f5ab618235379e2be55c83c68c9a0ec951` |
+| Distributed `app.js` | 190743 / `ae5852c6e5e1d5b7b7de0cb44ce954b0dc39ad8360c3b8c259b7975c70b9f067` |
+| `public/manifest.json` | `0337c2de19140391dce9737af6203ded8d7ae7d761c10990858926f1cfcddc63` |
+
+There are 53 relative manifest targets, 63 distributed files, three original
+CSS entries and 221 unique resolved Webpack module identifiers; none resolves
+Bootstrap. All stylesheet outputs share the declared layer order. Final
+15 PNG/JSON reference pairs live under `tests/Browser/references-final/` and
+match the product/capture/manifest provenance above; the original 15 pairs
+remain unchanged. Full commands/results and explicit limits are in the final
+acceptance report and `reports/stage-10-acceptance.json`.

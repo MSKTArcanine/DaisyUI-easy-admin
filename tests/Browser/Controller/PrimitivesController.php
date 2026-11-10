@@ -12,19 +12,19 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class PrimitivesController extends AbstractController
 {
-    #[Route('/ui-primitives', name: 'browser_ui_primitives')]
-    #[Route('/ui-primitives/override', name: 'browser_ui_primitives_override')]
+    #[Route('/rendering-primitives', name: 'browser_rendering_primitives')]
+    #[Route('/rendering-primitives/override', name: 'browser_rendering_primitives_override')]
     public function index(Request $request): Response
     {
         $group = ActionGroup::new('nested', 'Nested choices')
-            ->addMainAction(Action::new('main', 'Main choice')->linkToUrl('/ui-primitives?selection=main'))
-            ->addAction(Action::new('first', 'Nested first')->linkToUrl('/ui-primitives?selection=first'))
-            ->addAction(Action::new('second', 'Nested second')->linkToUrl('/ui-primitives?selection=second'))->getAsDto();
+            ->addMainAction(Action::new('main', 'Main choice')->linkToUrl('/rendering-primitives?selection=main'))
+            ->addAction(Action::new('first', 'Nested first')->linkToUrl('/rendering-primitives?selection=first'))
+            ->addAction(Action::new('second', 'Nested second')->linkToUrl('/rendering-primitives?selection=second'))->getAsDto();
         foreach ([$group->getMainAction(), ...$group->getActions()] as $action) {
-            $action->setLinkUrl('/ui-primitives?selection='.$action->getName());
+            $action->setLinkUrl('/rendering-primitives?selection='.$action->getName());
         }
 
-        return $this->render('browser_ui_primitives_override' === $request->attributes->get('_route') ? 'browser/ui_primitives_override.html.twig' : 'browser/ui_primitives.html.twig', [
+        return $this->render('browser_rendering_primitives_override' === $request->attributes->get('_route') ? 'browser/rendering_primitives_override.html.twig' : 'browser/rendering_primitives.html.twig', [
             'group' => $group,
             'quoted_attribute' => 'A "quoted" <value>',
             'unsafe_label' => '<img src=x onerror=alert(1)>',
@@ -32,7 +32,7 @@ class PrimitivesController extends AbstractController
         ]);
     }
 
-    #[Route('/ui-primitives/submit', name: 'browser_ui_primitives_submit', methods: ['POST'])]
+    #[Route('/rendering-primitives/submit', name: 'browser_rendering_primitives_submit', methods: ['POST'])]
     public function submit(Request $request): JsonResponse
     {
         if (!$this->isCsrfTokenValid('primitive-form', $request->request->get('token'))) {

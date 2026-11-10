@@ -551,3 +551,65 @@ Unresolved issues and next stage:
   on `remove_bootstrap_and_perform_final_acceptance`: remove obsolete runtime
   code/styles/scaffolding, restore original asset entry names for the new UI,
   repeat all behavior/consumer checks and complete independent review.
+
+
+## Prompt 10 stage report - accepted
+
+Branch: `remove_bootstrap_and_perform_final_acceptance`. Final product/consumer
+archive pins `be15cf210ecf45f55ad0312829124039e7c54b23`; all stage branches
+and intent-prefixed `EAD-N` commits are retained.
+
+Changes made:
+
+- Removed Bootstrap package/lock/runtime/imports/inheritance/widget theme, old
+  theme styles and migration CSS/JS/preview delivery scaffolding. Original
+  `app.css`/`app.js`/field entry names now deliver the new UI. Retained Popper
+  and independent widgets with their licenses; kept neutral legacy template
+  aliases and supported configuration values through the rendering adapter.
+- Preserved all 190 baseline Twig paths and their README, overridable blocks,
+  Symfony form/component interfaces and public PHP configuration. Production
+  PHP changes are only the internal presentation helper and explicit service
+  registration; backend/controller/query/security/persistence APIs are unchanged.
+- Converted test pages to real shipped assets with application-only utilities;
+  removed transient styling modes and retained all behavior assertions. Added
+  delivered-runtime/module/network and root/subdirectory manifest checks.
+- Completed downstream, theme/source-discovery/asset and human/AI upgrade docs;
+  updated shipped skill provenance without increasing its 500-line limit.
+  Independently reviewed and fixed prose layering, scope examples, selected-menu
+  markers and the intermediate packaging omission; refreshed final references.
+
+Validation (full details in [acceptance.md](acceptance.md) and
+`reports/stage-10-acceptance.json`):
+
+| Command/check | Result |
+| --- | --- |
+| `make checks-before-pr` | Passed: 4168 PHP tests, 12562 assertions; CS/PHPStan/Twig/RST checks pass |
+| Final three-engine browser run against actual distribution | Passed: 330/330; zero skipped/unexpected/flaky/retried cases |
+| Fresh outside consumer, actual PHP8.3/Symfony6.4, three engines | Passed: 15/15; all eight extension examples and real request/persistence/validation/CSRF outcomes |
+| Focused review regressions | Prose/asset/dialog/layout/overlay 12/12; marker regressions reproduce old bug then pass 6/6 |
+| Local development/production builds, real watch edit, AssetMapper byte equality | Passed; final UI248582 bytes, appCSS381208 bytes, appJS190743 bytes |
+| Dependency/source/compiled/actual resolved module/runtime/network audits | Passed; 221 resolved modules, zero Bootstrap; 13 original entries, all 53 relative manifest targets and original keys |
+| Normal Composer ZIP/no-Node production installation | Passed; exact 641-file source parity, strict Composer validation, nonsymlink vendor, no Node/Yarn/TailwindBundle |
+| Template/block and production PHP review | All paths/blocks retained; only internal adapter and four service lines added in production PHP |
+| Original/final visual references | Original 15 pairs unchanged; separate final 15 pairs match product pin and current manifest |
+
+Six duplicate styling-mode workflows were consolidated with all assertions
+retained (18 engine executions removed); the new runtime audit adds three, so
+345 becomes 330. Preliminary interrupted runs, fixture corrections and intentional
+red regression proofs are separate from accepted complete runs. No test, failure
+or functionality was suppressed to declare completion.
+
+Unresolved limits:
+
+- Actual PHP8.2 and exact minimum browsers, a separate Symfony7 runtime and
+  PostgreSQL/MySQL/MariaDB execution were not run. Verified runtimes are
+  PHP8.5/Symfony8.1/ORM3 and PHP8.3/Symfony6.4/ORM2, with PHP8.2 Composer resolution.
+- Installed Vich, remote Flysystem browser integration and a rendered profiler
+  panel remain unverified; interfaces and existing source/unit coverage remain.
+- Four new accessible-name translation keys use allowed English placeholders
+  outside English; existing translations are unchanged. Remote CI was not run.
+- One visible frontend advisory documents required native `hidden` precedence.
+
+No known failure remains in accepted checks. No further rendering migration
+stage remains; optional environment/integration/localization follow-up is clearly
+separate from the completed cutover.

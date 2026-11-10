@@ -601,3 +601,52 @@ production installation uses Composer `--no-dev`, `assets:install` and
 `asset-map:compile`. Application CSS/JS remain application-owned mapped assets.
 The eight examples and compatibility boundaries are documented in
 [extending.md](extending.md) and the consumer README.
+
+
+## D19. Complete the cutover through the original asset contract
+
+The final source is `assets/css/ui.css`. The independent maintainer kernel
+compiles it with the pinned TailwindBundle/local Yarn compiler and AssetMapper.
+Encore packages those exact compiled bytes with existing fonts/icons in the
+original `app.css` entry; `app.js` initializes the native CRUD/shell modules.
+The original 13 entry names and three CSS entries remain intact. Popper stays
+because `assets/js/overlays.js` imports it directly; DOMPurify, TomSelect,
+CodeMirror, Trix, DirtyForm, Mark.js, slugify and basicLightbox remain independent
+widgets. Their required licenses are distributed.
+
+`yarn remove bootstrap` removes the single package and its lock entry. The old
+26 theme CSS files, two migration CSS shims, isolated fonts/CRUD/CSS distribution
+entries and client Bootstrap attribute bridges are removed. Two old form-theme
+paths remain as two-line neutral aliases, with rendered switch/state/submission
+coverage through both paths and the main theme. The PHP adapter intentionally
+continues accepting bounded legacy configuration strings/attributes; it does
+not load Bootstrap. Bootstrap JS constructors/events and arbitrary downstream
+utilities/plugins require the documented application migration.
+
+Browser contracts now load the delivered `app.css`/`app.js` rather than another
+rendering build. The fixture compiler emits only application-owned Tailwind
+utilities, with no daisyUI/theme/Preflight duplication. Transitional mode cookies
+and query branches are gone. Six duplicated workflows run once with all their
+behavior assertions and stronger final-style bounds; a new runtime/network audit
+adds three engine cases. Original screenshots are immutable; final references
+carry separate capture/manifest provenance.
+
+Native form/collection events, request methods/fields/tokens, validation, typed
+values, server permissions and persistence remain behavioral contracts. The
+production PHP diff is limited to the internal presentation extension and its
+explicit service registration; no controllers, routing, repositories, factories,
+forms, validators, DTOs or public builders/interfaces were changed.
+
+Independent review found prose reset declarations outranking prose recipes.
+The corrected order is `base.reset`, `base.prose-defaults`, `base.prose`, with
+explicit computed link-color/underline and custom code-font regressions. Generic
+resets in plain `base` would still outrank named sublayers, so the named reset
+layer is deliberate. Theme override examples now use `[data-ea-ui]` for values
+declared directly on the theme root. Human/AI upgrade guides and the shipped
+500-line skill plus its rendering reference describe this final contract.
+
+Final visual review also found selectable menu markers visible for unselected
+items despite correct `aria-checked`/persisted state. Scoped component CSS now
+reserves marker geometry while showing only selected markers. Appearance and
+checkbox/radio menu regressions verify actual computed visibility after state
+changes, alongside their existing keyboard and event assertions.
