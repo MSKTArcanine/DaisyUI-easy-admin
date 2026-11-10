@@ -103,6 +103,14 @@
         min-inline-size: 0;
     }
 
+    [data-ea-ui] .dropdown-item-check {
+        visibility: hidden;
+    }
+
+    [data-ea-ui] [data-ea-menu-item][aria-checked='true'] > .dropdown-item-trailing > .dropdown-item-check {
+        visibility: visible;
+    }
+
     [data-ea-ui] .badge-dot {
         background-color: currentColor;
         block-size: var(--ea-sp-3, calc(var(--spacing) * 1.5));
