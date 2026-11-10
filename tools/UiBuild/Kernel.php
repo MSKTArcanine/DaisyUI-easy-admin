@@ -50,9 +50,8 @@ final class Kernel extends BaseKernel
             'asset_mapper' => [
                 'paths' => [self::repositoryDir().'/assets/css' => 'easyadmin'],
                 'excluded_patterns' => [
-                    '*/assets/css/app.css', '*/assets/css/ui-fonts-preview.css', '*/assets/css/layers.css',
+                    '*/assets/css/app.css', '*/assets/css/layers.css',
                     '*/assets/css/form-type-*.css', '*/assets/css/easyadmin-theme/*', '*/assets/css/ui/*',
-                    '*/assets/css/migration-*.css',
                 ],
                 'server' => false,
                 'public_prefix' => '/assets/',
@@ -63,7 +62,7 @@ final class Kernel extends BaseKernel
         ]);
         $container->extension('symfonycasts_tailwind', [
             'binary' => self::repositoryDir().'/node_modules/.bin/tailwindcss',
-            'input_css' => [self::repositoryDir().'/assets/css/ui-preview.css'],
+            'input_css' => [self::repositoryDir().'/assets/css/ui.css'],
         ]);
     }
 

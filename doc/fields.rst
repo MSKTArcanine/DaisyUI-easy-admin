@@ -352,7 +352,7 @@ related items in a tab) with the ``setBadge()`` method::
     // a static value with the default 'secondary' style
     FormField::addTab('Contact')->setBadge('New');
 
-    // a value with one of the predefined Bootstrap styles: 'primary', 'secondary',
+    // a value with one of the predefined semantic styles: 'primary', 'secondary',
     // 'success', 'danger', 'warning', 'info', 'light', 'dark'
     FormField::addTab('Invoices')->setBadge(7, 'warning');
 
@@ -367,7 +367,7 @@ The arguments of the ``setBadge()`` method are:
   entity instance and must return the value to display. A ``null``, ``false`` or
   empty string value hides the badge (the value ``0`` is displayed);
 * ``$style``: (type: ``string``, default: ``'secondary'``) one of the predefined
-  Bootstrap styles listed above; any other value is applied "as is" to the ``style``
+  semantic styles listed above; any other value is applied "as is" to the ``style``
   HTML attribute of the badge (e.g. ``'background-color: purple;'``);
 * ``$htmlAttributes``: (type: ``array``) an optional list of HTML attributes to add
   to the badge element.
@@ -418,10 +418,12 @@ design of this tab:
 Form Columns
 ~~~~~~~~~~~~
 
-Before using this option, you must be familiar with the `Bootstrap grid system`_,
-which divides each row into 12 same-width columns, and the `Bootstrap breakpoints`_,
-which are ``xs`` (device width < 576px), ``sm`` (>= 576px), ``md`` (>= 768px),
+The layout divides each row into 12 equal-width columns. The rendering
+adapter retains the legacy column inputs and their breakpoint widths:
+``xs`` (below 576px), ``sm`` (>= 576px), ``md`` (>= 768px),
 ``lg`` (>= 992px), ``xl`` (>= 1,200px) and ``xxl`` (>= 1,400px).
+These widths differ from Tailwind's breakpoints with the same names.
+Bootstrap CSS is not loaded.
 
 Form columns allow you to break down a complex form into two or more columns of
 fields. In addition to increasing the density of information, columns allow you to
@@ -432,8 +434,8 @@ form looks like:
    :alt: EasyAdmin form that uses three columns to group fields
 
 The following is a simple example that divides a form in two columns (the first
-one spanning 8 of the available 12 Bootstrap columns and the second column
-spanning the other 4 Bootstrap columns)::
+one spanning 8 of the available 12 columns and the second column
+spanning the other 4 columns)::
 
     use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 
@@ -453,8 +455,8 @@ spanning the other 4 Bootstrap columns)::
 The arguments of the ``addColumn()`` method are:
 
 * ``$cols``: (type: ``int|string``, default: ``'col'``) the width of the column
-  defined as any value compatible with the `Bootstrap grid system`_ (e.g. ``'col-6'``,
-  ``'col-md-6 col-xl-4'``, etc.). Integer values are transformed like this:
+  expressed with the supported legacy column tokens (e.g. ``'col-6'`` or
+  ``'col-md-6 col-xl-4'``). Integer values are transformed like this:
   N -> 'col-md-N' (e.g. ``8`` is transformed to ``col-md-8``). The default
   ``'col'`` value makes all the columns share the available width equally;
 * ``$label``: (type: ``TranslatableInterface|string|false|null``) an optional title
@@ -477,7 +479,7 @@ The arguments of the ``addColumn()`` method are:
     so you don't need to take any additional steps to use FontAwesome icons. Alternatively,
     you can :ref:`use your own icon sets <icon-customization>` instead of FontAwesome.
 
-Thanks to Bootstrap responsive classes, you can have columns of different sizes,
+With the retained responsive column inputs, you can have different widths,
 or even no columns at all, depending on the browser window size. In the following
 example, breakpoints below ``lg`` don't display columns. The two columns don't
 add up to ``12``. This is allowed, and it creates columns narrower than the full
@@ -654,8 +656,8 @@ design of this fieldset:
 Form Rows
 ~~~~~~~~~
 
-This option also relies on the `Bootstrap grid system`_ and the `Bootstrap breakpoints`_
-described in the :ref:`form columns <form-columns>` section.
+This option uses the twelve-column adapter and exact breakpoint widths
+described in :ref:`form columns <form-columns>`.
 
 Form rows allow you to display two or more fields on the same row. This is what it
 looks like:
@@ -706,11 +708,19 @@ improve the rendering of those fields.
 
 .. tip::
 
-    You can also use the CSS classes related to reordering and offsetting columns::
+    Responsive offsets retain their meaning::
 
-        yield DateTimeField::new('endsAt')->setColumns('col-sm-6 col-xxl-3 offset-lg-1 order-3');
+        yield DateTimeField::new('endsAt')
+            ->setColumns('col-sm-6 col-xxl-3 offset-lg-1');
 
-Because of how Bootstrap grid works, when you configure field columns manually,
+    Supported inputs include fixed widths, equal-width and auto columns,
+    offsets and the row breaks emitted by ``FormField::addRow()``. The
+    adapter preserves unrelated custom classes. Bootstrap ordering, gutter
+    and display utilities are not recreated; replace them with complete
+    Tailwind utilities or application CSS instead of relying on an old
+    ``order-*`` or ``g-*`` token.
+
+When you configure field columns manually,
 each row will contain as many fields as possible. If one field takes 4 columns
 and the next one takes 3 columns, the row still has ``12 - 4 - 3 = 5`` columns
 to render other fields. If the next field takes more than 5 columns, it renders
@@ -1343,8 +1353,6 @@ The built-in ``CommonPreConfigurator`` runs first (priority ``9999``) and
 .. _`PHP generators`: https://www.php.net/manual/en/language.generators.overview.php
 .. _`Twig templating features`: https://twig.symfony.com/doc/3.x/
 .. _`Symfony Form themes`: https://symfony.com/doc/current/form/form_themes.html
-.. _`Bootstrap grid system`: https://getbootstrap.com/docs/5.0/layout/grid/
-.. _`Bootstrap breakpoints`: https://getbootstrap.com/docs/5.0/layout/breakpoints/
 .. _`Doctrine DBAL Type`: https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html
 .. _`Custom Mapping Types`: https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html#custom-mapping-types
 .. _`Custom Form Field Types`: https://symfony.com/doc/current/form/create_custom_field_type.html

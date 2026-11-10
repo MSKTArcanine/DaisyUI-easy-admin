@@ -73,12 +73,10 @@
         {
             "includes": [
                 "assets/css/app.css",
-                "assets/css/ui-preview.css",
-                "assets/css/ui-fonts-preview.css",
+                "assets/css/ui.css",
                 "assets/css/ui/**",
                 "assets/css/form-type-code-editor.css",
                 "assets/css/form-type-text-editor.css",
-                "assets/css/migration-*.css",
                 "tests/Browser/assets/**",
                 "examples/consumer/assets/**/*.css",
                 "examples/consumer/tailwind/**/*.css"

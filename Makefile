@@ -59,15 +59,17 @@ build-ui-dev: ## Build development Tailwind CSS through the independent AssetMap
 build-ui: ## Build production Tailwind CSS through the independent AssetMapper tool
 	php tools/UiBuild/build.php
 build-ui-assets: build-ui ## Verify the independently compiled production UI stylesheet
-	node tests/build/check-ui-css.js var/ui-build/ui-preview.css
+	node tests/build/check-ui-css.js var/ui-build/ui.css
 build-browser-assets: build-assets ## Build the isolated browser fixture assets
 	EASYADMIN_BROWSER_ENV=prod php tests/Browser/console.php cache:clear
 	EASYADMIN_BROWSER_ENV=prod php tests/Browser/console.php tailwind:build --minify
 	EASYADMIN_BROWSER_ENV=prod php tests/Browser/console.php asset-map:compile
-	node tests/build/check-ui-css.js tests/Browser/var/tailwind/ui-preview.built.css
+	node tests/build/check-ui-css.js var/ui-build/ui.css
 watch-ui: ## Rebuild Tailwind on source changes alongside yarn watch or yarn dev-server
 	php tools/UiBuild/console.php tailwind:build --watch
 check-ui-css: build-ui-assets ## Verify production classes, layers and stylesheet isolation
+check-runtime: ## Audit dependency/source/distribution contracts (optional STATS=webpack.json)
+	node tests/build/audit-runtime.js $(STATS)
 
 checks-before-pr: linter-cs-fixer linter-phpstan linter-docs linter-twig tests ## Runs tests and linters which are also run on PRs
 

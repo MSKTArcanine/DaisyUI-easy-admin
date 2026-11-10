@@ -3,7 +3,7 @@
 
 @import '~trix/dist/trix.css' layer(vendor.trix);
 
-@layer ea.components {
+@layer components {
     .ea-text-editor-wrapper {
         background: var(--form-control-bg, var(--color-base-100, #fff));
         border: var(--border-width, 1px) solid var(--form-input-border-color, var(--color-base-300, #d4d4d4));

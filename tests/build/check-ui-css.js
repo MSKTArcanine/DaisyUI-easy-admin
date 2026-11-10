@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const postcss = require('postcss');
 
-const filename = process.argv[2] || 'var/ui-build/ui-preview.css';
+const filename = process.argv[2] || 'var/ui-build/ui.css';
 const css = fs.readFileSync(path.resolve(filename), 'utf8');
 const stylesheet = postcss.parse(css, { from: filename });
 const selectors = [];

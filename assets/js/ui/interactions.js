@@ -5,10 +5,7 @@ const MENU = '[data-ea-toggle="dropdown"]';
 const TAB = '[data-ea-toggle="tab"][id^="tablist-"]';
 const all = (root, selector) => [...(root.matches?.(selector) ? [root] : []), ...root.querySelectorAll(selector)];
 const targetOf = (element) => {
-    const selector =
-        element.getAttribute('data-ea-target') ??
-        element.getAttribute('data-bs-target') ??
-        element.getAttribute('href');
+    const selector = element.getAttribute('data-ea-target') ?? element.getAttribute('href');
     if (!selector || selector === '#') {
         return null;
     }
@@ -52,25 +49,6 @@ function stateFor(document) {
 export function initEasyAdminUI(root = document) {
     const document = root.ownerDocument ?? root;
     const state = stateFor(document);
-    for (const element of all(root, '[data-bs-toggle], [data-bs-dismiss]')) {
-        const type = element.getAttribute('data-bs-toggle');
-        if (
-            !(
-                (type === 'modal' && targetOf(element)?.matches('dialog[data-ea-dialog]')) ||
-                (type === 'dropdown' && menuFor(element)) ||
-                (element.getAttribute('data-bs-dismiss') === 'modal' && element.closest('dialog[data-ea-dialog]'))
-            )
-        ) {
-            continue;
-        }
-        for (const name of element.getAttributeNames().filter((name) => name.startsWith('data-bs-'))) {
-            const replacement = name.replace('data-bs-', 'data-ea-');
-            if (!element.hasAttribute(replacement)) {
-                element.setAttribute(replacement, element.getAttribute(name));
-            }
-            element.removeAttribute(name);
-        }
-    }
     for (const menu of all(root, '[data-ea-menu]')) {
         if (!state.initialized.has(menu)) {
             state.initialized.add(menu);

@@ -5,6 +5,43 @@ This guide is for humans. If you are an AI agent, read [UPGRADE-AI.md](UPGRADE-A
 
 ## EasyAdmin 5.10.0
 
+### Tailwind Rendering in This Fork
+
+This fork uses locally compiled Tailwind CSS 4 and daisyUI 5 with Twig and
+Symfony Forms. The package name, public PHP configuration, template namespace,
+asset package and existing `app.css`/`app.js`/field entry names remain unchanged.
+Install the fork through your Composer repository and run the normal
+`assets:install` command. Ordinary applications need no Node build; applications
+that add Tailwind classes absent from the bundle need their own compiled CSS.
+
+Remove application Bootstrap styles, scripts, Sass imports and Bootstrap widget
+themes. Migrate Bootstrap-specific utility layouts and custom template markup
+to the existing Twig components, daisyUI components, Tailwind utilities or
+application CSS. Numeric columns and supported `col-*`/`offset-*` configuration
+still use their original pixel breakpoints through the rendering adapter;
+arbitrary Bootstrap utilities and plugins are outside that adapter.
+
+Replace `window.bootstrap`, Bootstrap constructors and `*.bs.*` listeners.
+Use `ea:Modal`, `ea:ActionMenu`, `ea:Tabs` and native `data-ea-*` controls;
+native UI lifecycle events use `ea.modal.*`, `ea.menu.*`, `ea.tab.*` and
+`ea.collapse.*`. Existing EasyAdmin form and collection events retain their
+contracts. Initialize application-inserted content with
+`window.EasyAdminApp.init(container)` after loading its configured field entries.
+
+Extend `@EasyAdmin/crud/form_theme.html.twig` for custom form blocks. The old
+bundle `bootstrap_5_layout.html.twig` and `bootstrap_base_layout.html.twig` paths
+are neutral compatibility aliases; Bootstrap markup in downstream blocks still
+requires migration. Keep form names, attributes, error associations and hidden
+fields when overriding blocks.
+
+Replace `--bs-*` styling and imports of deleted `assets/css/easyadmin-theme/`
+stylesheets with semantic daisyUI roles or the preserved EasyAdmin tokens.
+The theme source is `assets/css/ui.css`, tokens are in `ui/tokens.css`, and
+layers are `theme`, `vendor`, `base`, `components`, `utilities`. Configure
+application CSS after bundle CSS; unlayered overrides remain supported.
+See [the extension guide](docs/ui-migration/extending.md) and
+[the independently installed application](examples/consumer/README.md).
+
 ### Flags Are Rounded and Outlined Everywhere
 
 The `<twig:ea:Flag>` component now renders flags with rounded corners and a

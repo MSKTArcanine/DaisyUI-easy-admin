@@ -192,7 +192,7 @@ class CrudApp {
         if (!filterButton) {
             return;
         }
-        const selector = filterButton.getAttribute('data-ea-target') ?? filterButton.getAttribute('data-bs-target');
+        const selector = filterButton.getAttribute('data-ea-target');
         const filterModal = selector ? document.querySelector(selector) : null;
         const filtersUrl = sanitizeUrl(
             filterButton.getAttribute('data-href') ?? filterButton.getAttribute('href'),
@@ -668,7 +668,6 @@ class CrudApp {
             '.dropdown',
             '.actions',
             '[data-ea-toggle]',
-            '[data-bs-toggle]',
             '.btn',
             '.modal',
         ];

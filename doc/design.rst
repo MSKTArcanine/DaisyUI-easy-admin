@@ -344,21 +344,20 @@ Variable                        What it changes
 ``--font-family-monospace``     The font of code
 ``--text-color``                The color of the text
 ``--text-muted``                The color of secondary text
-``--link-color``                The color of the links
-``--table-cell-border-color``   The lines between the rows of tables
-``--form-input-border-color``   The border of form fields
-``--table-hover-cell-bg``       The background of the table row under the pointer
-``--form-control-height``       The height of form fields
+``--color-primary``             The primary semantic color
+``--color-base-300``            Borders and table separators
+``--color-error``               Invalid controls and error messages
+``--color-base-200``            Secondary surfaces
+``--ea-control-height``         The bounded height of form controls
 ==============================  =======================================================
 
-To find the rest, inspect an element with the developer tools of your browser,
-or read these two files of the
-``vendor/easycorp/easyadmin-bundle/assets/css/easyadmin-theme/`` directory:
+To find the rest, inspect an element with your browser's developer tools.
+The source files are under
+``vendor/easycorp/easyadmin-bundle/assets/css/``:
 
-* ``design-tokens.css`` defines the few global values that the rest of the
-  design derives from, such as ``--ea-spacing``;
-* ``variables-theme.css`` defines the hundreds of specific values, such as
-  ``--sidebar-bg``.
+* ``ui/tokens.css`` defines the shared values, including ``--ea-spacing``;
+* ``ui.css`` defines the daisyUI light and dark semantic roles;
+* ``ui/`` contains scoped layout, form, field and component styles.
 
 Prefer the theme for the primary color, the radius, the spacing and the gray
 colors. It does things that CSS can't do: for example, ``primaryColor()`` also
@@ -367,11 +366,13 @@ icons.
 
 .. note::
 
-    Some Bootstrap components are styled by assigning EasyAdmin variables to
-    Bootstrap's own ``--bs-*`` variables (at the end of
-    ``variables-theme.css``). If a Bootstrap style doesn't change, redefine
-    its ``--bs-*`` variable in the ``body`` selector (not in ``:root``),
-    because ``<body>`` declares them in both color schemes.
+    The rendered UI uses Tailwind CSS and daisyUI. Bootstrap ``--bs-*``
+    variables no longer style it. Override semantic roles on
+    ``[data-ea-ui]`` and use
+    ``[data-ea-ui][data-theme='easyadmin-dark']`` for dark-only values.
+    Configure both the background role and its corresponding content role
+    when changing a color. The public ``Theme`` PHP configuration remains
+    available.
 
 .. _design-custom-css:
 
@@ -757,19 +758,19 @@ of the templates that extend ``@EasyAdmin/page/content.html.twig``:
   styles. Make them extend ``@EasyAdmin/page/content.html.twig``, which has
   the same blocks;
 * Elsewhere, add the ``ea-prose`` CSS class to the element that wraps the content;
-* Inside the :ref:`Modal component <components-modal>`, add the ``ea-prose``
-  class to an element of its ``body`` block, not to the ``bodyClass`` option.
+* Inside the :ref:`Modal component <components-modal>`, set
+  ``bodyClass="ea-prose"`` or wrap the content in an ``ea-prose`` element.
 
 Not everything inside those elements gets these styles:
 
 * Add the ``ea-not-prose`` CSS class (or the ``data-ea-not-prose`` attribute)
   to exclude part of the content. You can't enable prose again inside that
   element;
-* Bootstrap and EasyAdmin components (buttons, cards, tables with the
-  ``table`` class, etc.), Bootstrap typography classes (``h1``, ``display-*``,
-  ``list-unstyled``, etc.) and forms keep their own styles. Other CSS classes
-  don't disable prose: ``<p class="text-center">`` is still a styled
-  paragraph;
+* EasyAdmin and daisyUI components (buttons, cards, tables with the
+  ``table`` class, menus, etc.) and forms keep their own styles. Other CSS
+  classes don't disable prose: ``<p class="text-center">`` is still a
+  styled paragraph. Legacy Bootstrap typography classes require your own
+  application styles;
 * Inside an ``ea-prose`` element, components without their own text size
   (alerts, cards, tables, etc.) inherit its font size and line height. To use
   the default typography of the backend, wrap them in an ``ea-not-prose``
@@ -811,15 +812,15 @@ only in part of a page (e.g. ``<div class="ea-prose release-notes">``):
         --ea-prose-line-height: 1.5;
     }
 
-The colors use the ``--prose-*`` variables of ``variables-theme.css`` (e.g.
-``--prose-link-color``, ``--prose-code-color``). Links are blue here to make
-them visible in long texts, and they use the text color in the rest of the
-interface.
+The document colors use the ``--prose-*`` variables of ``ui/prose.css``
+(e.g. ``--prose-link-color`` and ``--prose-code-color``), derived from the
+semantic theme roles. Override them on ``[data-ea-ui]`` or on a prose
+container. Links use the configured primary color.
 
-Two exceptions: ``--prose-color`` only applies to elements with the
-``ea-prose`` class, and ``--heading-font-weight``,
-``--heading-letter-spacing`` and ``--link-font-weight`` also change the rest
-of the backend.
+``--prose-color`` applies to explicit ``ea-prose`` containers.
+``--heading-font-weight``, ``--heading-letter-spacing`` and
+``--link-font-weight`` customize document headings and links. Use the
+shared theme tokens or scoped component CSS to change the interface.
 
 .. _using-easyadmin-twig-components:
 
@@ -1358,8 +1359,9 @@ The path of ``addCssFile()`` is relative to the ``assets/`` directory if you
 use AssetMapper (e.g. ``styles/admin.css``) and to the ``public/`` directory
 otherwise. Your browser may also be using an old version of the file.
 
-**My CSS rule doesn't win.** The element has a Bootstrap utility class that
-uses ``!important``. See :ref:`CSS Cascade Layers <design-css-layers>`.
+**My CSS rule doesn't win.** Check the cascade layers and interaction state.
+Native ``hidden`` and a few overlay state rules use ``!important`` to keep
+closed content inaccessible. See :ref:`CSS Cascade Layers <design-css-layers>`.
 
 **My CSS variable only works in the light color scheme.** You used the
 ``:root`` selector. Use ``:root, .ea-dark-scheme``.
@@ -1382,40 +1384,47 @@ Reference
 CSS Cascade Layers
 ~~~~~~~~~~~~~~~~~~
 
-All backend styles are assigned to `CSS cascade layers`_, which are declared
-in this order in ``assets/css/layers.css``:
+All backend styles use `CSS cascade layers`_, declared in the same order
+by ``assets/css/layers.css`` and the Tailwind source ``assets/css/ui.css``:
 
-* ``ea-overrides``: rules that must beat third-party styles;
-* ``ea-defaults``: fallback values that lose to any other style;
-* ``vendor``: third-party styles (Bootstrap, FontAwesome, etc.);
-* ``ea``: EasyAdmin styles, divided into these sublayers:
+* ``theme``: design tokens, semantic roles and font faces;
+* ``vendor``: independent FontAwesome, CodeMirror and Trix styles;
+* ``base``: scoped element defaults and the ``base.prose-defaults`` and
+  ``base.prose`` document typography sublayers;
+* ``components``: EasyAdmin layout, form and widget integrations;
+* ``utilities``: Tailwind utilities and daisyUI's internal component layers.
 
-  * ``ea.tokens``: CSS variables;
-  * ``ea.base``: generic styles of HTML elements;
-  * ``ea.prose``: typography of HTML content in custom pages;
-  * ``ea.components``: styles of components (buttons, alerts, forms, etc.);
-  * ``ea.utilities``: utility classes.
+Unlayered application CSS overrides ordinary layered bundle declarations.
+Native ``hidden`` and a small number of interaction state rules use
+``!important``. Keep those states intact instead of making closed content
+visible with a competing rule.
 
-``ea-overrides`` comes first, and not last, because the layer order is inverted
-for ``!important`` declarations.
+Building the Source Assets
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-CSS outside any layer always wins over CSS in a layer, so your rules override
-the backend styles, no matter their specificity or loading order. The only
-exception are the ``!important`` rules of the backend, such as the Bootstrap
-utility classes (``d-none``, ``text-center``, etc.), which you can't override
-without removing the class from the HTML.
+EasyAdmin ships precompiled CSS, JavaScript, fonts and licenses. Ordinary
+applications only run ``php bin/console assets:install public``; Node and a
+frontend build are unnecessary. The bundle retains its Symfony Asset package,
+which reads the hashed file names from ``public/manifest.json``.
 
-Using the Source Assets with Webpack
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The maintainer build first compiles ``assets/css/ui.css`` locally with
+Tailwind CSS 4, daisyUI 5, TailwindBundle and AssetMapper. Encore then packages
+that output with the independent fonts, icons and existing JavaScript entry
+points. ``app.css``, ``app.js`` and the field entry names keep their existing
+installation contract. The source ``assets/css/app.css`` imports generated
+build output and is not an application-level Tailwind entry point.
 
-EasyAdmin provides both the source files and the compiled versions of all its
-CSS and JavaScript assets, so you don't have to install anything to use them.
-If you want total control over the backend styles, you can integrate the
-source files of the ``assets/`` directory in your application with `Webpack`_
-(via Symfony's `Webpack Encore`_). EasyAdmin builds its assets with Webpack
-Encore and loads them with its own Symfony Asset package, which uses the
-hashed file names of ``public/manifest.json``, not the asset configuration of
-your application.
+Use ``make build-assets`` for production and ``yarn dev`` for development.
+For live changes, run ``yarn watch`` or ``yarn dev-server`` alongside
+``make watch-ui``. The independent build application lives in
+``tools/UiBuild/`` and does not boot a development database or test kernel.
+
+Application templates can use classes already present in the shipped CSS.
+For additional utilities, compile a separate application-owned Tailwind 4
+stylesheet and deliver it through AssetMapper. Discover complete class names
+with explicit ``@source`` paths; use a bounded ``@source inline(...)`` list
+for finite dynamic mappings. Adding a class in Twig does not compile CSS in
+the browser. No production CDN or browser compiler is needed.
 
 .. _`Inter`: https://rsms.me/inter/
 .. _`JetBrains Mono`: https://www.jetbrains.com/lp/mono/

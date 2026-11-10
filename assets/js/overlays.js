@@ -68,34 +68,6 @@ export function initOverlays(root = document) {
     const document = root.ownerDocument ?? root;
     document[KEY] ??= { entries: new Map(), sequence: 0 };
     const state = document[KEY];
-    const legacySelector = '[data-bs-toggle="tooltip"],[data-bs-toggle="popover"]';
-    for (const trigger of [
-        ...(root.matches?.(legacySelector) ? [root] : []),
-        ...root.querySelectorAll(legacySelector),
-    ]) {
-        for (const name of [
-            'toggle',
-            'title',
-            'original-title',
-            'content',
-            'html',
-            'placement',
-            'offset',
-            'trigger',
-            'delay',
-            'custom-class',
-            'animation',
-            'container',
-            'boundary',
-        ]) {
-            if (trigger.hasAttribute(`data-bs-${name}`)) {
-                if (!trigger.hasAttribute(`data-ea-${name}`)) {
-                    trigger.setAttribute(`data-ea-${name}`, trigger.getAttribute(`data-bs-${name}`));
-                }
-                trigger.removeAttribute(`data-bs-${name}`);
-            }
-        }
-    }
     const triggers = [...(root.matches?.(SELECTOR) ? [root] : []), ...root.querySelectorAll(SELECTOR)];
     for (const trigger of triggers) {
         if (state.entries.has(trigger)) {

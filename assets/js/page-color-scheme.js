@@ -18,7 +18,6 @@ const applyColorScheme = () => {
     document.body.classList.toggle('ea-dark-scheme', resolved === 'dark');
     document.body.style.colorScheme = resolved;
     document.body.setAttribute('data-theme', `easyadmin-${resolved}`);
-    document.body.setAttribute('data-bs-theme', resolved);
     for (const option of document.querySelectorAll('[data-ea-color-scheme]')) {
         const checked = option.getAttribute('data-ea-color-scheme') === selected;
         option.setAttribute('aria-checked', String(checked));

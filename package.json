@@ -14,7 +14,6 @@
     "@symfony/webpack-encore": "^5.0.1",
     "@tailwindcss/cli": "4.3.3",
     "basiclightbox": "^5.0.4",
-    "bootstrap": "^5.3.8",
     "codemirror": "^5.65.2",
     "core-js": "^3.38.0",
     "daisyui": "5.7.50",

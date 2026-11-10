@@ -37,6 +37,7 @@ Files next to this one:
   attribute, controller and test classes, generated from the source. If a method is not listed there, it does not exist.
 - [references/patterns.md](references/patterns.md): copy-ready recipes for the most common tasks.
 - [references/traps.md](references/traps.md): method names that look right and are wrong.
+- [references/rendering.md](references/rendering.md): Twig, form themes, assets, native UI and styling in this fork.
 
 ## Mental model
 
@@ -106,7 +107,7 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 - Link CRUD controllers with
   `MenuItem::linkTo(ProductCrudController::class, 'Products', 'fa fa-box')`:
   controller class first, then label, then icon. `MenuItem::linkToCrud()` was
-  removed in 5.0. <!-- src/Config/MenuItem.php::linkTo; UPGRADE.md:274-290 -->
+  removed in 5.0. <!-- src/Config/MenuItem.php::linkTo; UPGRADE.md:311-327 -->
 - The other factories put the label first:
   `MenuItem::linkToRoute('Reports', 'fa fa-chart-bar', 'app_reports', ['year' => 2026])`,
   `MenuItem::linkToUrl('Website', 'fa fa-globe', 'https://example.com')`,
@@ -136,7 +137,7 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 <!-- rules:start -->
 - Declare `public static function getEntityFqcn(): string` (the base class
   does not) and add `/** @extends AbstractCrudController<Product> */` above
-  the class, otherwise PHPStan reports a missing generic type. <!-- src/Contracts/Controller/CrudControllerInterface.php::getEntityFqcn; UPGRADE.md:483-500 -->
+  the class, otherwise PHPStan reports a missing generic type. <!-- src/Contracts/Controller/CrudControllerInterface.php::getEntityFqcn; UPGRADE.md:520-537 -->
 - Overrides must keep the interface signatures: `createEntity(string $entityFqcn): ?object`
   (overrides may keep `: object`),
   `persistEntity(EntityManagerInterface $entityManager, object $entityInstance): void`,
@@ -198,7 +199,7 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 - Form layout uses the static methods `FormField::addTab('Details')`,
   `FormField::addFieldset('Pricing')`, `FormField::addColumn(6)` and
   `FormField::addRow()`. `FormField::addPanel()` was removed in 5.0. The first
-  argument of `addColumn()` is the column width, not a label. <!-- src/Field/FormField.php::addFieldset; src/Field/FormField.php::addColumn; UPGRADE.md:398-410 -->
+  argument of `addColumn()` is the column width, not a label. <!-- src/Field/FormField.php::addFieldset; src/Field/FormField.php::addColumn; UPGRADE.md:435-447 -->
 - `ChoiceField`: `setChoices(['Draft' => 'draft'])`,
   `renderAsBadges(['draft' => 'warning', 'published' => 'success'])` (types:
   success, warning, danger, info, primary, secondary, light, dark),
@@ -274,7 +275,7 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
   `asPrimaryAction()`, `asSuccessAction()`, `asWarningAction()`,
   `asDangerAction()`, `asInfoAction()`, `asTextLink()`, and
   `askConfirmation()` for a confirmation modal. Groups use `ActionGroup::new()`
-  with `asPrimaryActionGroup()` and friends. <!-- src/Config/Action.php::renderAsForm; src/Config/Action.php::askConfirmation; src/Config/ActionGroup.php::asPrimaryActionGroup; UPGRADE.md:361-377 -->
+  with `asPrimaryActionGroup()` and friends. <!-- src/Config/Action.php::renderAsForm; src/Config/Action.php::askConfirmation; src/Config/ActionGroup.php::asPrimaryActionGroup; UPGRADE.md:398-414 -->
 - `reorder()` disables automatic ordering; `setCssClass()` drops the default
   `.btn-*` and `.action-<name>` classes (and with them the selectors used by the
   test helpers), `addCssClass()` keeps them; `displayIf()` on a global action
@@ -346,16 +347,12 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 
 <!-- rules:start -->
 - The `ea` Twig global was removed; call the `ea()` function, which returns
-  `null` outside the admin. `ea_url()` returns the URL generator. <!-- src/Twig/EasyAdminTwigExtension.php::getFunctions; UPGRADE.md:136-155 -->
+  `null` outside the admin. `ea_url()` returns the URL generator. <!-- src/Twig/EasyAdminTwigExtension.php::getFunctions; UPGRADE.md:173-192 -->
 - Override page templates with `Crud::overrideTemplate('crud/index', 'admin/product/index.html.twig')`
   and field templates with `->setTemplatePath()`. The `new` and `edit` pages render form fields
-  through Symfony form themes (`Crud::addFormTheme()`), not through field templates. <!-- src/Config/Crud.php::overrideTemplate; src/Config/Crud.php::addFormTheme; src/Field/FieldTrait.php::setTemplatePath; doc/fields.rst:1066-1069 -->
-- Backend CSS lives in cascade layers (`vendor`, `ea`, `ea-overrides`), so
-  unlayered custom CSS wins without `!important`. Override design tokens on
-  `:root, .ea-dark-scheme`, not only on `:root`. <!-- UPGRADE.md:197-221; doc/design.rst:314-316; doc/design.rst:1400-1404 -->
-- Custom pages extend `@EasyAdmin/page/content.html.twig`, not `@EasyAdmin/layout.html.twig`: only the former styles the
-  HTML of the `main` block (headings, lists, tables, blue links). Elsewhere, add the `ea-prose` class (`ea-not-prose` opts out).
-  Don't write CSS for those elements: unlayered CSS beats these styles. <!-- templates/page/content.html.twig; doc/design.rst:718-821 -->
+  through Symfony form themes (`Crud::addFormTheme()`), not through field templates. <!-- src/Config/Crud.php::overrideTemplate; src/Config/Crud.php::addFormTheme; src/Field/FieldTrait.php::setTemplatePath -->
+- Rendering uses Tailwind 4/daisyUI 5, neutral Symfony form themes and native `data-ea-*` controls.
+  Follow [the rendering reference](references/rendering.md) for layers, tokens, prose and Bootstrap integration migration. <!-- assets/css/layers.css; assets/css/ui.css; assets/js/ui/interactions.js; UPGRADE.md:8-44 -->
 - Use the shipped Twig components in custom templates: `<twig:ea:Button>`,
   `<twig:ea:Badge>`, `<twig:ea:Alert>`, `<twig:ea:Icon>`, `<twig:ea:Modal>`,
   `<twig:ea:Pagination>`, `<twig:ea:Switch>`, `<twig:ea:Tabs>`,
@@ -393,7 +390,7 @@ described in `vendor/easycorp/easyadmin-bundle/UPGRADE.md`.
 
 `linkToCrudAction()` itself still exists: 4.x code that uses it compiles and
 fails at render time until the target method gets `#[AdminRoute]`.
-<!-- UPGRADE.md:136-155; UPGRADE.md:247-259; UPGRADE.md:245-500 -->
+<!-- UPGRADE.md:173-192; UPGRADE.md:284-296; UPGRADE.md:282-537; UPGRADE.md:8-44 -->
 
 ## If you see this error, do this
 
@@ -492,6 +489,9 @@ source_contains: src/Controller/AbstractCrudController.php | isCsrfTokenValid(Bo
 source_contains: src/Orm/EntityRepository.php | ->from($entityDto->getFqcn(), 'entity')
 source_contains: src/Config/Actions.php | $this->dto->removeAction($pageName, Action::BATCH_DELETE);
 source_contains: templates/crud/includes/_action_confirmation_modal.html.twig | csrf_token('ea-delete')
+source_contains: assets/css/layers.css | @layer theme, vendor, base, components, utilities;
+source_contains: assets/js/ui/interactions.js | dialog.showModal();
+source_contains: assets/css/ui/prose.css | .ea-not-prose
 source_contains: templates/page/content.html.twig | {% block body_class 'page-content' %}
 source_contains: doc/security.rst | is_granted($permission, $item)
 source_contains: doc/actions.rst | controller_resolver.auto_mapping

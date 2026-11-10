@@ -1,17 +1,3 @@
-/* The cascade layer order used by all EasyAdmin styles. This statement must be
-   the first CSS emitted in every compiled file (layer order is set by the first
-   occurrence of each layer name), so this file must be the first import of every
-   entry point; a plain '@layer' statement written in the entry file itself would
-   be emitted after the imported files by the bundler.
-
-   The 'ea-overrides' layer is declared first because for '!important'
-   declarations the layer order is inverted; see easyadmin-theme/vendor-overrides.css
-
-   The 'ea-defaults' layer holds fallback values that must lose to every other
-   style, including third-party ones; see easyadmin-theme/prose-defaults.css
-
-   'ea.prose' (typography of HTML content) sits between 'ea.base' and
-   'ea.components': it must beat the generic element styles of base.css (e.g.
-   'a', 'code') but lose to any component */
-@layer ea-overrides, ea-defaults, vendor, ea;
-@layer ea.tokens, ea.base, ea.prose, ea.components, ea.utilities;
+/* every distributed stylesheet declares the same order, including standalone
+   editor entries; unlayered application styles override ordinary bundle rules */
+@layer theme, vendor, base, components, utilities;

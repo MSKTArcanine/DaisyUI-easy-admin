@@ -1,5 +1,0 @@
-/* Independent font/icon delivery for the isolated shell preview; remove at cutover. */
-@import '~@fortawesome/fontawesome-free/css/all.css' layer(theme);
-@import '~@fortawesome/fontawesome-free/css/v4-shims.css' layer(theme);
-@import '~@fortawesome/fontawesome-free/css/v5-font-face.css' layer(theme);
-@import './easyadmin-theme/fonts.css' layer(theme);

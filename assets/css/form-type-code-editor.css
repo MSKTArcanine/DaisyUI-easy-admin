@@ -3,7 +3,7 @@
 
 @import '~codemirror/lib/codemirror.css' layer(vendor.codemirror);
 
-@layer ea.components {
+@layer components {
     .CodeMirror {
         font-family: var(--font-family-monospace);
         font-feature-settings: normal;

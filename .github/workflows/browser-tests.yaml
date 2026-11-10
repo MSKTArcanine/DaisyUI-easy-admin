@@ -32,6 +32,7 @@ jobs:
             - run: make tests-browser
               env:
                   EASYADMIN_BROWSER_ALL_ENGINES: '1'
+            - run: make check-runtime
             - uses: actions/upload-artifact@v5
               if: ${{ !cancelled() }}
               with:

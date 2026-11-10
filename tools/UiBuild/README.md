@@ -8,11 +8,12 @@ the pinned Tailwind 4 CLI and daisyUI plugin; the build downloads nothing.
 `php tools/UiBuild/build.php --dev` builds development CSS, and the same
 command without `--dev` builds minified production CSS. Both commands compile
 the real AssetMapper manifest and export its stylesheet to
-`var/ui-build/ui-preview.css`. The export verifies that the mapped bytes
+`var/ui-build/ui.css`. The export verifies that the mapped bytes
 exactly match the Tailwind cache used by Encore. Encore retains the normal
 hashed files, `manifest.json`, `entrypoints.json`, fonts, licenses and
-JavaScript entry names. `ui-preview.css` is the additional migration entry
-until the final asset cutover.
+JavaScript entry names. The normal `app.css` entry combines this compiled
+UI with the independent font and icon styles. Editor styles retain their
+separate entries and the same cascade layer order.
 
 The ordinary `yarn dev`, `yarn build`, `yarn watch` and `yarn dev-server`
 commands prepare this stylesheet before starting Encore. `make build-assets`
@@ -28,5 +29,5 @@ recreates the AssetMapper manifest/export and distribution artifacts.
 
 `make build-ui-assets` verifies the production stylesheet independently.
 `make build-browser-assets` builds the distribution and the separate browser
-fixture wrapper. Fixture templates and JavaScript are discovered by that
+fixture utilities. Fixture templates and JavaScript are discovered by that
 wrapper, so test-only classes do not enter the distributed stylesheet.

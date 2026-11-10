@@ -12,7 +12,8 @@ Use this prompt to upgrade backends for the flag and security changes made in Ea
 EasyAdmin 5.10.0 changes the look of the `<twig:ea:Flag>` component and checks
 `Actions::setPermission()` and `Actions::disable()` also when running custom action
 methods (the ones used in `linkToCrudAction()`, or in `linkToRoute()` with a custom
-action route of the same CRUD controller). Opening the URL of a disabled or not
+action route of the same CRUD controller). This fork also replaces Bootstrap rendering
+with Tailwind 4 and daisyUI 5 while retaining Twig and Symfony Forms. Opening the URL of a disabled or not
 granted action now returns a 403 error. Search the project (templates, CSS, PHP) and
 apply what's relevant. Skip what doesn't apply.
 
@@ -43,6 +44,39 @@ apply what's relevant. Skip what doesn't apply.
 
 5. The `--field-country-flag-border-color` CSS variable was removed (it wasn't used).
    Remove it, or use `--flag-outline-color` instead.
+
+6. For this Tailwind fork, remove application imports of Bootstrap CSS/JS/Sass,
+   Bootstrap widget themes, `window.bootstrap`, `new bootstrap.Modal(...)`,
+   `new bootstrap.Dropdown(...)` and `*.bs.*` listeners. Replace raw Bootstrap
+   dialogs/menus/tabs with `ea:Modal`, `ea:ActionMenu`, `ea:Tabs` and native
+   `data-ea-toggle`/`data-ea-target`/`data-ea-dismiss` controls. Replace UI lifecycle
+   listeners with `ea.modal.*`, `ea.menu.*`, `ea.tab.*`, `ea.collapse.*`; retain
+   `ea.form.submit`, `ea.form.error`, `ea.collection.item-added` and
+   `ea.collection.item-removed`. Call `window.EasyAdminApp.init(container)` for
+   application-inserted content after loading its configured field entries.
+
+7. Replace custom Bootstrap utility layouts and wrappers with daisyUI components,
+   complete Tailwind classes or application CSS. Retain numeric columns and
+   supported `col-*`/`offset-*` PHP configuration at their original breakpoints.
+   Replace unsupported `row-cols-*`, `g-*`, `gx-*`, `gy-*`, `order-*` and container
+   classes. Preserve URLs, methods, action metadata, CSRF and submitted values.
+
+8. Replace custom form-theme Bootstrap inheritance with
+   `{% use '@EasyAdmin/crud/form_theme.html.twig' %}` and override the required
+   block. Search `bootstrap_5_layout.html.twig` and `bootstrap_base_layout.html.twig`;
+   treat the bundle paths as neutral aliases and migrate downstream Bootstrap
+   markup. Preserve `attr`, `row_attr`, names, IDs, help/errors and hidden/rest fields.
+
+9. Replace `--bs-*` styling with semantic roles such as `--color-primary`,
+   `--color-primary-content`, `--color-base-100`, `--color-base-content` and
+   `--color-error`, or existing `--ea-*` tokens. Replace deleted theme stylesheet
+   imports with application CSS; use `assets/css/ui.css` and `ui/tokens.css` in
+   source builds. Replace old layer assumptions with
+   `theme, vendor, base, components, utilities`; keep application overrides after
+   bundle CSS. Retain the Composer name, namespace, asset package and existing
+   entry names; run `assets:install`. Compile application-owned CSS for Tailwind
+   classes absent from the precompiled bundle; follow `docs/ui-migration/extending.md`
+   and `examples/consumer/README.md` without editing vendor files.
 
 ## Optional changes
 

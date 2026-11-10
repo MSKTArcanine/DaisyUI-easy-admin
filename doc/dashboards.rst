@@ -451,11 +451,13 @@ All menu items define the following methods to configure some options:
   renders the given content as a badge of the menu item. It's commonly used to
   show notification counts. The first argument can be any value that can be
   converted to a string in a Twig template (numbers, strings, *stringable*
-  objects, etc.) The second argument is one of the predefined Bootstrap styles
+  objects, etc.) The second argument is one of the retained semantic styles
   (``primary``, ``secondary``, ``success``, ``danger``, ``warning``, ``info``,
   ``light``, ``dark``). You can also pass an arbitrary string, which is used as
   the value of the ``style`` HTML attribute of the badge. The third argument
   allows you to set custom HTML attributes in the element that renders the badge.
+  The renderer adapts these style names to daisyUI without loading Bootstrap;
+  ``danger`` keeps its error meaning. Custom inline styles remain unchanged.
 
 The rest of the options depend on the menu item type, as explained in the next sections.
 

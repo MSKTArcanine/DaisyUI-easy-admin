@@ -127,9 +127,10 @@ uses it, for example, to render the
 
     <twig:ea:Alert variant="danger">Your password is about to expire.</twig:ea:Alert>
 
-The ``variant`` prop accepts the usual Bootstrap values (``primary``,
+The ``variant`` prop retains the semantic configuration values (``primary``,
 ``success``, ``warning``, ``danger``, etc.; default: ``info``). Add an optional
-``icon``, a ``title`` and a dismiss button as follows:
+``icon``, a ``title`` and a dismiss button as follows. These values retain
+their meaning through the rendering adapter; they do not load Bootstrap:
 
 .. code-block:: twig
 
@@ -164,17 +165,20 @@ values as badges):
 
     <twig:ea:Badge color="success">Published</twig:ea:Badge>
 
-The ``color`` prop accepts the usual Bootstrap values (``primary``,
+The ``color`` prop retains the semantic configuration values (``primary``,
 ``secondary``, ``success``, ``danger``, ``warning``, ``info``, ``light`` and
 ``dark``) plus ``default`` (the neutral gray color used when you don't set
 any color). Any other value is added as a ``badge-{color}`` CSS class, so you
-can define your own colors.
+can define your own colors. The renderer maps these values to daisyUI
+styles; ``danger`` retains its meaning and renders the error color. For a
+custom badge color, define ``--badge-color`` and ``--badge-fg`` in your
+application CSS. Legacy Bootstrap color classes require migration.
 
 The ``variant`` prop defines the visual style of the badge:
 
 * ``light`` (default): a light background with a thin border of the same color;
 * ``solid``: a dark background with white or dark text;
-* ``outline``: a gray border with no background;
+* ``outline``: a colored border with no background;
 * ``dot``: like ``outline``, plus a small circle (called "status dot")
   before the text.
 
@@ -241,6 +245,10 @@ The ``color`` prop defines what the button means: ``default`` (a neutral gray,
 used when you don't set any color), ``primary`` (the primary color of your
 theme), ``success``, ``warning``, ``danger`` and ``info``. Any other value is
 added as a ``btn-{color}`` CSS class, so you can define your own colors.
+The renderer maps these values to daisyUI styles; ``danger`` retains its
+error meaning. For a custom button color, define ``--btn-color`` and
+``--btn-fg`` in your application CSS. Legacy Bootstrap color classes
+require migration.
 
 The ``variant`` prop defines the visual style of the button, and it works with
 every color:

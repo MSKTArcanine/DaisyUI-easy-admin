@@ -1,25 +1,8 @@
-/* All styles are assigned to cascade layers so that any unlayered CSS added by
-   backend applications always overrides EasyAdmin styles, no matter its
-   specificity or loading order. The layer order is defined in layers.css,
-   which must be the first import */
+/* TailwindBundle and AssetMapper compile the UI before Encore packages it with
+   the independent fonts and icons under the existing app.css entry */
 @import './layers.css';
-
-@import '~bootstrap/dist/css/bootstrap.min.css' layer(vendor.bootstrap);
-
+@import '../../tools/UiBuild/var/tailwind/ui.built.css';
 @import '~@fortawesome/fontawesome-free/css/all.css' layer(vendor.fontawesome);
 @import '~@fortawesome/fontawesome-free/css/v4-shims.css' layer(vendor.fontawesome);
 @import '~@fortawesome/fontawesome-free/css/v5-font-face.css' layer(vendor.fontawesome);
-
-@import './easyadmin-theme/vendor-overrides.css' layer(ea-overrides);
-@import './easyadmin-theme/prose-defaults.css' layer(ea-defaults);
-@import './easyadmin-theme/theme.css' layer(ea);
-@import './migration-components.css';
-@import './migration-dialog.css';
-@import './ui/layout.css';
-@import './ui/detail.css';
-@import './ui/forms.css';
-@import './ui/overlays.css';
-@import './ui/visibility.css' layer(ea-overrides);
-@import './ui/fields.css';
-@import './ui/media.css';
-@import './ui/uploads.css';
+@import './easyadmin-theme/fonts.css' layer(theme);

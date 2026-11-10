@@ -166,12 +166,15 @@ biome handles formatting (`yarn ci`). Conventions it doesn't enforce:
 - Standard CSS only (no SCSS/LESS)
 - Don't use nested rules — keep selectors flat
 - `kebab-case` for class names
-- Bootstrap 5.3 classes and utilities
+- Tailwind CSS 4 utilities and daisyUI 5 components; no Bootstrap runtime
+- Compile through `tools/UiBuild/` (TailwindBundle + AssetMapper), then package
+  through the existing Encore asset entries; run `make build-assets`
+- Use complete class names in discovered source or the bounded inclusion list;
+  keep browser-fixture classes out of shipped CSS and omit Tailwind Preflight
 - Logical properties: `margin-block-end` instead of `margin-bottom`
-- Responsive design required; use only these Bootstrap breakpoints:
-  - Medium (md): ≥768px
-  - Large (lg): ≥992px
-  - Extra large (xl): ≥1200px
+- Responsive design required. Preserve legacy configuration breakpoint widths
+  through the presentation adapter (576/768/992/1200/1400px); Tailwind breakpoint
+  names do not imply identical widths
 
 ## Documentation (doc/)
 

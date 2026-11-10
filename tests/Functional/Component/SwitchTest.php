@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Component;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\Size;
+use PHPUnit\Framework\Attributes\TestWith;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormError;
@@ -59,21 +60,27 @@ class SwitchTest extends AbstractFieldFunctionalTestCase
         self::assertStringContainsString('<span class="ea-switch">', $html);
     }
 
-    public function testFormAttrOptionIsRenderedOnTheSwitchInput(): void
+    #[TestWith(['@EasyAdmin/crud/form_theme.html.twig'])]
+    #[TestWith(['@EasyAdmin/symfony-form-themes/bootstrap_5_layout.html.twig'])]
+    #[TestWith(['@EasyAdmin/symfony-form-themes/bootstrap_base_layout.html.twig'])]
+    public function testFormAttrOptionIsRenderedOnTheSwitchInput(string $formTheme): void
     {
-        $html = $this->renderCheckboxThroughFormTheme($this->createSwitchForm());
+        $html = $this->renderCheckboxThroughFormTheme($this->createSwitchForm(), $formTheme);
 
         self::assertMatchesRegularExpression('/<input[^>]+role="switch"/', $html);
         self::assertMatchesRegularExpression('/<input[^>]+data-device-target="monoblock"/', $html);
     }
 
-    public function testInvalidSwitchInputGetsTheInvalidClass(): void
+    #[TestWith(['@EasyAdmin/crud/form_theme.html.twig'])]
+    #[TestWith(['@EasyAdmin/symfony-form-themes/bootstrap_5_layout.html.twig'])]
+    #[TestWith(['@EasyAdmin/symfony-form-themes/bootstrap_base_layout.html.twig'])]
+    public function testInvalidSwitchInputGetsTheInvalidClass(string $formTheme): void
     {
         $form = $this->createSwitchForm();
         $form->submit(['monoblock' => '1']);
         $form->get('monoblock')->addError(new FormError('Some error'));
 
-        $html = $this->renderCheckboxThroughFormTheme($form);
+        $html = $this->renderCheckboxThroughFormTheme($form, $formTheme);
 
         self::assertMatchesRegularExpression('/<input[^>]+class="ea-switch-input toggle is-invalid"/', $html);
     }
@@ -110,7 +117,10 @@ class SwitchTest extends AbstractFieldFunctionalTestCase
         self::assertCount(0, $crawler->filter('script'));
     }
 
-    public function testSymfonyCheckboxSubmissionPreservesBooleanValuesAndInputIdentity(): void
+    #[TestWith(['@EasyAdmin/crud/form_theme.html.twig'])]
+    #[TestWith(['@EasyAdmin/symfony-form-themes/bootstrap_5_layout.html.twig'])]
+    #[TestWith(['@EasyAdmin/symfony-form-themes/bootstrap_base_layout.html.twig'])]
+    public function testSymfonyCheckboxSubmissionPreservesBooleanValuesAndInputIdentity(string $formTheme): void
     {
         $checkedForm = $this->createSwitchForm();
         $checkedForm->submit(['monoblock' => '1']);
@@ -120,7 +130,7 @@ class SwitchTest extends AbstractFieldFunctionalTestCase
         self::assertTrue($checkedForm->isValid());
         self::assertTrue($checkedForm->get('monoblock')->getData());
         self::assertFalse($uncheckedForm->get('monoblock')->getData());
-        $input = (new Crawler($this->renderCheckboxThroughFormTheme($checkedForm)))->filter('input');
+        $input = (new Crawler($this->renderCheckboxThroughFormTheme($checkedForm, $formTheme)))->filter('input');
         self::assertSame('device_monoblock', $input->attr('id'));
         self::assertSame('device[monoblock]', $input->attr('name'));
         self::assertSame('1', $input->attr('value'));
@@ -138,14 +148,14 @@ class SwitchTest extends AbstractFieldFunctionalTestCase
             ->getForm();
     }
 
-    private function renderCheckboxThroughFormTheme(FormInterface $form): string
+    private function renderCheckboxThroughFormTheme(FormInterface $form, string $formTheme): string
     {
         $template = <<<'TWIG'
-            {% form_theme form '@EasyAdmin/symfony-form-themes/bootstrap_5_layout.html.twig' %}
+            {% form_theme form form_theme %}
             {{ form_widget(form.monoblock) }}
             TWIG;
 
-        return $this->renderSwitch($template, ['form' => $form->createView()]);
+        return $this->renderSwitch($template, ['form' => $form->createView(), 'form_theme' => $formTheme]);
     }
 
     private function renderSwitch(string $template, array $context = []): string
