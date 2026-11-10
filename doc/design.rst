@@ -1431,7 +1431,6 @@ the browser. No production CDN or browser compiler is needed.
 .. _`Google Fonts`: https://fonts.google.com/
 .. _`Bunny Fonts`: https://fonts.bunny.net/
 .. _`OpenType features`: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_fonts/OpenType_fonts_guide
-.. _`Webpack`: https://webpack.js.org/
 .. _`Webpack Encore`: https://symfony.com/doc/current/frontend.html
 .. _`override templates from bundles`: https://symfony.com/doc/current/bundles/override.html#templates
 .. _`customize individual form fields`: https://symfony.com/doc/current/form/form_customization.html
