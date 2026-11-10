@@ -563,3 +563,41 @@ New styles remain isolated from Bootstrap previews; temporary legacy imports,
 compatibility CSS and preview entries are removed in Prompt 10. Optional
 installed Vich/remote-storage behavior remains a separate unverified integration
 rather than a reason to remove those supported render blocks.
+
+
+## D18. Ship compiled assets and prove extensions in an independent application
+
+The maintainer compiler now lives in `tools/UiBuild/`, registering only
+FrameworkBundle and TailwindBundle with AssetMapper. `build.php --dev` and
+`build.php` run local Tailwind, real `asset-map:compile`, and `export.php`. The
+export checks byte identity between the mapped CSS, compiler cache and exported
+CSS before Encore packages it. This removes the browser database/security/test
+kernel from the product build. Yarn scripts and Make remain the entry points.
+`make watch-ui` runs beside `yarn watch`/`yarn dev-server`; a real temporary Twig
+class triggered both watchers and reached delivered CSS. The probe is removed.
+Generated cache directories are excluded from PHP style checks; generated asset
+manifests and application compiler output are excluded from source formatting.
+
+The product source discovers bundle Twig, JavaScript and the presentation
+adapter only. `tests/Browser/assets/ui-preview.css` owns fixture discovery,
+including the build-contract arbitrary class, independently of shipped CSS.
+Stage 9 adds one temporary, precompiled `ui-preview.css` distribution entry; its
+consumer loads that entry plus existing isolated fonts/native JS. Stage 10 must
+fold these into original `app.css`/`app.js` and remove temporary head overrides.
+No document loads Bootstrap CSS with daisyUI.
+
+`examples/consumer/` is a separate Symfony application with its own Composer
+and Yarn locks, entity/database, authentication, controllers, Twig and assets.
+It installs a pinned Git archive as a normal Composer ZIP artifact, with no
+symlink/path repository or vendor edits. Only artifact version/provenance
+metadata is injected before installation; the library manifest remains unchanged.
+`package-reference.json` records source SHA and archive checksum. Reproducible
+archive metadata uses the pinned commit timestamp. Tools/examples/test fixtures
+are excluded from the library archive through `.gitattributes`.
+
+The application ships its own compiled utility stylesheet. Its optional local
+TailwindBundle/Yarn build is necessary only when changing its class set; normal
+production installation uses Composer `--no-dev`, `assets:install` and
+`asset-map:compile`. Application CSS/JS remain application-owned mapped assets.
+The eight examples and compatibility boundaries are documented in
+[extending.md](extending.md) and the consumer README.

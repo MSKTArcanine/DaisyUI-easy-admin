@@ -497,3 +497,57 @@ Unresolved issues and next stage:
 - Continue with **Prompt 9 - Prove downstream extensibility** on
   `prove_downstream_extensibility`, then complete final Bootstrap removal and
   acceptance on the Prompt 10 branch.
+
+
+## Prompt 9 stage report
+
+Branch: `prove_downstream_extensibility`; build-foundation commit `77076f5eb`.
+
+Changes made:
+
+- Extracted a standalone Framework/AssetMapper/Tailwind maintainer build and
+  preserved Yarn/Encore distribution, fonts, manifests and widget entry names.
+  Separated fixture source discovery from shipped CSS and proved real watch
+  propagation. Added an isolated precompiled CSS entry until final cutover.
+- Created `examples/consumer/` with normal pinned Composer ZIP installation,
+  its own package-manager locks, Symfony/Doctrine configuration and deterministic
+  SQLite data. A fresh copy runs outside this repository without vendor edits.
+- Demonstrated all eight requested extension points with actual rendered values,
+  configured assets and application-owned compiled utilities; documented stable
+  hooks, theme layers/tokens, Bootstrap integration changes and upstream upkeep.
+- Added `tests/Consumer/`, `make tests-consumer` and a separate CI job with a
+  production PHP-only PATH installation. CI configuration was parsed locally;
+  remote CI was not invoked.
+
+Validation (details in `reports/stage-9-consumer.json`):
+
+| Command/check | Result |
+| --- | --- |
+| Independent development/production build and direct `yarn dev` | Passed; 325625/248286 CSS bytes; mapped/cache/export equality |
+| `yarn watch` with `make watch-ui` and real temporary Twig edit | Passed; both compilers updated delivered CSS; probe removed |
+| Normal asset build and manifest verification | Passed; 67 files, 56 targets, one independently mapped CSS asset |
+| Browser build contract suite, all three engines | Passed: 15/15 |
+| Fresh outside Composer `--no-dev`, `assets:install`, `asset-map:compile`, SQLite seed | Passed on PHP 8.3.33/Symfony 6.4.50; Node/Yarn absent from PATH, TailwindBundle absent, copied vendor package |
+| Archive reproducibility and installed reference/checksum | Passed; same pinned archive produced identical SHA256 twice |
+| `EASYADMIN_BROWSER_ALL_ENGINES=1 make tests-consumer` with outside app/PHP environment | Passed: 15/15, zero skipped/flaky/retried cases |
+| PHP CS Fixer / Twig / frontend | Passed: zero of 1068 PHP files fixable; six consumer and 15 browser Twig templates; 142 frontend files, 153 visible advisories |
+| Product PHP / original visual references | No production PHP changes; original references unchanged |
+
+Early consumer setup errors were corrected in application configuration and
+its custom field signature. Request assertions now verify observed historical
+submitter naming and generated URL semantics. No behavior assertion was removed
+to make an exception page pass; installation checks require a successful real
+index and seeded content. The final complete consumer run passes.
+
+Unresolved issues and next stage:
+
+- Actual PHP 8.2/minimum-browser runtimes and the previously documented optional
+  Vich/remote-storage/profiler integrations remain unverified. Composer PHP 8.2
+  resolution plus actual PHP 8.3/Symfony 6.4 and PHP 8.5/Symfony 8.1 runs are
+  distinct evidence. The temporary PHP 8.3 extension wrapper is host-only tooling.
+- Bootstrap remains in the normal distribution until Prompt 10. Stage 9 loads
+  isolated daisyUI assets and does not claim global removal.
+- Continue with **Prompt 10 - Remove Bootstrap and perform final acceptance**
+  on `remove_bootstrap_and_perform_final_acceptance`: remove obsolete runtime
+  code/styles/scaffolding, restore original asset entry names for the new UI,
+  repeat all behavior/consumer checks and complete independent review.

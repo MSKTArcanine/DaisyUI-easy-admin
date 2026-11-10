@@ -401,3 +401,36 @@ PHP collector/non-admin tests do not substitute for the missing panel render.
 The normal package still includes Bootstrap pending final cutover. The original
 visual-reference files remain unchanged. Standalone consuming-application
 installation and extension proof is Prompt 9.
+
+
+## Prompt 9 independent installation and extension contracts
+
+`tests/Consumer/` runs against an actual installed application outside the
+checkout using its own PHP binary, native sessions and SQLite database. Set
+`EASYADMIN_CONSUMER_DIR` and optionally `EASYADMIN_CONSUMER_PHP`, then run
+`EASYADMIN_BROWSER_ALL_ENGINES=1 make tests-consumer`. The five cases cover:
+
+1. Normal copied Composer package, pinned source/archive checksum, unchanged
+   namespace, absence of app Node modules, local compiled CSS/fonts/scripts
+   without Bootstrap or browser errors.
+2. Real layout and field overrides, custom field values on index/detail,
+   semantic token control color, configured CSS/JS plus importmap effects,
+   and a custom utility absent from bundle CSS but applied from application CSS.
+3. A custom Symfony form block used by real new/edit POST requests: exact names,
+   IDs, values, original action submitter and CSRF; persisted typed values and
+   checkbox omission semantics.
+4. Actual server validation and forged CSRF rejection with retained form values
+   and unchanged database state.
+5. A generated custom action's GET URL/method and actual JSON records without
+   mutation.
+
+`.github/workflows/browser-tests.yaml` includes a separate consumer job. It
+checks out history for the pinned archive, copies the app outside the checkout,
+installs production dependencies/assets with a PHP-only PATH and executes all
+three engines. Local execution is recorded separately from configuring CI;
+remote CI was not invoked in this session.
+
+The independent build contract suite also passed 15/15 cases across Chromium,
+Firefox and WebKit after moving fixture-only Tailwind discovery out of shipped
+CSS. Existing upstream PHP behavior is unchanged in this stage; the complete
+PHP suite remains the passing Prompt 8 result and runs again at final cutover.

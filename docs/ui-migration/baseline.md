@@ -315,3 +315,36 @@ remain the source of behavioral evidence. The native preview and remaining
 legacy document use separate stylesheets; normal global Bootstrap removal is
 still Prompt 10. `reports/stage-8-widgets.json` records the full run and the
 subsequent precision-only field-display verification separately.
+
+
+## Prompt 9 independent build and consuming application
+
+The stage starts from `7e290baca` on `prove_downstream_extensibility`. The
+separately installed package pins build-foundation commit
+`77076f5ebc15083da649f363ea9b207f12809061`; its ZIP SHA256 is
+`16b417c52fb1d9ba408d0729183e71e5d6394f74dc02e333ccdb1c7ebe6fbb62`.
+`examples/consumer/package-reference.json` and the application Composer lock
+record this artifact independently of the checkout's runtime. No path symlink
+repository or vendor edits are used.
+
+Verified environments:
+
+- Maintainer: PHP 8.5.11, FrameworkBundle 8.1.11 and the existing pinned Yarn
+  Tailwind 4.3.3/daisyUI 5.7.50 toolchain. Independent dev CSS 325625 bytes;
+  production CSS 248286 bytes; one mapped CSS asset, 56 distribution manifest
+  targets and 67 distributed files. Real dual-watcher edit propagation passed.
+- Consumer: actual PHP 8.3.33, HttpKernel 6.4.50, FrameworkBundle 6.4.49,
+  AssetMapper 6.4.50, ORM 2.20.14, DBAL 3.10.6, Twig 3.30 and UX TwigComponent
+  2.36. Composer resolves with PHP platform 8.2.0 and pinned 6.4 components.
+  This is not an actual PHP 8.2 runtime test.
+- Fresh application installed outside the repository at a temporary directory
+  with Node/Yarn absent from PATH. Composer `--no-dev`, copied bundle assets,
+  application AssetMapper compilation and real SQLite data creation passed.
+  Installed vendor path is nonsymlinked and TailwindBundle is absent.
+
+The host's PHP 8.3 lacked PDO SQLite. A matching packaged extension was extracted
+under `/tmp/easyadmin-php83-runtime/`; its wrapper preserves the normal PHP
+configuration and adds an isolated extension scan directory. No host installation
+was modified. The example explicitly requires `ext-pdo_sqlite`/`ext-zip`, so
+ordinary users receive an installation error before creating data if missing.
+The temporary host wrapper is verification tooling, not an application dependency.

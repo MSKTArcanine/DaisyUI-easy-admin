@@ -21,6 +21,9 @@
             "!**/tests/Browser/public/assets-built",
             "!**/tests/Consumer/results",
             "!**/examples/consumer/public/assets",
+            "!**/examples/consumer/public/bundles",
+            "!**/examples/consumer/assets/styles/consumer-utilities.css",
+            "!**/tools/UiBuild/public/assets",
             "!**/.claude",
             "!**/public/entrypoints.json",
             "!**/public/manifest.json"

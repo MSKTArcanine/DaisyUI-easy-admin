@@ -61,7 +61,7 @@ for (const mode of [
 
 test('production output contains explicit source classes and no unresolved compiler directives', async () => {
     const manifestPath = path.join(__dirname, 'public/assets-built/manifest.json');
-    expect(fs.existsSync(manifestPath), 'Run make build-ui-assets before browser tests.').toBe(true);
+    expect(fs.existsSync(manifestPath), 'Run make build-browser-assets before browser tests.').toBe(true);
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     const outputPath = path.join(__dirname, 'public', manifest['easyadmin/ui-preview.css']);
     const css = fs.readFileSync(outputPath, 'utf8');

@@ -1,0 +1,85 @@
+{
+    "stage": 9,
+    "branch": "prove_downstream_extensibility",
+    "parent_commit": "7e290baca",
+    "package_commit": "77076f5ebc15083da649f363ea9b207f12809061",
+    "archive_sha256": "16b417c52fb1d9ba408d0729183e71e5d6394f74dc02e333ccdb1c7ebe6fbb62",
+    "archive_reproducible": true,
+    "consumer_browser": {
+        "startTime": "2026-11-10T00:10:14.432Z",
+        "duration": 17681.99,
+        "expected": 15,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+    },
+    "build_contract_browser": {
+        "passed": 15,
+        "engines": ["chromium", "firefox", "webkit"]
+    },
+    "consumer_install": {
+        "php": "8.3.33",
+        "symfony": "6.4.50",
+        "package": "5.9.1-dev",
+        "reference": "77076f5ebc15083da649f363ea9b207f12809061",
+        "installPath": "/tmp/easyadmin-consumer-stage9-nwh6l4cy/vendor/easycorp/easyadmin-bundle",
+        "symlink": false,
+        "tailwindBundleInstalled": false,
+        "frontendToolsOnPath": {
+            "node": false,
+            "yarn": false
+        },
+        "commands": [
+            [
+                "/usr/bin/php8.3",
+                "/usr/bin/composer",
+                "install",
+                "--no-dev",
+                "--prefer-dist",
+                "--no-interaction",
+                "--no-scripts"
+            ],
+            ["/usr/bin/php8.3", "bin/console", "cache:clear", "--no-warmup"],
+            ["/usr/bin/php8.3", "bin/console", "assets:install", "public"],
+            ["/usr/bin/php8.3", "bin/console", "asset-map:compile"],
+            ["/usr/bin/php8.3", "bin/console", "app:fixtures", "seed"]
+        ]
+    },
+    "build": {
+        "development_css_bytes": 325625,
+        "production_css_bytes": 248286,
+        "assetmapper_css_assets": 1,
+        "manifest_targets": 56,
+        "distributed_files": 67,
+        "mapped_cache_export_equal": true,
+        "actual_watch_rebuild": true,
+        "fixture_classes_excluded": true,
+        "application_utilities_bytes": 447
+    },
+    "checks": {
+        "php_cs_files": 1068,
+        "php_cs_fixable": 0,
+        "consumer_twig": 6,
+        "browser_twig": 15,
+        "frontend_files": 142,
+        "frontend_warnings": 153,
+        "workflow_yaml_parsed": true,
+        "production_php_changes": false,
+        "original_references_unchanged": true,
+        "remote_ci_invoked": false
+    },
+    "fixture_findings_resolved": [
+        "Register application controller required dependencies and anonymous Twig components",
+        "Match custom field factory signature to actual FieldInterface",
+        "Declare SQLite and ZIP application extension requirements",
+        "Assert actual historical ea[newForm][btn] edit submitter and generated same-origin absolute action URL"
+    ],
+    "unverified": [
+        "Actual PHP 8.2 runtime",
+        "Exact minimum browser versions",
+        "Installed VichUploader integration",
+        "Remote Flysystem storage round trip",
+        "Rendered WebProfiler panel"
+    ],
+    "next_stage": 10
+}

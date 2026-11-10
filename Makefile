@@ -17,6 +17,8 @@ tests-parallel: ## Run tests in parallel processes (optional ARGS, e.g. make tes
 	php vendor/bin/paratest $(ARGS)
 tests-browser: build-browser-assets ## Run browser behavior regressions (optional ARGS)
 	yarn test:browser $(ARGS)
+tests-consumer: ## Test an installed consumer (set EASYADMIN_CONSUMER_DIR, optional ARGS)
+	yarn playwright test --config tests/Consumer/playwright.config.js $(ARGS)
 browser-serve: ## Serve the isolated rendering regression application
 	php -S 127.0.0.1:8089 tests/Browser/router.php
 browser-seed: ## Reset deterministic browser fixtures in their isolated database

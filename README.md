@@ -21,6 +21,13 @@
 
 EasyAdmin creates beautiful backends for Symfony applications. It's free, fast, and trusted by tens of thousands of projects.
 
+This fork migrates rendering to Tailwind CSS 4 and daisyUI 5 while keeping Twig,
+Symfony Forms and the public PHP configuration API. See the
+[migration records](docs/ui-migration/progress.md),
+[extension guide](docs/ui-migration/extending.md) and
+[separate Symfony consumer](examples/consumer/README.md) for this fork's setup
+and compatibility boundaries. The package name and PHP namespace are unchanged.
+
 <p align="center">
     <a href="./doc/images/easyadmin-screenshot-index-light.webp" target="_blank">
         <picture>

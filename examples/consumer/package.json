@@ -1,0 +1,11 @@
+{
+    "private": true,
+    "license": "MIT",
+    "devDependencies": {
+        "@tailwindcss/cli": "4.3.3",
+        "tailwindcss": "4.3.3"
+    },
+    "scripts": {
+        "build:css": "php bin/console tailwind:build --minify && php scripts/publish-css.php"
+    }
+}

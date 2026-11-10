@@ -1,0 +1,4 @@
+{% block _Entry_title_widget %}
+    {% set attr = attr|merge({'data-testid': 'consumer-title-widget', 'data-consumer-form-extension': 'true'}) %}
+    {{ block('form_widget_simple') }}
+{% endblock %}

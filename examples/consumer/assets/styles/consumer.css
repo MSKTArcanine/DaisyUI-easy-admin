@@ -1,0 +1,11 @@
+[data-ea-ui] {
+    --color-primary: #7c3aed;
+    --color-primary-content: #fff;
+    --radius-selector: 0.75rem;
+}
+
+.consumer-configured-css-proof {
+    display: inline-block;
+    border-block-start: 3px solid var(--color-primary);
+    padding-block-start: 0.25rem;
+}

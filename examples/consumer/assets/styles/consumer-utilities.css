@@ -1,0 +1,2 @@
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+@layer properties{@supports (((-webkit-hyphens:none)) and (not (margin-trim:inline))) or ((-moz-orient:inline) and (not (color:rgb(from red r g b)))){*,:before,:after,::backdrop{--tw-tracking:initial}}}@layer utilities{.static{position:static}.block{display:block}.tracking-\[0\.137em\]{--tw-tracking:.137em;letter-spacing:.137em}}@property --tw-tracking{syntax:"*";inherits:false}

@@ -38,3 +38,47 @@ jobs:
                   name: browser-results
                   path: tests/Browser/results/
                   retention-days: 14
+
+    consumer:
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  fetch-depth: 0
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.3'
+                  extensions: intl, pdo_sqlite, mbstring, fileinfo, zip
+                  coverage: none
+                  tools: composer:2.9.8
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: '20'
+            - run: corepack enable
+            - run: corepack prepare yarn@1.22.22 --activate
+            - run: yarn install --frozen-lockfile
+            - run: yarn playwright install --with-deps chromium firefox webkit
+            - name: Prepare the pinned Composer artifact
+              run: |
+                  reference=$(php -r 'echo json_decode(file_get_contents("examples/consumer/package-reference.json"), true)["reference"];')
+                  php examples/consumer/scripts/package.php "$GITHUB_WORKSPACE" "$reference"
+                  php examples/consumer/scripts/copy.php "$RUNNER_TEMP/easyadmin-consumer"
+            - name: Install production assets without Node on PATH
+              run: |
+                  php_binary=$(command -v php)
+                  composer_binary=$(command -v composer)
+                  mkdir "$RUNNER_TEMP/consumer-no-node-bin"
+                  ln -s "$php_binary" "$RUNNER_TEMP/consumer-no-node-bin/php"
+                  PATH="$RUNNER_TEMP/consumer-no-node-bin" CONSUMER_COMPOSER_BINARY="$composer_binary" "$php_binary" "$RUNNER_TEMP/easyadmin-consumer/scripts/install.php"
+            - run: make tests-consumer
+              env:
+                  EASYADMIN_CONSUMER_DIR: ${{ runner.temp }}/easyadmin-consumer
+                  EASYADMIN_CONSUMER_PHP: php
+                  EASYADMIN_BROWSER_ALL_ENGINES: '1'
+            - uses: actions/upload-artifact@v5
+              if: ${{ !cancelled() }}
+              with:
+                  name: consumer-results
+                  path: tests/Consumer/results/
+                  retention-days: 14

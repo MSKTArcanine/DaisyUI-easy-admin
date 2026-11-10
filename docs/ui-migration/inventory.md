@@ -611,3 +611,21 @@ bounds, accessible names, color samples, safe/unsafe URLs and readonly viewers
 in both schemes and staged styles. Regenerated normal assets preserve all 55
 manifest targets. Legacy Bootstrap styles/runtime and temporary preview/support
 entries remain scheduled for Prompt 10.
+
+
+## Prompt 9 downstream and delivery surfaces
+
+| Surface | Actual source | Integration and verification |
+| --- | --- | --- |
+| Maintainer CSS compilation | `tools/UiBuild/{Kernel,build,console,export}.php`, `Makefile`, `package.json` | Independent Framework/AssetMapper/Tailwind build; mapped/cache/export byte equality, dev/prod and actual watch rebuild |
+| Distribution | `webpack.config.js`, `public/{manifest,entrypoints}.json`, `src/Resources/bin/fix-assets-manifest-file.php` | Preserve hashed entry/manifest/font contract; temporary isolated CSS entry until 10; all manifest targets checked |
+| Consumer installation | `examples/consumer/scripts/{package,install}.php`, `composer.json`, `composer.lock`, `package-reference.json` | Pinned ZIP, normal Composer installation outside checkout, copied assets plus mapped app assets, no Node or vendor edits |
+| Layout block | `examples/consumer/templates/admin/layout.html.twig` | Existing `header_logo` block with `parent()`; temporary asset head overrides removed in 10 |
+| Configured field replacement | `examples/consumer/src/Controller/EntryCrudController.php`, `templates/admin/fields/title.html.twig` | Existing `setTemplatePath()` renders real index/detail entity values |
+| Form block | `examples/consumer/templates/admin/form_theme.html.twig` | Ordered partial `_Entry_title_widget` extends normal Symfony rendering; real create/edit/invalid/CSRF/persistence checks |
+| Custom field | `examples/consumer/src/Field/StatusField.php`, `templates/admin/fields/status.html.twig` | Existing interface/trait and renderer; exact persisted values |
+| Custom action | `examples/consumer/src/Controller/EntryCrudController.php::export()` | Generated read-only GET action returns actual ordered records without mutation |
+| Theme tokens | `examples/consumer/assets/styles/consumer.css` | Application CSS changes semantic primary/content/radius roles without bundle edits; computed control appearance |
+| Configured CSS/JS | `examples/consumer/src/Controller/DashboardController.php`, `assets/scripts/configured.js`, `assets/app.js`, `importmap.php` | Existing configured files plus AssetMapper entry, local requests and actual JS effects |
+| Additional Tailwind utility | `examples/consumer/tailwind/consumer.css`, `assets/styles/consumer-utilities.css`, `scripts/publish-css.php`, `yarn.lock` | Explicit app source discovery; arbitrary `tracking-[0.137em]` absent from bundle CSS and effective from compiled app CSS |
+| Independent behavior suite | `tests/Consumer/{helpers,playwright.config,extensions.spec}.js` | Actual installed vendor package outside repository; generated requests, CSRF, server validation and database state across three engines |
